@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3 · What the wavelet does | Seismic Inversion, from the start</title>
+<meta name="description" content="A survey records the rock through a wavelet, and the wavelet sets how thin a bed can be before its top and base arrive as one event. Thin a bed down and watch it happen.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<div class="wrap">
+  <header class="masthead">
+    <a class="brand" href="../index.html"><span class="dot"></span>Seismic inversion, <b>from the start</b></a>
+    <nav>
+      <a href="../index.html">All modules</a>
+      <a href="../glossary.html">Glossary</a>
+      <a href="#pm">How this page works</a>
+    </nav>
+  </header>
+
+  <div class="mod-head">
+    <p class="eyebrow">Module 3 &nbsp;·&nbsp; What the wavelet does</p>
+    <h1>The recording is the rock seen through a wavelet</h1>
+    <p class="sub">Module 2 showed that impedance is the thing worth having, so why not read it off the
+      trace? A survey puts a wavelet at each boundary rather than a spike, and once two boundaries are
+      closer together than the wavelet is long, their reflections overlap. Thin a bed down and watch it
+      happen.</p>
+  </div>
+
+  <div class="labhead">
+    <div class="labgrid">
+      <div>
+        <p class="cap">One sand in shale <span>&mdash; the rock, and what a survey sees</span></p>
+        <canvas id="cHead" aria-label="A sand bed inside shale, its impedance, its two reflections and the trace they make"></canvas>
+      </div>
+      <div>
+        <p class="cap">The bed and the wavelet <span>&mdash; move either one</span></p>
+        <div class="controls" id="mainControls">
+          <div class="ctl-col">
+            <h2>The bed</h2>
+            <div class="ctl">
+              <label for="thick">Sand thickness <span class="val" id="thickV">30 m</span></label>
+              <input type="range" data-key="thick" id="thick" min="2" max="60" step="1" value="30">
+            </div>
+
+            <h2>The rock</h2>
+            <div class="numrow layer-b">
+              <label for="vpS">Sand velocity</label>
+              <input type="number" id="vpS" data-key="vpS" min="1800" max="4000" step="50" value="2600">
+              <span class="unit">m/s</span>
+            </div>
+            <div class="numrow layer-b">
+              <label for="rhoS">Sand density</label>
+              <input type="number" id="rhoS" data-key="rhoS" min="1.8" max="2.8" step="0.05" value="2.15">
+              <span class="unit">g/cc</span>
+            </div>
+
+            <h2>The wavelet</h2>
+            <div class="ctl">
+              <label for="fr">Frequency <span class="val" id="frV">30 Hz</span></label>
+              <input type="range" data-key="fr" id="fr" min="12" max="70" step="1" value="30">
+            </div>
+
+            <div class="modbar" style="margin-top:14px">
+              <button class="btn ghost small reset" id="resetBtn" type="button">Reset</button>
+              <button class="btn ghost small" id="copyBtn" type="button">Copy link to this setup</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="tabhint">Four short steps. Step 2 is the experiment worth doing slowly, and step 4 is a game.</p>
+
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Module steps">
+    <button role="tab" data-tab="p1" aria-selected="false">1 · Two reflections</button>
+    <button role="tab" data-tab="p2" aria-selected="false">2 · Thinning it down</button>
+    <button role="tab" data-tab="p3" aria-selected="false">3 · A shorter wavelet</button>
+    <button role="tab" data-tab="p4" aria-selected="false">4 · Rank the beds</button>
+    <span class="gap"></span>
+    <button role="tab" data-tab="pw" aria-selected="false">Why this matters</button>
+    <button role="tab" data-tab="pc" aria-selected="false">Check yourself</button>
+    <button role="tab" data-tab="pm" aria-selected="false">How this page works</button>
+  </nav>
+
+  <!-- =============================== STEP 1 =============================== -->
+  <section class="tabpane" id="p1" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">1</span>A bed has two boundaries</h3>
+      <span class="hint">Leave the thickness at 30 m for now</span>
+    </div>
+
+    <p class="lede">A sand sitting in shale gives two reflections. One where the shale meets the top of
+      the sand, and one where the base of the sand meets shale again. They have opposite signs, because
+      the impedance steps down going in and back up coming out.</p>
+
+    <p class="lede">The left panel shows the rock and its impedance. The middle of the right panel shows
+      the two reflections as sticks: one number each, at the depth each boundary sits at. The right of
+      that panel shows the trace, with a wavelet laid on each stick.</p>
+
+    <p class="lede">At 30 m the bed is thick enough that the two wavelets land in different places and stay
+      apart. You can see a top and a base, count them, and measure the gap between them.</p>
+
+    <div class="sec-row" id="row1">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> The rock, and its impedance
+          <span class="note">the sand is a block</span></p>
+        <canvas id="c1a" aria-label="The sand bed inside shale, with its impedance"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> Two reflections, and the trace
+          <span class="note">one wavelet on each</span></p>
+        <canvas id="c1b" aria-label="The two reflection coefficients and the trace they produce"></canvas>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Impedance of the sand</span><b id="s1a">&mdash;</b></div>
+      <div class="stat"><span>Impedance of the shale</span><b id="s1b">&mdash;</b></div>
+      <div class="stat"><span>Reflection at the top</span><b id="s1c">&mdash;</b></div>
+      <div class="stat"><span>Reflection at the base</span><b id="s1d">&mdash;</b></div>
+      <div class="stat"><span>Time through the bed and back</span><b id="s1e">&mdash;</b></div>
+      <div class="stat key"><span>Wiggles you can count</span><b id="s1f">&mdash;</b></div>
+    </div>
+
+    <div class="whymatters">
+      <h4>Why this matters</h4>
+      <p>Almost every reservoir you will care about is a bed inside something else, so this pair of
+        reflections is the shape most interpretation is built on. How far apart they land, and whether
+        they land apart at all, decides what you can measure from a seismic section.</p>
+    </div>
+  </section>
+
+  <!-- =============================== STEP 2 =============================== -->
+  <section class="tabpane" id="p2" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">2</span>Now thin it down</h3>
+      <span class="hint">Take the thickness slider from 60 m to 2 m, slowly</span>
+    </div>
+
+    <p class="lede">The rock keeps getting thinner all the way. The trace does not keep up.</p>
+
+    <p class="lede">At the settings the page opens with, the gap between the peak and the trough follows
+      the real thickness of the bed down to about 13 m. Below that it stops. The two reflections have
+      started to overlap, and the gap settles at roughly the separation between the wavelet's own peak
+      and trough however thin the sand gets. The left panel plots the measured gap against the real
+      thickness, and the readout prints the thickness where the two part company at whatever frequency
+      is set.</p>
+
+    <p class="lede">The third readout turns that gap back into a thickness, which is what an interpreter
+      does with it. Above the limit it comes out a little short. Below the limit it stops falling, so a
+      4 m sand is reported as something over 14 m thick.</p>
+
+    <p class="lede">The size of the wiggle keeps changing after the gap has stopped. It rises to a peak
+      and then falls away toward nothing. So below that thickness a bright reflection may mean a thicker
+      bed, or a bigger contrast, or neither, and the trace does not distinguish them.</p>
+
+    <p class="lede">The teal line is the quarter-wavelength rule of thumb that step 3 works with. It sits
+      at a thicker bed than the point where this page's measurement actually parts company with the
+      truth, by a factor of about 0.6 at every frequency. The rule is the cautious one, and the readout
+      prints both numbers.</p>
+
+    <div class="sec-row" id="row2">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> Measured gap against real thickness
+          <span class="note">the dashed line is a perfect measurement</span></p>
+        <canvas id="c2a" aria-label="The measured peak-to-trough gap plotted against the true bed thickness"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> The trace at five thicknesses
+          <span class="note">60, 30, 20, 10 and 4 m</span></p>
+        <canvas id="c2b" aria-label="The trace from the same sand at five different thicknesses"></canvas>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Real thickness now</span><b id="s2a">&mdash;</b></div>
+      <div class="stat"><span>Time through it and back</span><b id="s2b">&mdash;</b></div>
+      <div class="stat"><span>Gap you can measure</span><b id="s2c">&mdash;</b></div>
+      <div class="stat"><span>Thickness that gap implies</span><b id="s2d">&mdash;</b></div>
+      <div class="stat key"><span>Is this bed resolved</span><b id="s2e">&mdash;</b></div>
+      <div class="stat wide"><span>Size of the wiggle</span><b id="s2f">&mdash;</b></div>
+      <div class="stat wide"><span>Where the gap stops following</span><b id="s2g">&mdash;</b></div>
+    </div>
+
+    <div class="miscon">
+      <h4>Common misconception</h4>
+      <p class="said">"A brighter reflection means a thicker bed."</p>
+      <p class="fix">Set the thickness to 15 m and note the size of the wiggle. Now set it to 40 m — a
+        bed nearly three times thicker — and the wiggle is <b>smaller</b>. Below the resolution limit
+        the two reflections add together and reinforce each other, and that adding peaks at one
+        particular thickness rather than growing forever. A bright event can mean a thick bed, a thin
+        one at just the right thickness, or a large contrast. The trace does not say which.</p>
+    </div>
+  </section>
+
+  <!-- =============================== STEP 3 =============================== -->
+  <section class="tabpane" id="p3" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">3</span>A shorter wavelet sees more</h3>
+      <span class="hint">Move the frequency and watch the limit move with it</span>
+    </div>
+
+    <p class="lede">The limit in step 2 came from the wavelet rather than from the rock. A higher
+      frequency is a shorter wavelet, and a shorter wavelet keeps two reflections apart at thicknesses
+      where a longer one cannot.</p>
+
+    <p class="lede">There is a rule of thumb for where the limit falls: a quarter of the wavelength of
+      the wavelet in the rock. Wavelength is velocity divided by frequency, so the readouts work it out
+      from the numbers you have set. The left panel shows the same bed recorded at three frequencies so
+      you can see the limit move.</p>
+
+    <p class="lede">This is also why nobody can simply buy their way past the problem. Higher frequencies
+      are absorbed by the earth as they travel, so a deep target arrives with a longer wavelet than a
+      shallow one whatever the survey did. The limit is worse the deeper you look.</p>
+
+    <div class="sec-row" id="row3">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> The same bed, three wavelets
+          <span class="note">20, 35 and 55 Hz</span></p>
+        <canvas id="c3a" aria-label="The same sand bed recorded with three different wavelet frequencies"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> Where the limit falls
+          <span class="note">across the whole frequency range</span></p>
+        <canvas id="c3b" aria-label="The resolution limit in meters plotted against wavelet frequency"></canvas>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Frequency now</span><b id="s3a">&mdash;</b></div>
+      <div class="stat"><span>Wavelength in the sand</span><b id="s3b">&mdash;</b></div>
+      <div class="stat"><span>A quarter of that</span><b id="s3c">&mdash;</b></div>
+      <div class="stat"><span>Quarter wavelength at 20 Hz</span><b id="s3d">&mdash;</b></div>
+      <div class="stat key"><span>Quarter wavelength at 55 Hz</span><b id="s3e">&mdash;</b></div>
+      <div class="stat wide"><span>What decides the limit</span><b id="s3f">&mdash;</b></div>
+      <div class="stat wide"><span>Measured limit at this frequency</span><b id="s3g">&mdash;</b></div>
+    </div>
+
+    <div class="whymatters">
+      <h4>Why this matters</h4>
+      <p>Geological thickness and seismic resolution are two different things, and confusing them is one
+        of the more expensive mistakes available. A bed can be there, be thick enough to produce, and
+        still not be separable on the section. When somebody says a reservoir is below seismic
+        resolution, this is what they mean.</p>
+    </div>
+  </section>
+
+  <!-- =============================== STEP 4 =============================== -->
+  <section class="tabpane" id="p4" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">4</span>Rank the beds</h3>
+      <span class="hint">Pick the thickest of the three, then try the same deal at a higher frequency</span>
+    </div>
+
+    <p class="lede">Three sands are hidden in the shale. Each has its own thickness and its own
+      impedance contrast, and all three are recorded with the wavelet set in the control panel. Only
+      the traces are shown. Pick the thickest sand.</p>
+
+    <p class="lede">Choosing fills in the right panel: the thickness each trace implies, from the gap
+      between its peak and its trough, beside the thickness that is actually there. Deal again, and try
+      a few deals at 20 Hz and then a few at 60 Hz.</p>
+
+    <p class="lede">Two things are being scored. How often you name the thickest bed, and how often the
+      thickness read off the trace is within a quarter of the truth for all three beds. The second one
+      is the one that moves with frequency.</p>
+
+    <div class="sec-row" id="row4">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> Three traces
+          <span class="note">same wavelet, three different sands</span></p>
+        <canvas id="c4a" aria-label="Three seismic traces, one from each of three hidden sand beds"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> What the gap says, and what is really there
+          <span class="note">both appear when you choose</span></p>
+        <canvas id="c4b" aria-label="The thickness implied by each trace, with the true thickness of each bed shown after a choice is made"></canvas>
+      </div>
+    </div>
+
+    <div class="modbar" style="margin-top:14px">
+      <span class="hint">Thickest sand:</span>
+      <button class="btn ghost small pick" id="pickA" type="button" data-pick="0">A</button>
+      <button class="btn ghost small pick" id="pickB" type="button" data-pick="1">B</button>
+      <button class="btn ghost small pick" id="pickC" type="button" data-pick="2">C</button>
+      <button class="btn ghost small" id="dealBtn" type="button">Deal three new sands</button>
+      <button class="btn ghost small reset" id="scoreBtn" type="button">Clear the score</button>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Deal</span><b id="s4a">&mdash;</b></div>
+      <div class="stat"><span>Limit at this frequency</span><b id="s4b">&mdash;</b></div>
+      <div class="stat"><span>Beds above that limit</span><b id="s4c">&mdash;</b></div>
+      <div class="stat key"><span>This deal</span><b id="s4d">&mdash;</b></div>
+      <div class="stat wide"><span>Thickest bed named correctly</span><b id="s4e">&mdash;</b></div>
+      <div class="stat wide"><span>All three thicknesses within a quarter of the truth</span><b id="s4f">&mdash;</b></div>
+    </div>
+
+    <div class="whymatters">
+      <h4>Why this matters</h4>
+      <p>The wiggle that catches the eye first is the brightest one, and across a few hundred deals
+        the brightest trace is the thickest bed about a third of the time, which is what picking at
+        random would give. The separation between peak and trough is the measurement that ranks them.
+        The thickness it reports is a different matter: below the limit it stops falling, so a 5 m sand
+        and a 15 m sand are both reported at something over 15 m. A thickness map made this way still
+        contours, still looks like a map, and over the thin part of the field the contours are the
+        wavelet rather than the reservoir.</p>
+    </div>
+  </section>
+
+  <!-- ============================ WHY IT MATTERS =========================== -->
+  <section class="tabpane" id="pw" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">W</span>Why this matters</h3>
+      <span class="hint">And what it means for the rest of the set</span>
+    </div>
+    <p class="lede">Module 2 argued that impedance is the thing worth having. This module is the reason
+      you cannot simply read it off the trace.</p>
+    <p class="lede">The trace is the rock seen through a wavelet, and the wavelet throws information away.
+      Two boundaries closer together than about a quarter of a wavelength arrive as one event, and the
+      event that arrives does not carry enough to take them apart again. No amount of processing puts
+      back what was not recorded.</p>
+    <p class="lede">That is one of the two reasons the inverse problem does not have a single answer.
+      Many different beds produce the same wiggle once they are thin enough, so a trace on its own cannot
+      choose between them. Module 4 makes that concrete by having you build two of them.</p>
+    <p class="lede">The other reason is the opposite end of the scale: a survey records no very low
+      frequencies, so the slow variation of impedance with depth is missing as well. Module 6 is about
+      where that comes from.</p>
+  </section>
+
+  <!-- ============================ CHECK YOURSELF =========================== -->
+  <section class="tabpane" id="pc" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">C</span>Check yourself</h3>
+      <span class="hint">Four questions. Wrong answers are the useful ones</span>
+    </div>
+
+    <ol class="check" id="checkList">
+      <li data-q="q1" data-right="b">
+        <p class="qtext">A sand sits inside shale. How many reflections does it produce?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">One, at the top</button>
+          <button class="opt" data-opt="b" type="button">Two, with opposite signs</button>
+          <button class="opt" data-opt="c" type="button">Two, with the same sign</button>
+        </div>
+        <p class="why" hidden><b>Two, with opposite signs.</b> Impedance steps down going into a soft
+          sand and back up coming out of it, so the two reflections have opposite polarity. If the sand
+          were harder than the shale the pair would flip, but they would still be opposite to each
+          other.</p>
+      </li>
+
+      <li data-q="q2" data-right="c">
+        <p class="qtext">You thin the bed from 30 m to 5 m. What happens to the gap you can measure
+          between the peak and the trough on the trace?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">It shrinks in proportion</button>
+          <button class="opt" data-opt="b" type="button">It grows</button>
+          <button class="opt" data-opt="c" type="button">It shrinks, then stops shrinking</button>
+        </div>
+        <p class="why" hidden><b>It shrinks, then stops.</b> Down to a thickness set by the wavelet the
+          measured gap follows the real thickness. Below that the two reflections overlap and the gap
+          settles at roughly the separation between the wavelet's own peak and trough, no matter how thin
+          the bed gets. Step 2 plots this, and the thickness where the line leaves the diagonal is the
+          resolution limit.</p>
+      </li>
+
+      <li data-q="q3" data-right="a">
+        <p class="qtext">Two events on a section are separated by a bright, strong reflection. Which is
+          the safest reading?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">Something has a large impedance contrast, or is at a tuning thickness</button>
+          <button class="opt" data-opt="b" type="button">The bed there is thick</button>
+          <button class="opt" data-opt="c" type="button">There are hydrocarbons</button>
+        </div>
+        <p class="why" hidden><b>A large contrast, or a thickness that happens to make the two
+          reflections reinforce.</b> Brightness below the resolution limit depends on thickness as much
+          as on the rock, which is why a 15 m bed on this page gives a bigger wiggle than a 40 m one.
+          Hydrocarbons are one thing that can raise a contrast, but so can lithology, porosity, cement
+          and the processing. Amplitude on its own does not choose between them.</p>
+      </li>
+
+      <li data-q="q4" data-right="b">
+        <p class="qtext">Your target is at 4,000 m and the wavelet there is about 20 Hz. The rock velocity
+          is 3,000 m/s. Roughly how thin a bed can you separate?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">About 10 m</button>
+          <button class="opt" data-opt="b" type="button">About 40 m</button>
+          <button class="opt" data-opt="c" type="button">About 150 m</button>
+        </div>
+        <p class="why" hidden><b>About 40 m.</b> The wavelength is velocity divided by frequency, so
+          3,000 over 20 is 150 m, and a quarter of that is about 37 m. Anything thinner arrives as a
+          single event. This is worth doing in your head before you promise anyone a thickness map: at
+          depth, with low frequencies and fast rock, the limit can be larger than the reservoir.</p>
+      </li>
+    </ol>
+
+    <div class="whymatters">
+      <h4>If question 3 surprised you</h4>
+      <p>Go to step 2 and compare the wiggle at 15 m with the wiggle at 40 m, with the size readout in
+        view. The thinner bed gives the bigger wiggle. Seeing that once is worth more than reading it
+        several times.</p>
+    </div>
+  </section>
+
+  <!-- =============================== METHOD =============================== -->
+  <section class="tabpane" id="pm" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">M</span>How this page works</h3>
+      <span class="hint">The arithmetic, and what it leaves out</span>
+    </div>
+
+    <p class="lede"><b>Everything on this page is computed while you watch</b>, in your browser, from
+      the numbers in the control panel. The functions are in <code>assets/physics.js</code>.</p>
+
+    <p class="lede"><b>The model.</b> Shale at 3,000 m/s and 2.45 g/cc, with a sand of the velocity and
+      density you set. The thickness slider is a real thickness in meters; the page converts it to time
+      using the sand's own velocity, so changing the sand velocity moves the base of the bed as well as
+      its impedance.</p>
+
+    <p class="lede"><b>The measured gap</b> is the separation in milliseconds between the largest peak
+      and the largest trough on the trace. That is a crude way to measure a bed and it is chosen on
+      purpose, because it is what an interpreter does with a cursor.</p>
+
+    <p class="lede"><b>Where the gap stops following</b> is measured rather than assumed. The page
+      sweeps the bed from 2 m to 60 m in half-meter steps at the frequency you have set. At each
+      thickness it compares the measured gap with the true two-way time, and it reports the thickest bed
+      at which the two differ by more than 20 percent. Both extremum positions are fitted through their
+      neighboring samples, so the gap carries a fraction of a millisecond rather than jumping a whole
+      sample at a time.</p>
+
+    <p class="lede"><b>The rule of thumb</b> drawn on the step 2 panel is a quarter of a wavelength,
+      calculated from the sand velocity and the wavelet's peak frequency. On this page the measured
+      departure lands at about 0.6 of that value at every frequency. The rule is built on the peak
+      frequency, while the thing that sets the plateau is the separation between the wavelet's peak and
+      its trough. The rule and the measurement scale together with velocity over frequency; they differ
+      by a constant. The thickness at which the wiggle is <em>brightest</em> is different again, and the
+      page reports each of the three rather than treating them as one number.</p>
+
+    <p class="lede"><b>The ranking game in step 4</b> draws three thicknesses between 4 m and 45 m, at
+      least 3 m apart. Each bed then gets its own density between 1.90 and 2.40 g/cc, which is a range
+      of impedance contrast of roughly two and a half to one. All three share the velocity in the
+      control panel, so one assumed velocity converts every gap into a thickness. The only things that
+      vary between the beds are thickness and contrast. Contrast has to vary: three beds that differed
+      only in thickness could be ranked from amplitude alone, which is not the position an interpreter
+      is in. The deal number is the seed, so a deal is reproducible and the link at the top of the page
+      carries it.</p>
+
+    <p class="lede"><b>What step 4 does and does not show.</b> The two reflections from a bed in uniform
+      shale are equal and opposite, so the shape of the trace depends on the thickness alone and the
+      contrast only scales it. The peak-to-trough separation therefore still puts three beds in the
+      right order here however thin they are, and <code>tools/check-game.js</code> confirms that across
+      600 deals. What fails below the limit is the number, not the ordering: the separation stops
+      falling, so the thickness it reports is too large by as much as a factor of five. In a real
+      section, with noise and with beds above and below, the ordering goes as well.</p>
+
+    <p class="lede"><b>Where this page simplifies.</b></p>
+    <ul class="lede" style="padding-left:20px">
+      <li><b>The wavelet is symmetrical and the same at all depths.</b> Real wavelets lose their high
+        frequencies as they travel, so a deep target is recorded with a longer wavelet than a shallow
+        one — which makes the limit worse with depth, not better.</li>
+      <li><b>The wave arrives straight down and there is no noise.</b> Noise makes a weak thin-bed
+        response harder to see and so makes the practical limit worse than the one measured here.</li>
+      <li><b>One bed in a uniform shale.</b> Real sections have beds above and below whose reflections
+        also overlap, which is messier than this and no easier.</li>
+      <li><b>Resolution here is vertical only.</b> There is a horizontal limit too, set by the migration
+        and the Fresnel zone, and it is usually worse.</li>
+      <li><b>The quarter-wavelength rule is a rule of thumb, not a law.</b> Different definitions of
+        resolution give somewhat different numbers, and careful work uses the measurement rather than
+        the rule.</li>
+    </ul>
+
+    <details class="instr">
+      <summary>Instructor notes</summary>
+      <div class="instr-body">
+        <h5>Learning objectives</h5>
+        <ul>
+          <li>State that a bed produces two reflections of opposite sign.</li>
+          <li>Describe what happens to the measured gap as a bed thins below the resolution limit.</li>
+          <li>Calculate a quarter-wavelength limit from a velocity and a frequency.</li>
+          <li>Give two reasons other than thickness for a bright reflection.</li>
+          <li>Explain why three beds cannot be ranked by thickness once they fall below the limit.</li>
+        </ul>
+
+        <h5>Summary</h5>
+        <p>Geological thickness and seismic resolution are different things. Below a thickness set by
+          the wavelet the trace stops reporting thickness and starts reporting a mixture of thickness
+          and impedance contrast.</p>
+
+        <h5>Suggested discussion questions</h5>
+        <ul>
+          <li>Your reservoir is 12 m thick at 3,500 m depth. What would you need to see it as two events,
+            and is that realistic?</li>
+          <li>An amplitude map shows a bright patch. List four things that could produce it.</li>
+          <li>If a bed is below resolution, is the seismic useless over it? What can you still say?</li>
+          <li>In step 4 the three beds differ in contrast as well as thickness. What would the game be
+            like if they all had the same contrast, and why would that be the easier problem?</li>
+        </ul>
+
+        <h5>Common misconceptions this page addresses</h5>
+        <ul>
+          <li>That a brighter reflection means a thicker bed.</li>
+          <li>That resolution is a property of the rock rather than of the wavelet.</li>
+          <li>That a thickness map is a measurement of thickness everywhere on it.</li>
+        </ul>
+
+        <h5>Approximate completion time</h5>
+        <p>Twenty-five minutes. Step 2 rewards being done slowly: drag the thickness from 60 m down to
+          2 m while watching the gap readout, and stop at the moment it stops changing. Step 4 works
+          well as a class exercise, with the frequency at 20 Hz for the first few deals and 60 Hz for
+          the next few, and the two scores read out at the end.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="nextup" id="nextup" hidden>
+    <p class="eyebrow">Next up</p>
+    <h3>4 · More than one answer fits</h3>
+    <p>Thin beds trade thickness against contrast, and once they do, several different beds make the same
+      wiggle. The next module has you build two of them by hand.</p>
+    <a class="btn" href="04-more-than-one-answer.html">Go to module 4 →</a>
+    <a class="btn ghost" href="02-a-number-about-a-rock.html">Back to module 2</a>
+  </section>
+
+  <div class="pager" id="pager" hidden>
+    <a class="btn ghost" href="02-a-number-about-a-rock.html">← Module 2: a number about a rock</a>
+    <a class="btn ghost" href="04-more-than-one-answer.html">Module 4: more than one answer fits →</a>
+  </div>
+
+  <footer>
+    <div class="foot-grid">
+      <p>Built for teaching by Dr. Heather Bedle and Dr. April Moreno-Ward, School of Geosciences,
+        University of Oklahoma, with the
+        <a href="https://www.ou.edu/mcee/labs/aaspi">AASPI</a> consortium.</p>
+      <p class="lic">Licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+        — free to use, adapt and share, including commercially, provided the source is credited and
+        adaptations carry the same license.</p>
+      <p class="lic">Nothing you do in this module leaves your browser. The only thing recorded is that
+        the page was opened — no cookie, no account, nothing about you.</p>
+      <p class="lic">To cite: H. Bedle and A. Moreno-Ward, <i>Seismic Inversion, from the start</i>,
+        University of Oklahoma. <span class="k">SSRN: [article link to follow]</span></p>
+    </div>
+  </footer>
+</div>
+
+<script src="../assets/count.js"></script>
+<script src="../assets/glossary.js"></script>
+<script src="../assets/panelout.js"></script>
+<script src="../assets/seismic.js"></script>
+<script src="../assets/physics.js"></script>
+<script src="../assets/panels.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  if (typeof SEIS === 'undefined' || typeof PHYS === 'undefined') {
+    const el = document.createElement('div');
+    el.setAttribute('style', 'background:#841617;color:#fff;padding:14px 18px;font:14px/1.5 monospace');
+    el.textContent = 'This module needs assets/seismic.js and assets/physics.js.';
+    const w = document.querySelector('.wrap');
+    (w || document.body).insertBefore(el, w ? w.firstChild : null);
+    return;
+  }
+
+  const $ = (id) => document.getElementById(id);
+  const visible = (id) => { const el = $(id); return el && !el.hidden; };
+  const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+  const CRIM = '#841617', TEAL = '#0B7285', SLATE = '#5C6670', INK = '#16191C';
+  const OLIVE = '#6B7A2E', GRID = '#C9CDD2';
+
+  const DEF = { thick: 30, vpS: 2600, rhoS: 2.15, fr: 30, deal: 1, tab: 'p1' };
+  const S = SEIS.readState(DEF);
+  (function sanitize() {
+    const num = (k, lo, hi) => {
+      let v = Number(S[k]);
+      if (!isFinite(v)) v = DEF[k];
+      S[k] = Math.min(hi, Math.max(lo, v));
+    };
+    num('thick', 2, 60); num('vpS', 1800, 4000);
+    num('rhoS', 1.8, 2.8); num('fr', 12, 70);
+    num('deal', 1, 9999); S.deal = Math.round(S.deal);
+  })();
+  const saveState = () => SEIS.writeState(S, DEF);
+  if ($('copyBtn')) $('copyBtn').addEventListener('click', (e) => SEIS.copyLink(e.currentTarget));
+
+  const DT = 0.001, NT = 300, T0 = 0;
+  const TOP = 0.100;                          // top of the sand, in seconds
+  const SHALE = { vp: 3000, rho: 2.45 };
+
+  // Exactly one place converts a time into a y position.
+  const yOf = (t, R) => R.y + ((t - T0) / ((NT - 1) * DT)) * R.h;
+  const yAt = (i, R) => yOf(T0 + i * DT, R);
+
+  /* Fixed axes. The thickness slider moves the bed, not the scale. */
+  const AX = {
+    z:     [4000, 10000],
+    rc:    [-0.3, 0.3],
+    amp:   [-0.3, 0.3],
+    thick: [0, 60],
+    gap:   [0, 50],
+    limit: [0, 80],
+    freq:  [12, 70],
+  };
+
+  const fmt0 = (v) => Math.round(v).toLocaleString();
+  const fmt3 = (v) => (v >= 0 ? '+' : '') + v.toFixed(3);
+
+  let D = {};
+
+  // A bed of the given thickness, built with the sand's own velocity so that
+  // changing the velocity moves the base as well as the impedance.
+  function bedLayers(thick_m, vp, rho) {
+    const twoWay = 2 * thick_m / vp;
+    return {
+      twoWay,
+      layers: [
+        { t0: T0, t1: TOP, vp: SHALE.vp, density: SHALE.rho },
+        { t0: TOP, t1: TOP + twoWay, vp, density: rho },
+        { t0: TOP + twoWay, t1: 999, vp: SHALE.vp, density: SHALE.rho },
+      ],
+    };
+  }
+
+  // The position of an extremum, fitted through the sample on either side of it.
+  // Counting whole samples makes the gap stair-step, which on a 1 ms trace is
+  // more than a meter of apparent thickness per step.
+  function fitExtremum(trace, i) {
+    if (i <= 0 || i >= trace.length - 1) return i;
+    const a = trace[i - 1], b = trace[i], c = trace[i + 1];
+    const d = a - 2 * b + c;
+    return d === 0 ? i : i + 0.5 * (a - c) / d;
+  }
+
+  // What an interpreter does with a cursor: find the biggest peak and the
+  // biggest trough and measure between them.
+  function peakTroughGap(trace) {
+    let pi = -1, pv = -Infinity, ti = -1, tv = Infinity;
+    for (let i = 0; i < trace.length; i++) {
+      if (trace[i] > pv) { pv = trace[i]; pi = i; }
+      if (trace[i] < tv) { tv = trace[i]; ti = i; }
+    }
+    return {
+      gap: Math.abs(fitExtremum(trace, pi) - fitExtremum(trace, ti)),
+      size: Math.max(Math.abs(pv), Math.abs(tv)),
+    };
+  }
+
+  function traceFor(thick_m, freq, vp, rho) {
+    const b = bedLayers(thick_m, vp, rho);
+    return PHYS.syntheticTrace(b.layers, { t0: T0, dt: DT, n: NT, frequency: freq }).trace;
+  }
+
+  // The thickest bed in the sweep whose measured gap is more than tol away from
+  // the true two-way time, with the crossing interpolated between the two sweep
+  // points that straddle it.
+  function departureThickness(sweep, tol) {
+    const err = (p) => Math.abs(p.gap - p.trueMs) - tol * p.trueMs;
+    let last = -1;
+    for (let i = 0; i < sweep.length; i++) if (err(sweep[i]) > 0) last = i;
+    if (last < 0) return sweep[0].thick;
+    if (last >= sweep.length - 1) return sweep[sweep.length - 1].thick;
+    const a = err(sweep[last]), b = err(sweep[last + 1]);
+    const f = a === b ? 0 : a / (a - b);
+    return sweep[last].thick + f * (sweep[last + 1].thick - sweep[last].thick);
+  }
+
+  /* Step 4. Three beds from one seed, so a deal is reproducible and the link at
+     the top of the page carries it. All three share the velocity in the control
+     panel and differ in density, which leaves thickness and impedance contrast
+     as the only things that vary and makes one assumed velocity right for all
+     three when a gap is turned back into a thickness. */
+  const DEAL = { loT: 4, hiT: 45, minSep: 3, loRho: 1.90, hiRho: 2.40 };
+
+  function dealBeds(seed, freq) {
+    const rnd = PHYS.randomSeed(Math.round(seed) || 1);
+    const span = DEAL.hiT - DEAL.loT;
+    let thick = [];
+    for (let guard = 0; guard < 400 && thick.length < 3; guard++) {
+      const t = DEAL.loT + rnd() * span;
+      if (thick.every((u) => Math.abs(u - t) >= DEAL.minSep)) thick.push(t);
+    }
+    while (thick.length < 3) thick.push(DEAL.loT + thick.length * DEAL.minSep);
+    return thick.map((t, k) => {
+      const rho = DEAL.loRho + rnd() * (DEAL.hiRho - DEAL.loRho);
+      const trace = traceFor(t, freq, D.vpS, rho);
+      const m = peakTroughGap(trace);
+      const z = PHYS.impedance(D.vpS, rho);
+      return {
+        name: 'ABC'.charAt(k),
+        thick: t,
+        rho,
+        z,
+        rc: PHYS.reflectionCoefficient(D.zShale, z),
+        trace,
+        gap: m.gap,
+        size: m.size,
+        implied: m.gap * D.vpS / 2000,
+        resolved: t > D.depart,
+      };
+    });
+  }
+
+  function recompute() {
+    D.thick = Math.round(S.thick);
+    D.vpS = Math.round(S.vpS);
+    D.rhoS = Number(S.rhoS);
+    D.fr = Math.round(S.fr);
+    D.deal = Math.round(S.deal);
+
+    D.zSand = PHYS.impedance(D.vpS, D.rhoS);
+    D.zShale = PHYS.impedance(SHALE.vp, SHALE.rho);
+    D.rcTop = PHYS.reflectionCoefficient(D.zShale, D.zSand);
+    D.rcBase = PHYS.reflectionCoefficient(D.zSand, D.zShale);
+
+    const b = bedLayers(D.thick, D.vpS, D.rhoS);
+    D.twoWay = b.twoWay;
+    D.layers = b.layers;
+    const out = PHYS.syntheticTrace(b.layers, { t0: T0, dt: DT, n: NT, frequency: D.fr });
+    D.trace = out.trace;
+    D.refl = out.reflectivity;
+    D.zSeries = PHYS.impedanceSeries(b.layers, T0, DT, NT);
+
+    const m = peakTroughGap(D.trace);
+    D.gap = m.gap;
+    D.size = m.size;
+    // the gap read back as a thickness, which is what it gets used for
+    D.implied = D.gap * D.vpS / 2000;
+
+    // the rule of thumb, worked from the numbers on screen
+    D.wavelength = PHYS.wavelength(D.vpS, D.fr);
+    D.limit = PHYS.tuningThickness(D.vpS, D.fr);
+
+    // step 2: the whole thinning experiment, at the current frequency
+    D.sweep = [];
+    for (let t = 2; t <= 60 + 1e-9; t += 0.5) {
+      const r = peakTroughGap(traceFor(t, D.fr, D.vpS, D.rhoS));
+      D.sweep.push({ thick: t, gap: r.gap, size: r.size, trueMs: 2000 * t / D.vpS });
+    }
+    // brightest thickness, measured rather than assumed
+    let bs = 0, bt = 0;
+    D.sweep.forEach((p) => { if (p.size > bs) { bs = p.size; bt = p.thick; } });
+    D.brightestThick = bt;
+    D.brightestSize = bs;
+
+    // Where the measured gap parts company with the truth: the thickest bed at
+    // which the two differ by more than the tolerance, interpolated between the
+    // two sweep points that straddle the crossing so the number moves smoothly
+    // with frequency instead of jumping half a meter at a time.
+    D.depart = departureThickness(D.sweep, 0.20);
+    D.departRatio = D.limit > 0 ? D.depart / D.limit : 0;
+
+    D.resolved = D.thick > D.depart;
+
+    // step 4: three hidden beds, dealt from the deal number
+    D.hidden = dealBeds(D.deal, D.fr);
+
+    // step 2 panel: five example traces
+    D.fiveT = [60, 30, 20, 10, 4];
+    D.five = D.fiveT.map((t) => traceFor(t, D.fr, D.vpS, D.rhoS));
+
+    // step 3: the same bed at three frequencies, and the limit against frequency
+    D.threeF = [20, 35, 55];
+    D.three = D.threeF.map((f) => traceFor(D.thick, f, D.vpS, D.rhoS));
+    D.limitCurve = [];
+    for (let f = AX.freq[0]; f <= AX.freq[1]; f += 1) {
+      D.limitCurve.push({ f, limit: PHYS.tuningThickness(D.vpS, f) });
+    }
+    D.limit20 = PHYS.tuningThickness(D.vpS, 20);
+    D.limit55 = PHYS.tuningThickness(D.vpS, 55);
+
+    D.cache = {};
+  }
+
+  /* --- drawing helpers ---------------------------------------------------- */
+
+  function panel(id, hRatio) {
+    const c = $(id);
+    if (!c || !c.parentElement) return null;
+    const cs = window.getComputedStyle(c.parentElement);
+    const w = c.parentElement.clientWidth
+            - parseFloat(cs.paddingLeft || 0) - parseFloat(cs.paddingRight || 0);
+    const h = Math.max(240, Math.round(w * (hRatio || 0.8)));
+    const ctx = SEIS.fitCanvas(c, w, h);
+    ctx.clearRect(0, 0, w, h);
+    return { ctx, w, h };
+  }
+
+  function trackLabel(ctx, rect, label, rng, fmt) {
+    SEIS.frame(ctx, rect);
+    ctx.save();
+    ctx.font = '10px "IBM Plex Mono", monospace';
+    ctx.fillStyle = SLATE; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText(label, rect.x + rect.w / 2, rect.y + rect.h + 6);
+    if (fmt) {
+      ctx.textAlign = 'left'; ctx.fillText(fmt(rng[0]), rect.x, rect.y - 13);
+      ctx.textAlign = 'right'; ctx.fillText(fmt(rng[1]), rect.x + rect.w, rect.y - 13);
+    }
+    ctx.restore();
+  }
+
+  // Shade the sand wherever it is, so it can be followed as it thins.
+  function markBed(ctx, rect) {
+    const y0 = yOf(TOP, rect), y1 = yOf(TOP + D.twoWay, rect);
+    ctx.save();
+    ctx.fillStyle = 'rgba(198,166,100,.26)';
+    ctx.fillRect(rect.x, y0, rect.w, Math.max(1.2, y1 - y0));
+    ctx.restore();
+  }
+
+  function stepCurve(ctx, rect, values, rng, color, width) {
+    ctx.save();
+    ctx.beginPath(); ctx.rect(rect.x, rect.y, rect.w, rect.h); ctx.clip();
+    ctx.strokeStyle = color; ctx.lineWidth = width || 2.2;
+    ctx.beginPath();
+    for (let i = 0; i < values.length; i++) {
+      const f = (values[i] - rng[0]) / (rng[1] - rng[0]);
+      const x = rect.x + Math.max(-0.2, Math.min(1.2, f)) * rect.w;
+      const y = yAt(i, rect);
+      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }
+    ctx.stroke(); ctx.restore();
+  }
+
+  function drawSticks(ctx, rect) {
+    const xm = rect.x + rect.w * (0 - AX.rc[0]) / (AX.rc[1] - AX.rc[0]);
+    SEIS.dashedLine(ctx, xm, rect.y, xm, rect.y + rect.h, GRID, [3, 3], 1);
+    ctx.save();
+    ctx.beginPath(); ctx.rect(rect.x, rect.y, rect.w, rect.h); ctx.clip();
+    for (let i = 0; i < NT; i++) {
+      if (!D.refl[i]) continue;
+      const f = (D.refl[i] - AX.rc[0]) / (AX.rc[1] - AX.rc[0]);
+      const x = rect.x + Math.max(0, Math.min(1, f)) * rect.w;
+      const y = yAt(i, rect);
+      ctx.strokeStyle = D.refl[i] >= 0 ? TEAL : CRIM; ctx.lineWidth = 2.6;
+      ctx.beginPath(); ctx.moveTo(xm, y); ctx.lineTo(x, y); ctx.stroke();
+      ctx.fillStyle = D.refl[i] >= 0 ? TEAL : CRIM;
+      ctx.beginPath(); ctx.arc(x, y, 3.4, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.restore();
+    SEIS.frame(ctx, rect);
+  }
+
+  function drawWiggle(ctx, rect, trace, rng, color, fill) {
+    const xm = rect.x + rect.w * (0 - rng[0]) / (rng[1] - rng[0]);
+    const xOf = (v) => rect.x + rect.w
+      * (Math.max(rng[0], Math.min(rng[1], v)) - rng[0]) / (rng[1] - rng[0]);
+    ctx.save();
+    ctx.beginPath(); ctx.rect(rect.x, rect.y, rect.w, rect.h); ctx.clip();
+    if (fill) {
+      ctx.fillStyle = fill;
+      ctx.beginPath(); ctx.moveTo(xm, yAt(0, rect));
+      for (let i = 0; i < trace.length; i++) ctx.lineTo(Math.max(xm, xOf(trace[i])), yAt(i, rect));
+      ctx.lineTo(xm, yAt(trace.length - 1, rect)); ctx.closePath(); ctx.fill();
+    }
+    ctx.strokeStyle = color; ctx.lineWidth = 1.7; ctx.beginPath();
+    for (let i = 0; i < trace.length; i++) {
+      const x = xOf(trace[i]), y = yAt(i, rect);
+      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }
+    ctx.stroke(); ctx.restore();
+    SEIS.dashedLine(ctx, xm, rect.y, xm, rect.y + rect.h, GRID, [3, 3], 1);
+  }
+
+  /* --- the sticky head ---------------------------------------------------- */
+
+  function drawHead() {
+    const p = panel('cHead', 0.5); if (!p) return;
+    const { ctx, w, h } = p;
+    const pad = 16, top = 26, bot = 26, gap = 14;
+    const cw = (w - 2 * pad - 2 * gap) / 3;
+    const H = h - top - bot;
+    const r = (k) => ({ x: pad + k * (cw + gap), y: top, w: cw, h: H });
+
+    markBed(ctx, r(0));
+    stepCurve(ctx, r(0), D.zSeries, AX.z, TEAL, 2.6);
+    trackLabel(ctx, r(0), 'impedance', AX.z, fmt0);
+
+    markBed(ctx, r(1));
+    drawSticks(ctx, r(1));
+    trackLabel(ctx, r(1), 'two reflections', AX.rc, (v) => v.toFixed(1));
+
+    markBed(ctx, r(2));
+    drawWiggle(ctx, r(2), D.trace, AX.amp, INK, 'rgba(22,25,28,.30)');
+    trackLabel(ctx, r(2), 'the trace', AX.amp, (v) => v.toFixed(1));
+  }
+
+  /* --- step 1 -------------------------------------------------------------- */
+
+  function draw1() {
+    const pa = panel('c1a', 0.9);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const rect = { x: 24, y: 28, w: w - 48, h: h - 62 };
+      markBed(ctx, rect);
+      stepCurve(ctx, rect, D.zSeries, AX.z, TEAL, 2.8);
+      trackLabel(ctx, rect, 'impedance — the sand is the shaded block', AX.z, fmt0);
+    }
+    const pb = panel('c1b', 0.9);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const pad = 14, top = 28, gap = 18;
+      const cw = (w - 2 * pad - gap) / 2;
+      const H = h - top - 34;
+      const ra = { x: pad, y: top, w: cw, h: H };
+      const rb = { x: pad + cw + gap, y: top, w: cw, h: H };
+      markBed(ctx, ra); drawSticks(ctx, ra);
+      trackLabel(ctx, ra, 'reflections', AX.rc, (v) => v.toFixed(1));
+      markBed(ctx, rb); drawWiggle(ctx, rb, D.trace, AX.amp, INK, 'rgba(22,25,28,.30)');
+      trackLabel(ctx, rb, 'the trace', AX.amp, (v) => v.toFixed(1));
+    }
+
+    set('s1a', fmt0(D.zSand));
+    set('s1b', fmt0(D.zShale));
+    set('s1c', fmt3(D.rcTop));
+    set('s1d', fmt3(D.rcBase));
+    set('s1e', (D.twoWay * 1000).toFixed(1) + ' ms');
+    set('s1f', D.resolved ? '2 — a top and a base' : '1 — they have merged');
+  }
+
+  /* --- step 2 -------------------------------------------------------------- */
+
+  function draw2() {
+    const pa = panel('c2a', 0.86);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const rect = { x: 60, y: 22, w: w - 82, h: h - 66 };
+      SEIS.frame(ctx, rect);
+      SEIS.axisBottom(ctx, rect, AX.thick[0], AX.thick[1], 'real thickness, m', (v) => v.toFixed(0));
+      SEIS.axisLeft(ctx, rect, AX.gap[0], AX.gap[1], 'measured gap, ms', (v) => v.toFixed(0), { flip: true });
+      const xOf = (v) => rect.x + (v - AX.thick[0]) / (AX.thick[1] - AX.thick[0]) * rect.w;
+      const yV = (v) => rect.y + (AX.gap[1] - Math.max(0, Math.min(AX.gap[1], v)))
+                       / (AX.gap[1] - AX.gap[0]) * rect.h;
+      // a perfect measurement would follow the true two-way time
+      ctx.save(); ctx.strokeStyle = GRID; ctx.lineWidth = 1.4; ctx.setLineDash([5, 4]);
+      ctx.beginPath();
+      D.sweep.forEach((p, i) => {
+        const x = xOf(p.thick), y = yV(p.trueMs);
+        i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      });
+      ctx.stroke(); ctx.restore();
+      // what the trace actually gives
+      ctx.save(); ctx.strokeStyle = CRIM; ctx.lineWidth = 2.4; ctx.beginPath();
+      D.sweep.forEach((p, i) => {
+        const x = xOf(p.thick), y = yV(p.gap);
+        i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      });
+      ctx.stroke(); ctx.restore();
+      // the rule of thumb, and the thickness where this page's measurement
+      // actually parts company with the truth
+      SEIS.dashedLine(ctx, xOf(D.limit), rect.y, xOf(D.limit), rect.y + rect.h, TEAL, [4, 3], 1.6);
+      SEIS.tag(ctx, xOf(D.limit) + 6, rect.y + 14, 'quarter wavelength', TEAL, 'left');
+      SEIS.dashedLine(ctx, xOf(D.depart), rect.y, xOf(D.depart), rect.y + rect.h, OLIVE, [4, 3], 1.6);
+      SEIS.tag(ctx, xOf(D.depart) + 6, rect.y + 30, 'measured here', OLIVE, 'left');
+      // where you are
+      ctx.save(); ctx.fillStyle = INK;
+      ctx.beginPath(); ctx.arc(xOf(D.thick), yV(D.gap), 4.6, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+      SEIS.tag(ctx, rect.x + rect.w - 6, rect.y + rect.h - 12,
+               'dashed = a perfect measurement', SLATE, 'right');
+    }
+    const pb = panel('c2b', 0.86);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const pad = 12, top = 28, gap = 8;
+      const cw = (w - 2 * pad - 4 * gap) / 5;
+      const H = h - top - 34;
+      D.five.forEach((tr, k) => {
+        const rect = { x: pad + k * (cw + gap), y: top, w: cw, h: H };
+        drawWiggle(ctx, rect, tr, AX.amp, INK, 'rgba(22,25,28,.28)');
+        trackLabel(ctx, rect, D.fiveT[k] + ' m', null, null);
+      });
+    }
+
+    set('s2a', D.thick + ' m');
+    set('s2b', (D.twoWay * 1000).toFixed(1) + ' ms');
+    set('s2c', D.gap.toFixed(1) + ' ms');
+    set('s2d', D.implied.toFixed(1) + ' m, against ' + D.thick + ' m of rock');
+    set('s2e', D.resolved ? 'yes — the gap still follows the rock'
+                          : 'no — the gap has stopped following');
+    set('s2f', D.size.toFixed(3) + ', brightest at ' + D.brightestThick.toFixed(1) + ' m');
+    set('s2g', D.depart.toFixed(1) + ' m — ' + D.departRatio.toFixed(2)
+               + ' of the quarter wavelength, which is ' + D.limit.toFixed(1) + ' m');
+  }
+
+  /* --- step 3 -------------------------------------------------------------- */
+
+  function draw3() {
+    const pa = panel('c3a', 0.86);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const pad = 12, top = 28, gap = 12;
+      const cw = (w - 2 * pad - 2 * gap) / 3;
+      const H = h - top - 34;
+      D.three.forEach((tr, k) => {
+        const rect = { x: pad + k * (cw + gap), y: top, w: cw, h: H };
+        markBed(ctx, rect);
+        drawWiggle(ctx, rect, tr, AX.amp, INK, 'rgba(22,25,28,.28)');
+        const okHere = D.thick > D.depart * D.fr / D.threeF[k];
+        trackLabel(ctx, rect, D.threeF[k] + ' Hz — ' + (okHere ? 'two events' : 'one'), null, null);
+      });
+    }
+    const pb = panel('c3b', 0.86);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const rect = { x: 60, y: 22, w: w - 82, h: h - 66 };
+      SEIS.frame(ctx, rect);
+      SEIS.axisBottom(ctx, rect, AX.freq[0], AX.freq[1], 'wavelet frequency, Hz', (v) => v.toFixed(0));
+      SEIS.axisLeft(ctx, rect, AX.limit[0], AX.limit[1], 'thinnest bed you can separate, m',
+                    (v) => v.toFixed(0), { flip: true });
+      const xOf = (v) => rect.x + (v - AX.freq[0]) / (AX.freq[1] - AX.freq[0]) * rect.w;
+      const yV = (v) => rect.y + (AX.limit[1] - Math.max(0, Math.min(AX.limit[1], v)))
+                       / (AX.limit[1] - AX.limit[0]) * rect.h;
+      ctx.save(); ctx.strokeStyle = TEAL; ctx.lineWidth = 2.4; ctx.beginPath();
+      D.limitCurve.forEach((p, i) => {
+        const x = xOf(p.f), y = yV(p.limit);
+        i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      });
+      ctx.stroke(); ctx.restore();
+      SEIS.tag(ctx, xOf(AX.freq[1]) - 6, yV(D.limitCurve[D.limitCurve.length - 1].limit) - 26,
+               'quarter wavelength', TEAL, 'right');
+      // the same measurement step 2 makes, at every frequency
+      ctx.save(); ctx.strokeStyle = OLIVE; ctx.lineWidth = 2.4; ctx.beginPath();
+      D.limitCurve.forEach((p, i) => {
+        const x = xOf(p.f), y = yV(D.depart * D.fr / p.f);
+        i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      });
+      ctx.stroke(); ctx.restore();
+      SEIS.tag(ctx, xOf(AX.freq[1]) - 6, yV(D.depart * D.fr / AX.freq[1]) - 12,
+               'measured here', OLIVE, 'right');
+      // your bed, and whether it sits above or below the curve
+      SEIS.dashedLine(ctx, rect.x, yV(D.thick), rect.x + rect.w, yV(D.thick), CRIM, [4, 3], 1.6);
+      SEIS.tag(ctx, rect.x + 6, yV(D.thick) - 12, 'your bed, ' + D.thick + ' m', CRIM, 'left');
+      ctx.save(); ctx.fillStyle = INK;
+      ctx.beginPath(); ctx.arc(xOf(D.fr), yV(D.limit), 4.6, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    }
+
+    set('s3a', D.fr + ' Hz');
+    set('s3b', Math.round(D.wavelength) + ' m');
+    set('s3c', D.limit.toFixed(1) + ' m');
+    set('s3d', D.limit20.toFixed(1) + ' m');
+    set('s3e', D.limit55.toFixed(1) + ' m');
+    set('s3f', 'the wavelet and the rock velocity, not the bed');
+    set('s3g', D.depart.toFixed(1) + ' m, and it halves when the frequency doubles');
+  }
+
+  /* --- step 4: rank the beds ---------------------------------------------- */
+
+  const GAME = { pick: null, tries: 0, right: 0, close: 0 };
+  const CLOSE = 0.25;        // how near the truth a reported thickness has to be
+
+  function truthIndex() {
+    let bi = 0;
+    D.hidden.forEach((b, i) => { if (b.thick > D.hidden[bi].thick) bi = i; });
+    return bi;
+  }
+
+  function draw4() {
+    const pa = panel('c4a', 0.86);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const pad = 12, top = 28, gap = 12;
+      const cw = (w - 2 * pad - 2 * gap) / 3;
+      const H = h - top - 34;
+      D.hidden.forEach((b, k) => {
+        const rect = { x: pad + k * (cw + gap), y: top, w: cw, h: H };
+        drawWiggle(ctx, rect, b.trace, AX.amp, INK, 'rgba(22,25,28,.28)');
+        const picked = GAME.pick === k;
+        trackLabel(ctx, rect, b.name + (picked ? ' — your pick' : ''), null, null);
+        if (picked) {
+          ctx.save(); ctx.strokeStyle = CRIM; ctx.lineWidth = 1.6;
+          ctx.strokeRect(rect.x + 0.5, rect.y + 0.5, rect.w - 1, rect.h - 1);
+          ctx.restore();
+        }
+      });
+    }
+    const pb = panel('c4b', 0.86);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const rect = { x: 54, y: 26, w: w - 76, h: h - 70 };
+      SEIS.frame(ctx, rect);
+      SEIS.axisBottom(ctx, rect, AX.thick[0], AX.thick[1], 'thickness, m', (v) => v.toFixed(0));
+      const xOf = (v) => rect.x
+        + Math.max(0, Math.min(1, (v - AX.thick[0]) / (AX.thick[1] - AX.thick[0]))) * rect.w;
+      const band = rect.h / 3;
+      const revealed = GAME.pick !== null;
+      ctx.save();
+      ctx.font = '11px "IBM Plex Mono", monospace';
+      D.hidden.forEach((b, k) => {
+        const y0 = rect.y + k * band;
+        ctx.fillStyle = SLATE; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+        ctx.fillText(b.name, rect.x - 8, y0 + band / 2);
+        ctx.textAlign = 'left';
+        if (revealed) {
+          // what the gap says
+          ctx.fillStyle = OLIVE;
+          ctx.fillRect(rect.x, y0 + band * 0.16, xOf(b.implied) - rect.x, 13);
+          ctx.fillText(b.implied.toFixed(1) + ' m from the gap',
+                       Math.min(xOf(b.implied) + 6, rect.x + rect.w - 150), y0 + band * 0.16 + 7);
+          // what is actually there
+          ctx.fillStyle = INK;
+          ctx.fillRect(rect.x, y0 + band * 0.56, xOf(b.thick) - rect.x, 13);
+          ctx.fillText(b.thick.toFixed(1) + ' m of rock' + (b.resolved ? '' : ' — below the limit'),
+                       Math.min(xOf(b.thick) + 6, rect.x + rect.w - 190), y0 + band * 0.56 + 7);
+        } else {
+          ctx.fillStyle = GRID;
+          ctx.fillText('?', rect.x + 8, y0 + band / 2);
+        }
+        if (k < 2) SEIS.dashedLine(ctx, rect.x, y0 + band, rect.x + rect.w, y0 + band, GRID, [3, 3], 1);
+      });
+      ctx.restore();
+      SEIS.dashedLine(ctx, xOf(D.depart), rect.y, xOf(D.depart), rect.y + rect.h, CRIM, [4, 3], 1.6);
+      SEIS.tag(ctx, xOf(D.depart) + 6, rect.y + 12, 'the limit here', CRIM, 'left');
+    }
+
+    document.querySelectorAll('#p4 .pick').forEach((b) => {
+      b.disabled = GAME.pick !== null;
+    });
+
+    const above = D.hidden.filter((b) => b.resolved).length;
+    set('s4a', 'number ' + D.deal);
+    set('s4b', D.depart.toFixed(1) + ' m');
+    set('s4c', above + ' of 3');
+    if (GAME.pick === null) {
+      set('s4d', 'choose A, B or C');
+    } else {
+      const t = truthIndex();
+      const off = D.hidden.map((b) => Math.abs(b.implied - b.thick) / b.thick);
+      const worst = Math.max.apply(null, off);
+      set('s4d', (GAME.pick === t ? 'right, ' : 'wrong, ')
+                 + D.hidden[t].name + ' is the thickest at ' + D.hidden[t].thick.toFixed(1)
+                 + ' m — the worst thickness read off a trace here is out by '
+                 + Math.round(100 * worst) + ' percent');
+    }
+    set('s4e', GAME.tries ? GAME.right + ' out of ' + GAME.tries + ' deals'
+                          : 'no deals played yet');
+    set('s4f', GAME.tries ? GAME.close + ' out of ' + GAME.tries + ' deals'
+                          : 'no deals played yet');
+  }
+
+  function wireGame() {
+    document.querySelectorAll('#p4 .pick').forEach((b) => {
+      b.addEventListener('click', () => {
+        if (GAME.pick !== null) return;
+        GAME.pick = Number(b.dataset.pick);
+        GAME.tries += 1;
+        if (GAME.pick === truthIndex()) GAME.right += 1;
+        if (D.hidden.every((x) => Math.abs(x.implied - x.thick) <= CLOSE * x.thick)) {
+          GAME.close += 1;
+        }
+        drawAll();
+      });
+    });
+    if ($('dealBtn')) {
+      $('dealBtn').addEventListener('click', () => {
+        S.deal = (Math.round(S.deal) % 9999) + 1;
+        GAME.pick = null;
+        recompute(); drawAll(); saveState();
+      });
+    }
+    if ($('scoreBtn')) {
+      $('scoreBtn').addEventListener('click', () => {
+        GAME.tries = 0; GAME.right = 0; GAME.close = 0; GAME.pick = null;
+        drawAll();
+      });
+    }
+  }
+
+  /* --- check yourself ------------------------------------------------------ */
+
+  (function wireCheck() {
+    const list = $('checkList');
+    if (!list) return;
+    list.addEventListener('click', (ev) => {
+      const btn = ev.target.closest('.opt');
+      if (!btn) return;
+      const li = btn.closest('li');
+      const right = li.getAttribute('data-right');
+      li.querySelectorAll('.opt').forEach((b) => {
+        b.classList.remove('right', 'wrong');
+        if (b.getAttribute('data-opt') === right) b.classList.add('right');
+      });
+      if (btn.getAttribute('data-opt') !== right) btn.classList.add('wrong');
+      const why = li.querySelector('.why');
+      if (why) why.hidden = false;
+    });
+  })();
+
+  /* --- wiring -------------------------------------------------------------- */
+
+  function syncControls() {
+    if ($('thick')) $('thick').value = S.thick;
+    set('thickV', Math.round(S.thick) + ' m');
+    if ($('vpS')) $('vpS').value = Math.round(S.vpS);
+    if ($('rhoS')) $('rhoS').value = Number(S.rhoS).toFixed(2);
+    if ($('fr')) $('fr').value = S.fr;
+    set('frV', Math.round(S.fr) + ' Hz');
+  }
+
+  function drawAll() {
+    syncControls();
+    drawHead();
+    if (visible('p1')) draw1();
+    if (visible('p2')) draw2();
+    if (visible('p3')) draw3();
+    if (visible('p4')) draw4();
+  }
+
+  const PANES = ['p1', 'p2', 'p3', 'p4', 'pw', 'pc', 'pm'];
+
+  function showTab(id) {
+    PANES.forEach((q) => { const el = $(q); if (el) el.hidden = q !== id; });
+    document.querySelectorAll('#tabs button').forEach((b) => {
+      b.setAttribute('aria-selected', b.dataset.tab === id);
+    });
+    const lab = document.querySelector('.labhead');
+    if (lab) lab.hidden = (id === 'pw' || id === 'pc' || id === 'pm');
+    const last = (id === 'pc' || id === 'pm');
+    if ($('nextup')) $('nextup').hidden = !last;
+    if ($('pager')) $('pager').hidden = !last;
+    S.tab = id;
+    drawAll();
+    saveState();
+  }
+  document.querySelectorAll('#tabs button').forEach((b) => {
+    b.addEventListener('click', () => showTab(b.dataset.tab));
+  });
+
+  document.addEventListener('input', (ev) => {
+    const key = ev.target && ev.target.dataset && ev.target.dataset.key;
+    if (!key) return;
+    const v = parseFloat(ev.target.value);
+    if (!isFinite(v)) return;
+    S[key] = v;
+    recompute(); drawAll(); saveState();
+  });
+
+  if ($('resetBtn')) {
+    $('resetBtn').addEventListener('click', () => {
+      Object.keys(DEF).forEach((k) => { if (k !== 'tab') S[k] = DEF[k]; });
+      GAME.pick = null;
+      recompute(); drawAll(); saveState();
+    });
+  }
+
+  wireGame();
+
+  let rt;
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(drawAll, 140); });
+
+  recompute();
+  showTab(PANES.indexOf(S.tab) >= 0 ? S.tab : 'p1');
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawAll);
+
+  window.__MOD = { S, get D() { return D; }, recompute, drawAll, showTab };
+})();
+</script>
+</body>
+</html>

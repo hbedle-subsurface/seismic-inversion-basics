@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>4 · More than one answer fits | Seismic Inversion, from the start</title>
+<meta name="description" content="Two different arrangements of rock can produce exactly the same seismic trace. Build both by hand, then find out what narrows the choice down.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<div class="wrap">
+  <header class="masthead">
+    <a class="brand" href="../index.html"><span class="dot"></span>Seismic inversion, <b>from the start</b></a>
+    <nav>
+      <a href="../index.html">All modules</a>
+      <a href="../glossary.html">Glossary</a>
+      <a href="#pm">How this page works</a>
+    </nav>
+  </header>
+
+  <div class="mod-head">
+    <p class="eyebrow">Module 4 &nbsp;·&nbsp; More than one answer fits</p>
+    <h1>Two different rocks, one identical trace</h1>
+    <p class="sub">This is the module the whole set is built around. Modules 1 to 3 showed what a survey
+      records. This one shows what it fails to record, by having you build two different arrangements of
+      rock that a survey could not tell apart.</p>
+  </div>
+
+  <div class="labhead">
+    <div class="labgrid">
+      <div>
+        <p class="cap">Model A and model B <span>&mdash; and the traces they make</span></p>
+        <canvas id="cHead" aria-label="Two different impedance models and the seismic traces they produce"></canvas>
+      </div>
+      <div>
+        <p class="cap">Build the second model <span>&mdash; then compare the traces</span></p>
+        <div class="controls" id="mainControls">
+          <div class="ctl-col">
+            <h2>Model B, against model A</h2>
+            <div class="ctl">
+              <label for="mult">Every impedance multiplied by
+                <span class="val" id="multV">1.60&times;</span></label>
+              <input type="range" data-key="mult" id="mult" min="0.4" max="2.5" step="0.05" value="1.60">
+            </div>
+            <div class="ctl">
+              <label for="add">Every impedance plus
+                <span class="val" id="addV">0</span></label>
+              <input type="range" data-key="add" id="add" min="-2000" max="4000" step="100" value="0">
+            </div>
+
+            <h2>The survey</h2>
+            <div class="ctl">
+              <label for="fr">Wavelet frequency <span class="val" id="frV">30 Hz</span></label>
+              <input type="range" data-key="fr" id="fr" min="14" max="70" step="1" value="30">
+            </div>
+            <div class="ctl">
+              <label for="nz">Noise <span class="val" id="nzV">0% of trace</span></label>
+              <input type="range" data-key="nz" id="nz" min="0" max="20" step="1" value="0">
+            </div>
+
+            <div class="modbar" style="margin-top:14px">
+              <button class="btn ghost small reset" id="resetBtn" type="button">Reset</button>
+              <button class="btn ghost small" id="copyBtn" type="button">Copy link to this setup</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="tabhint">Three short steps. Step 1 is the one to be surprised by.</p>
+
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Module steps">
+    <button role="tab" data-tab="p1" aria-selected="false">1 · The same trace</button>
+    <button role="tab" data-tab="p2" aria-selected="false">2 · The bright spot</button>
+    <button role="tab" data-tab="p3" aria-selected="false">3 · Narrowing it</button>
+    <span class="gap"></span>
+    <span class="tabs-meta">
+  <button role="tab" data-tab="pw" aria-selected="false">Why this matters</button>
+      <button role="tab" data-tab="pc" aria-selected="false">Check yourself</button>
+      <button role="tab" data-tab="pm" aria-selected="false">How this page works</button>
+    </span>
+  </nav>
+
+  <!-- =============================== STEP 1 =============================== -->
+  <section class="tabpane" id="p1" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">1</span>Two different rocks, the same trace to the last decimal</h3>
+      <span class="hint">Move the multiplier anywhere you like</span>
+    </div>
+
+    <p class="lede">Model A is a section of rock: some shale, a soft sand, more shale, and a hard bed
+      at the base. Model B is the same section with every impedance multiplied by the number on the
+      control.</p>
+
+    <p class="lede">At a multiplier of 1.6, every layer in B is 60 percent harder than the layer it
+      matches in A. A geologist looking at the two logs would describe two different sections. The right
+      panel shows the traces those two sections produce, and they lie on top of one another. The readout
+      gives the difference between them sample by sample, and it holds at zero wherever the multiplier
+      is put.</p>
+
+    <p class="lede">The arithmetic behind that is short. A reflection coefficient is the difference
+      between two impedances divided by their sum. Multiplying both layers by 1.6 multiplies the
+      difference by 1.6 and the sum by 1.6, and the ratio is unchanged. Every reflection in the section
+      comes out the same, so the trace built from them comes out the same.</p>
+
+    <p class="lede">This is <b>non-uniqueness</b> in its cleanest form. It is a property of what a
+      seismic survey measures, not a shortcoming of this model: a recording of reflections carries the
+      ratios between impedances and does not carry their sizes. Any inversion of that recording faces
+      the same limit, however it is done and however good the data is.</p>
+
+    <div class="sec-row" id="row1">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> Two very different models
+          <span class="note">A teal, B red</span></p>
+        <canvas id="c1a" aria-label="The impedance of model A and model B, which are clearly different"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> Two identical traces
+          <span class="note">B is drawn over A</span></p>
+        <canvas id="c1b" aria-label="The traces from model A and model B, which lie exactly on top of each other"></canvas>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Sand impedance, model A</span><b id="s1a">&mdash;</b></div>
+      <div class="stat"><span>Sand impedance, model B</span><b id="s1b">&mdash;</b></div>
+      <div class="stat"><span>How different the models are</span><b id="s1c">&mdash;</b></div>
+      <div class="stat"><span>Reflection at the sand, A</span><b id="s1d">&mdash;</b></div>
+      <div class="stat"><span>Reflection at the sand, B</span><b id="s1e">&mdash;</b></div>
+      <div class="stat key"><span>Difference between the traces</span><b id="s1f">&mdash;</b></div>
+    </div>
+
+    <div class="miscon">
+      <h4>Common misconception</h4>
+      <p class="said">"A better survey would tell these two apart."</p>
+      <p class="fix">Raise the frequency to 70 Hz and drop the noise to zero, which is a better survey
+        than anyone will ever shoot. The traces stay identical. <b>The information that separates A from
+        B was never in a reflection to begin with</b>, so no recording of reflections can contain it,
+        and no processing can put it back. Modules 5 and 6 are about where it has to come from
+        instead: a well, and what it takes to use one.</p>
+    </div>
+
+    <div class="whymatters">
+      <h4>Try the other control</h4>
+      <p>The second control adds the same amount to every impedance instead of multiplying. That one does
+        change the trace a little, because adding a constant changes the sums in the denominators without
+        changing the differences. Move it and watch a small difference appear. The multiplier is the
+        exact case; the addition is close but not exact.</p>
+    </div>
+  </section>
+
+  <!-- =============================== STEP 2 =============================== -->
+  <section class="tabpane" id="p2" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">2</span>The bright spot that could be anything</h3>
+      <span class="hint">Move the thickness and watch the brightness stay put</span>
+    </div>
+
+    <p class="lede">Step 1 changed a whole section at once. This step changes a single bed, which is
+      the form of non-uniqueness most likely to turn up in a project.</p>
+
+    <p class="lede">A bright spot is usually mapped by reading the size of the peak at each trace, and
+      that single number is what goes onto the map. The left panel shows a sand bed at the thickness set
+      on the control, and beside it the bed that would be needed at a different thickness to produce the
+      same peak.</p>
+
+    <p class="lede">Moving the thickness from 4 m to 34 m finds a bed at every thickness that makes the
+      same bright spot: a thin bed with a large contrast, or a thick bed with a small one. Those are
+      different rocks and different volumes, and the amplitude map holds one number that fits all of
+      them.</p>
+
+    <p class="lede">Contrast and thickness are not the only pair. A soft organic shale, a gas sand and a
+      high-porosity brine sand can all sit at the impedance the bright bed needs, so even a thickness
+      settled by other means leaves the lithology and the fluid open. Separating those takes angle
+      information, well control, or a rock physics model — none of which is in the amplitude.</p>
+
+    <div class="sec-row" id="row2">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> Two beds with the same brightness
+          <span class="note">10 m reference, and yours</span></p>
+        <canvas id="c2a" aria-label="Two sand beds of different thickness and contrast that produce the same peak amplitude"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> Every bed that fits the same bright spot
+          <span class="note">thickness against contrast</span></p>
+        <canvas id="c2b" aria-label="The family of thickness and impedance pairs that all produce the same peak amplitude"></canvas>
+      </div>
+    </div>
+
+    <div class="controls" id="thickControls" style="margin-bottom:14px">
+      <div class="ctl-col">
+        <h2>The bed</h2>
+            <div class="ctl">
+              <label for="thick">Bed thickness <span class="val" id="thickV">10 m</span></label>
+              <input type="range" data-key="thick" id="thick" min="4" max="34" step="1" value="10">
+            </div>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Reference bed</span><b id="s2a">&mdash;</b></div>
+      <div class="stat"><span>Your thickness</span><b id="s2b">&mdash;</b></div>
+      <div class="stat"><span>Impedance it would need</span><b id="s2c">&mdash;</b></div>
+      <div class="stat"><span>Its reflection coefficient</span><b id="s2d">&mdash;</b></div>
+      <div class="stat"><span>Peak on the trace</span><b id="s2e">&mdash;</b></div>
+      <div class="stat key"><span>Thinnest and thickest bed that fits</span><b id="s2f">&mdash;</b></div>
+    </div>
+
+    <div class="whymatters">
+      <h4>Why this matters</h4>
+      <p>An amplitude map turns each trace into one number, and one number cannot carry two quantities.
+        Thickness and contrast go in and a single brightness comes out, so the map cannot say which
+        combination produced it. This is why volume estimates made from amplitude alone carry the range
+        they do.</p>
+    </div>
+  </section>
+
+  <!-- =============================== STEP 3 =============================== -->
+  <section class="tabpane" id="p3" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">3</span>What narrows it down</h3>
+      <span class="hint">Turn each one on and watch the set of answers shrink</span>
+    </div>
+
+    <p class="lede">Non-uniqueness means the data alone does not choose between the models that fit,
+      so something else has to. That something is called <b>prior information</b>, and each box below
+      adds a piece of it. With all three clear, 31 different beds fit the bright spot. Adding them one
+      at a time changes the count.</p>
+
+    <p class="lede">The counts quoted below are the ones the readouts give at the settings this page
+      opens on. They move with the wavelet frequency, because a different wavelet makes a different
+      family of beds fit. Read them off the panel rather than from here if you have changed
+      anything.</p>
+
+    <p class="lede"><b>Know what the rock can be.</b> A sandstone at this depth cannot have any
+      impedance you like. Ruling out the impossible takes 31 beds down to 29, which is a small
+      gain.</p>
+
+    <p class="lede"><b>Tie it to a well.</b> A well measures the impedance of the sand where it was
+      drilled. That takes the count to 27 and cuts the thinnest bed from 4 m to 8 m, which is also
+      modest.</p>
+
+    <p class="lede"><b>Use the whole wiggle, not just its size.</b> This one takes 31 beds down to 2.
+      A thin bed and a thick one produce differently <em>shaped</em> events even when their peaks match,
+      and that shape was on the trace all along. Reading a single number off a map discards it. Almost
+      all of the narrowing on this page comes from that one box.</p>
+
+    <p class="lede">Two beds still fit at the end, and that is the honest result rather than a failure of
+      the exercise. Prior information narrows the set of models; it does not collapse the set to one. An
+      inversion result is a member of whatever set is left, and how large that set is depends on how much
+      was added and how good it was.</p>
+
+    <p class="lede">That is the plainest argument for inversion there is. An inversion uses the whole
+      wiggle. An amplitude map uses one number from it.</p>
+
+    <div class="sec-row" id="row3">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> Beds that fit, as you add information
+          <span class="note">the shaded band is what is left</span></p>
+        <canvas id="c3a" aria-label="The range of acceptable bed thicknesses as each constraint is added"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> The trace, and what it can still hide
+          <span class="note">every model in the band, drawn together</span></p>
+        <canvas id="c3b" aria-label="The traces of every model still acceptable, drawn on top of one another"></canvas>
+      </div>
+    </div>
+
+    <div class="controls" id="constrainControls" style="margin-top:14px">
+      <div class="ctl-col">
+        <h2>Information you add</h2>
+        <div class="numrow">
+          <label for="cShape">Use the whole wiggle, not just the peak</label>
+          <input type="checkbox" id="cShape" data-check="cShape">
+          <span class="unit"></span>
+        </div>
+        <div class="numrow">
+          <label for="cWell">Tie the level to a well</label>
+          <input type="checkbox" id="cWell" data-check="cWell">
+          <span class="unit"></span>
+        </div>
+        <div class="numrow">
+          <label for="cRock">Rule out impossible rock</label>
+          <input type="checkbox" id="cRock" data-check="cRock">
+          <span class="unit"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Beds that fit the peak alone</span><b id="s3a">&mdash;</b></div>
+      <div class="stat"><span>Using the whole wiggle</span><b id="s3b">&mdash;</b></div>
+      <div class="stat"><span>Thickness range left</span><b id="s3c">&mdash;</b></div>
+      <div class="stat"><span>Impedance range left</span><b id="s3d">&mdash;</b></div>
+      <div class="stat key"><span>Which box did the most</span><b id="s3e">&mdash;</b></div>
+      <div class="stat wide"><span>What is still not decided</span><b id="s3f">&mdash;</b></div>
+    </div>
+
+    <div class="miscon">
+      <h4>Common misconception</h4>
+      <p class="said">"Once the inversion has run, the ambiguity is gone."</p>
+      <p class="fix">An inversion returns one model because it was told to, not because only one fits.
+        Two of the three boxes here are decisions somebody made rather than things the seismic measured. What the rock is allowed to be, and what the well says. <b>The result you are shown is one member
+        of a set</b>, and the honest question about any inversion is how wide that set was and which
+        assumptions narrowed it. On a real section, with an estimated wavelet and beds interfering with
+        each other, the set is much wider than this page's two.</p>
+    </div>
+  </section>
+
+  <!-- ============================ WHY IT MATTERS =========================== -->
+  <section class="tabpane" id="pw" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">W</span>Why this matters</h3>
+      <span class="hint">The idea the whole set is built around</span>
+    </div>
+    <p class="lede">The forward direction has one answer. The backward direction has many. That is not a
+      shortcoming of any particular method, and a better algorithm does not fix it.</p>
+    <p class="lede">Step 1 is the sharpest form of it. Scale every impedance in a section and the
+      reflections do not change at all, so no recording of reflections can tell you which scaling is
+      right. The absolute level of an impedance volume is not something the seismic knows.</p>
+    <p class="lede">Step 2 is the everyday form. A number read off an amplitude map is one number
+      carrying two quantities, and it cannot be taken apart without help.</p>
+    <p class="lede">Step 3 is what practitioners actually do. They add information. Wells, geology, rock
+      physics, an assumption about how simple the answer should be. Each addition narrows the set. None
+      of them comes from the seismic, and each is a decision that can be right or wrong.</p>
+    <p class="lede">So the useful question about an impedance volume is not whether it is correct. It is
+      which assumptions narrowed it, and whether you agree with them. Module 7 turns that into a short
+      list you can ask out loud.</p>
+  </section>
+
+  <!-- ============================ CHECK YOURSELF =========================== -->
+  <section class="tabpane" id="pc" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">C</span>Check yourself</h3>
+      <span class="hint">Four questions. Wrong answers are the useful ones</span>
+    </div>
+
+    <ol class="check" id="checkList">
+      <li data-q="q1" data-right="c">
+        <p class="qtext">You multiply every impedance in a section by 1.6. What happens to the seismic
+          trace?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">It gets 1.6 times bigger</button>
+          <button class="opt" data-opt="b" type="button">It changes slightly</button>
+          <button class="opt" data-opt="c" type="button">Nothing at all</button>
+        </div>
+        <p class="why" hidden><b>Nothing at all.</b> Every reflection coefficient is a difference divided
+          by a sum, and multiplying everything scales the difference and the sum by the same amount. The
+          traces are identical to the last decimal place, which step 1 lets you check at any multiplier
+          you like.</p>
+      </li>
+
+      <li data-q="q2" data-right="a">
+        <p class="qtext">Given that, what can a seismic survey never tell you on its own?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">The absolute level of impedance</button>
+          <button class="opt" data-opt="b" type="button">Where the boundaries are</button>
+          <button class="opt" data-opt="c" type="button">Which way each boundary steps</button>
+        </div>
+        <p class="why" hidden><b>The absolute level.</b> Boundaries and their polarity are exactly what
+          reflections carry, and the trace reports both. What no reflection carries is where the whole
+          section sits on the impedance scale. That has to come from a well, which is what modules 5 and 6 are
+          about.</p>
+      </li>
+
+      <li data-q="q3" data-right="b">
+        <p class="qtext">A bright spot on an amplitude map. What does the brightness on its own tell
+          you?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">How thick the bed is</button>
+          <button class="opt" data-opt="b" type="button">A combination of thickness and contrast</button>
+          <button class="opt" data-opt="c" type="button">How porous the rock is</button>
+        </div>
+        <p class="why" hidden><b>A combination, and the map cannot take it apart.</b> Step 2 finds a bed
+          at every thickness from 4 m to 34 m that produces exactly the same peak, by trading contrast
+          against thickness. A thin bed with a strong contrast and a thick one with a weak contrast are
+          the same number on the map.</p>
+      </li>
+
+      <li data-q="q4" data-right="c">
+        <p class="qtext">An inversion returns a single impedance volume. Why only one, when many models
+          fit?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">Because it found the only model that fits</button>
+          <button class="opt" data-opt="b" type="button">Because the others were ruled out by the data</button>
+          <button class="opt" data-opt="c" type="button">Because assumptions chose one from the set</button>
+        </div>
+        <p class="why" hidden><b>Assumptions chose one.</b> Each of these picks among models the data was equally happy with. A background
+          model from wells, a limit on how far the answer may move, an assumption about how few layers
+          there should be. The volume is one member of a set, and the
+          assumptions that selected it are usually not printed on the map.</p>
+      </li>
+    </ol>
+
+    <div class="whymatters">
+      <h4>If question 1 surprised you</h4>
+      <p>Go to step 1 and drag the multiplier from 0.4 to 2.5 with the trace-difference readout in view.
+        It reads zero the whole way, at every frequency and with the noise off. That one fact is why
+        inversion needs information from outside the seismic.</p>
+    </div>
+  </section>
+
+  <!-- =============================== METHOD =============================== -->
+  <section class="tabpane" id="pm" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">M</span>How this page works</h3>
+      <span class="hint">The arithmetic, and what it leaves out</span>
+    </div>
+
+    <p class="lede"><b>Everything on this page is computed while you watch.</b> The functions are in
+      <code>assets/physics.js</code>.</p>
+
+    <p class="lede"><b>Step 1 is exact, not approximate.</b> Multiplying every impedance by a constant
+      leaves every reflection coefficient algebraically unchanged, so the two traces agree to the limit
+      of the computer's arithmetic. The readout reports the measured difference rather than assuming it,
+      and it stays at zero.</p>
+
+    <p class="lede"><b>The second control adds a constant instead of multiplying</b>, and that one does
+      change the trace, because adding to both impedances changes the sum in the denominator without
+      changing the difference in the numerator. It is included so the exact case can be told from the
+      nearly-exact one.</p>
+
+    <p class="lede"><b>Step 2 searches for real.</b> For each thickness, the page tries impedances across
+      the whole plausible range and keeps the one whose peak comes closest to the reference bed's peak.
+      Nothing is fitted in advance.</p>
+
+    <p class="lede"><b>Step 3 measures each constraint rather than assuming it helps.</b> The result is not what the usual
+      account suggests. At the default 30 Hz, rock bounds take 31 beds to 29. A well tie takes it to 27.
+      Using the whole wiggle takes it to 2. The three counts change with the frequency; the ordering
+      does not. The ambiguity in
+      step 2 belongs to <em>an amplitude read off a map</em>, not to the trace. Given the complete wiggle,
+      a known wavelet and known surrounding rock, thickness and contrast separate well.</p>
+
+    <p class="lede">That is the honest shape of this page's finding, and it has a limit. The waveform
+      test here is generous. Perfect wavelet, no interference from neighbouring beds, and only two unknowns.
+      Every one of those is false on a real section, and each makes the surviving set larger. The scaling
+      ambiguity in step 1, by contrast, is exact and no amount of waveform helps with it at all.</p>
+
+    <p class="lede"><b>Where this page simplifies.</b></p>
+    <ul class="lede" style="padding-left:20px">
+      <li><b>The wavelet is known exactly and is symmetrical.</b> In practice it is estimated, and an
+        error in it widens every range on this page.</li>
+      <li><b>The rock above and below the bed is known.</b> In practice it is not, which adds more
+        unknowns and more ambiguity than step 3 shows.</li>
+      <li><b>Only two things vary in step 2.</b> A real section has many layers whose reflections
+        overlap, so the true set of models that fit is far larger than a two-parameter search can
+        show.</li>
+      <li><b>The whole-waveform test here is generous.</b> It assumes a perfect wavelet, no interference
+        from neighbouring beds and controllable noise, so the narrowing it achieves is a best case.</li>
+      <li><b>No angles.</b> Recording the same reflection at several angles adds information and narrows
+        the set further. That belongs to the advanced set.</li>
+    </ul>
+
+    <details class="instr">
+      <summary>Instructor notes</summary>
+      <div class="instr-body">
+        <h5>Learning objectives</h5>
+        <ul>
+          <li>Show that scaling every impedance leaves the trace unchanged.</li>
+          <li>State what a seismic survey therefore cannot determine on its own.</li>
+          <li>Explain why a single amplitude cannot separate thickness from contrast.</li>
+          <li>Name three kinds of information that narrow the set, and say which does the most.</li>
+        </ul>
+
+        <h5>Summary</h5>
+        <p>The inverse problem has many answers. An inversion returns one because assumptions chose it,
+          not because the data did.</p>
+
+        <h5>Suggested discussion questions</h5>
+        <ul>
+          <li>Two contractors invert the same volume and hand back different impedance levels. Both fit
+            the seismic. What would you ask each of them?</li>
+          <li>Your prospect is mapped on amplitude alone. What range of volumes is consistent with the
+            map, and what one piece of data would most reduce it?</li>
+          <li>Step 3 shows the whole wiggle doing far more than the well tie or the rock bounds. Why
+            might an interpreter still work from an amplitude map?</li>
+        </ul>
+
+        <h5>Common misconceptions this page addresses</h5>
+        <ul>
+          <li>That a better survey would resolve the ambiguity in step 1.</li>
+          <li>That running an inversion removes the ambiguity rather than choosing within it.</li>
+        </ul>
+
+        <h5>Approximate completion time</h5>
+        <p>Twenty minutes. Step 1 is worth doing on a projector: dragging the multiplier while the
+          difference readout sits at zero makes the point in about ten seconds.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="nextup" id="nextup" hidden>
+    <p class="eyebrow">Next up</p>
+    <h3>5 · Tying a well</h3>
+    <p>If the seismic cannot set the level, something else must, and that something is a well. The next
+      module puts one onto the same time axis as the seismic, which every later step depends on.</p>
+    <a class="btn" href="05-tying-a-well.html">Go to module 5 →</a>
+    <a class="btn ghost" href="03-what-the-wavelet-does.html">Back to module 3</a>
+  </section>
+
+  <div class="pager" id="pager" hidden>
+    <a class="btn ghost" href="03-what-the-wavelet-does.html">← Module 3: what the wavelet does</a>
+    <a class="btn ghost" href="05-tying-a-well.html">Module 5: tying a well →</a>
+  </div>
+
+  <footer>
+    <div class="foot-grid">
+      <p>Built for teaching by Dr. Heather Bedle and Dr. April Moreno-Ward, School of Geosciences,
+        University of Oklahoma, with the
+        <a href="https://www.ou.edu/mcee/labs/aaspi">AASPI</a> consortium.</p>
+      <p class="lic">Licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+        — free to use, adapt and share, including commercially, provided the source is credited and
+        adaptations carry the same license.</p>
+      <p class="lic">Nothing you do in this module leaves your browser. The only thing recorded is that
+        the page was opened — no cookie, no account, nothing about you.</p>
+      <p class="lic">To cite: H. Bedle and A. Moreno-Ward, <i>Seismic Inversion, from the start</i>,
+        University of Oklahoma. <span class="k">SSRN: [article link to follow]</span></p>
+    </div>
+  </footer>
+</div>
+
+<script src="../assets/count.js"></script>
+<script src="../assets/glossary.js"></script>
+<script src="../assets/panelout.js"></script>
+<script src="../assets/seismic.js"></script>
+<script src="../assets/physics.js"></script>
+<script src="../assets/panels.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  if (typeof SEIS === 'undefined' || typeof PHYS === 'undefined') {
+    const el = document.createElement('div');
+    el.setAttribute('style', 'background:#841617;color:#fff;padding:14px 18px;font:14px/1.5 monospace');
+    el.textContent = 'This module needs assets/seismic.js and assets/physics.js.';
+    const w = document.querySelector('.wrap');
+    (w || document.body).insertBefore(el, w ? w.firstChild : null);
+    return;
+  }
+
+  const $ = (id) => document.getElementById(id);
+  const visible = (id) => { const el = $(id); return el && !el.hidden; };
+  const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+  const CRIM = '#841617', TEAL = '#0B7285', SLATE = '#5C6670', INK = '#16191C';
+  const GRID = '#C9CDD2';
+
+  const DEF = {
+    mult: 1.60, add: 0, fr: 30, nz: 0, thick: 10,
+    cShape: 0, cWell: 0, cRock: 0, tab: 'p1',
+  };
+  const S = SEIS.readState(DEF);
+  (function sanitize() {
+    const num = (k, lo, hi) => {
+      let v = Number(S[k]);
+      if (!isFinite(v)) v = DEF[k];
+      S[k] = Math.min(hi, Math.max(lo, v));
+    };
+    num('mult', 0.4, 2.5); num('add', -2000, 4000);
+    num('fr', 14, 70); num('nz', 0, 20); num('thick', 4, 34);
+    ['cShape', 'cWell', 'cRock'].forEach((k) => { S[k] = Number(S[k]) ? 1 : 0; });
+  })();
+  const saveState = () => SEIS.writeState(S, DEF);
+  if ($('copyBtn')) $('copyBtn').addEventListener('click', (e) => SEIS.copyLink(e.currentTarget));
+
+  const DT = 0.001, NT = 300, T0 = 0;
+
+  // Exactly one place converts a time into a y position.
+  const yOf = (t, R) => R.y + ((t - T0) / ((NT - 1) * DT)) * R.h;
+  const yAt = (i, R) => yOf(T0 + i * DT, R);
+
+  /* Fixed axes. Model B can be 2.5 times model A, so the impedance axis has to
+     hold both without ever rescaling. */
+  const AX = {
+    z:      [2000, 26000],
+    amp:    [-0.45, 0.45],
+    thick:  [0, 36],
+    zbed:   [3000, 7400],
+  };
+
+  const fmt0 = (v) => Math.round(v).toLocaleString();
+  const fmt3 = (v) => (v >= 0 ? '+' : '') + v.toFixed(3);
+
+  // Model A: a section with a soft sand in it and a hard bed at the base.
+  const SECTION = [
+    { t0: 0.000, t1: 0.060, z: 7400, name: 'shale' },
+    { t0: 0.060, t1: 0.100, z: 8300, name: 'silt' },
+    { t0: 0.100, t1: 0.145, z: 5600, name: 'sand' },
+    { t0: 0.145, t1: 0.200, z: 7900, name: 'shale' },
+    { t0: 0.200, t1: 0.400, z: 9800, name: 'limestone' },
+  ];
+  const SAND = 2;
+
+  // Step 2's bed: one sand in shale, of variable thickness and impedance.
+  const SHALE_Z = 7350, SAND_VP = 2600, BED_TOP = 0.100;
+  const REF_THICK = 10, REF_Z = 5200;
+
+  let D = {};
+
+  function seriesFrom(zOf) {
+    const z = new Float64Array(NT);
+    for (let i = 0; i < NT; i++) {
+      const t = T0 + i * DT;
+      let v = zOf(SECTION[SECTION.length - 1]);
+      for (const L of SECTION) if (t >= L.t0 && t < L.t1) { v = zOf(L); break; }
+      z[i] = v;
+    }
+    return z;
+  }
+
+  function traceFromImpedance(z, freq, noisePct, seed) {
+    const r = new Float64Array(NT);
+    for (let i = 1; i < NT; i++) {
+      r[i] = 0.5 * (z[i] - z[i - 1]) / (0.5 * (z[i] + z[i - 1]));
+    }
+    const clean = PHYS.convolve(r, PHYS.wavelet(freq, DT));
+    return noisePct ? PHYS.addNoise(clean, noisePct, seed) : clean;
+  }
+
+  function bedLayers(thick, zsand) {
+    const two = 2 * thick / SAND_VP;
+    return [
+      { t0: T0, t1: BED_TOP, vp: SHALE_Z, density: 1 },
+      { t0: BED_TOP, t1: BED_TOP + two, vp: zsand, density: 1 },
+      { t0: BED_TOP + two, t1: 999, vp: SHALE_Z, density: 1 },
+    ];
+  }
+  function bedTrace(thick, zsand, freq) {
+    return PHYS.syntheticTrace(bedLayers(thick, zsand),
+      { t0: T0, dt: DT, n: NT, frequency: freq }).trace;
+  }
+  function peakOf(tr) {
+    let m = 0;
+    for (let i = 0; i < tr.length; i++) m = Math.max(m, Math.abs(tr[i]));
+    return m;
+  }
+
+  function recompute() {
+    D.mult = Number(S.mult);
+    D.add = Number(S.add);
+    D.fr = Math.round(S.fr);
+    D.nz = Math.round(S.nz);
+    D.thick = Math.round(S.thick);
+    D.cShape = Number(S.cShape) ? 1 : 0;
+    D.cWell = Number(S.cWell) ? 1 : 0;
+    D.cRock = Number(S.cRock) ? 1 : 0;
+
+    /* --- step 1: the two whole-section models --------------------------- */
+    D.zA = seriesFrom((L) => L.z);
+    D.zB = seriesFrom((L) => L.z * D.mult + D.add);
+    // both traces get the same noise, so any difference is the models' own
+    D.traceA = traceFromImpedance(D.zA, D.fr, D.nz, 77001);
+    D.traceB = traceFromImpedance(D.zB, D.fr, D.nz, 77001);
+    D.gap = PHYS.misfit(D.traceA, D.traceB);
+    D.scaleA = PHYS.rms(D.traceA) || 1;
+    D.gapPct = 100 * D.gap / D.scaleA;
+
+    D.sandA = SECTION[SAND].z;
+    D.sandB = SECTION[SAND].z * D.mult + D.add;
+    D.rcA = PHYS.reflectionCoefficient(SECTION[SAND - 1].z, SECTION[SAND].z);
+    D.rcB = PHYS.reflectionCoefficient(
+      SECTION[SAND - 1].z * D.mult + D.add, SECTION[SAND].z * D.mult + D.add);
+    let dsum = 0;
+    for (let i = 0; i < NT; i++) dsum += Math.abs(D.zB[i] - D.zA[i]);
+    D.modelGap = dsum / NT;
+
+    /* --- step 2: every bed that gives the same peak --------------------- */
+    D.refTrace = bedTrace(REF_THICK, REF_Z, D.fr);
+    D.refPeak = peakOf(D.refTrace);
+
+    const key = 'f' + D.fr;
+    if (!D.familyKey || D.familyKey !== key) {
+      const fam = [];
+      for (let t = 4; t <= 34; t++) {
+        let best = null;
+        for (let z = 3100; z <= 7300; z += 20) {
+          const d = Math.abs(peakOf(bedTrace(t, z, D.fr)) - D.refPeak);
+          if (!best || d < best.d) best = { z, d };
+        }
+        // only count it as fitting if the peak really does match
+        const fits = best.d / D.refPeak < 0.02;
+        fam.push({ thick: t, z: best.z, fits, err: best.d / D.refPeak });
+      }
+      D.family = fam;
+      D.familyKey = key;
+    }
+    D.fitting = D.family.filter((p) => p.fits);
+    const mine = D.family.find((p) => p.thick === D.thick) || D.family[0];
+    D.myZ = mine.z;
+    D.myFits = mine.fits;
+    D.myRC = PHYS.reflectionCoefficient(SHALE_Z, D.myZ);
+    D.myPeak = peakOf(bedTrace(D.thick, D.myZ, D.fr));
+    D.thinnest = D.fitting.length ? D.fitting[0].thick : D.thick;
+    D.thickest = D.fitting.length ? D.fitting[D.fitting.length - 1].thick : D.thick;
+
+    /* --- step 3: what survives each constraint -------------------------- */
+    // the peak-only set is the family above; the waveform test compares the
+    // whole wiggle against a noise floor
+    const floor = Math.max(1e-9, (Math.max(D.nz, 2) / 100) * PHYS.rms(D.refTrace));
+    D.kept = D.family.filter((p) => {
+      if (!p.fits) return false;
+      if (D.cShape) {
+        const m = PHYS.misfit(bedTrace(p.thick, p.z, D.fr), D.refTrace);
+        if (m > floor) return false;
+      }
+      if (D.cWell) {
+        // a well says the sand is near 5,200; only beds close to it survive
+        if (Math.abs(p.z - REF_Z) > 400) return false;
+      }
+      if (D.cRock) {
+        // a sand at this depth cannot be harder than the shale or absurdly soft
+        if (p.z < 4200 || p.z > 6800) return false;
+      }
+      return true;
+    });
+    D.keptThick = D.kept.map((p) => p.thick);
+    D.keptZ = D.kept.map((p) => p.z);
+    D.tLo = D.keptThick.length ? Math.min.apply(null, D.keptThick) : null;
+    D.tHi = D.keptThick.length ? Math.max.apply(null, D.keptThick) : null;
+    D.zLo = D.keptZ.length ? Math.min.apply(null, D.keptZ) : null;
+    D.zHi = D.keptZ.length ? Math.max.apply(null, D.keptZ) : null;
+  }
+
+  /* --- drawing helpers ---------------------------------------------------- */
+
+  function panel(id, hRatio) {
+    const c = $(id);
+    if (!c || !c.parentElement) return null;
+    const cs = window.getComputedStyle(c.parentElement);
+    const w = c.parentElement.clientWidth
+            - parseFloat(cs.paddingLeft || 0) - parseFloat(cs.paddingRight || 0);
+    const h = Math.max(240, Math.round(w * (hRatio || 0.8)));
+    const ctx = SEIS.fitCanvas(c, w, h);
+    ctx.clearRect(0, 0, w, h);
+    return { ctx, w, h };
+  }
+
+  // Time down the side, so a student can see which way the panels run.
+  function timeScale(ctx, rect, withUnits) {
+    const ticks = [];
+    for (let ms = 0; ms <= 280; ms += 60) {
+      ticks.push({ pos: ms / ((NT - 1) * 1000 * DT), label: String(ms) });
+    }
+    PANEL.sideScale(ctx, rect, ticks, withUnits ? 'ms' : '');
+  }
+
+  function trackLabel(ctx, rect, label, rng, fmt) {
+    SEIS.frame(ctx, rect);
+    ctx.save();
+    ctx.font = '10px "IBM Plex Mono", monospace';
+    ctx.fillStyle = SLATE; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText(label, rect.x + rect.w / 2, rect.y + rect.h + 6);
+    if (fmt) {
+      ctx.textAlign = 'left'; ctx.fillText(fmt(rng[0]), rect.x, rect.y - 13);
+      ctx.textAlign = 'right'; ctx.fillText(fmt(rng[1]), rect.x + rect.w, rect.y - 13);
+    }
+    ctx.restore();
+  }
+
+  function stepCurve(ctx, rect, values, rng, color, width) {
+    ctx.save();
+    ctx.beginPath(); ctx.rect(rect.x, rect.y, rect.w, rect.h); ctx.clip();
+    ctx.strokeStyle = color; ctx.lineWidth = width || 2.2;
+    ctx.beginPath();
+    for (let i = 0; i < values.length; i++) {
+      const f = (values[i] - rng[0]) / (rng[1] - rng[0]);
+      const x = rect.x + Math.max(-0.2, Math.min(1.2, f)) * rect.w;
+      const y = yAt(i, rect);
+      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }
+    ctx.stroke(); ctx.restore();
+  }
+
+  function drawWiggle(ctx, rect, trace, rng, color, fill, width) {
+    const xm = rect.x + rect.w * (0 - rng[0]) / (rng[1] - rng[0]);
+    const xOf = (v) => rect.x + rect.w
+      * (Math.max(rng[0], Math.min(rng[1], v)) - rng[0]) / (rng[1] - rng[0]);
+    ctx.save();
+    ctx.beginPath(); ctx.rect(rect.x, rect.y, rect.w, rect.h); ctx.clip();
+    if (fill) {
+      ctx.fillStyle = fill;
+      ctx.beginPath(); ctx.moveTo(xm, yAt(0, rect));
+      for (let i = 0; i < trace.length; i++) ctx.lineTo(Math.max(xm, xOf(trace[i])), yAt(i, rect));
+      ctx.lineTo(xm, yAt(trace.length - 1, rect)); ctx.closePath(); ctx.fill();
+    }
+    ctx.strokeStyle = color; ctx.lineWidth = width || 1.7; ctx.beginPath();
+    for (let i = 0; i < trace.length; i++) {
+      const x = xOf(trace[i]), y = yAt(i, rect);
+      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }
+    ctx.stroke(); ctx.restore();
+    SEIS.dashedLine(ctx, xm, rect.y, xm, rect.y + rect.h, GRID, [3, 3], 1);
+  }
+
+  /* --- the sticky head ---------------------------------------------------- */
+
+  function drawHead() {
+    const p = panel('cHead', 0.5); if (!p) return;
+    const { ctx, w, h } = p;
+    const pad = 52, top = 30, bot = 26, gap = 14;
+    const cw = (w - 2 * pad - 3 * gap) / 4;
+    const H = h - top - bot;
+    const r = (k) => ({ x: pad + k * (cw + gap), y: top, w: cw, h: H });
+
+    stepCurve(ctx, r(0), D.zA, AX.z, TEAL, 2.6);
+    trackLabel(ctx, r(0), 'model A', AX.z, fmt0);
+    stepCurve(ctx, r(1), D.zB, AX.z, CRIM, 2.6);
+    trackLabel(ctx, r(1), 'model B', AX.z, fmt0);
+    drawWiggle(ctx, r(2), D.traceA, AX.amp, TEAL, 'rgba(11,114,133,.24)');
+    trackLabel(ctx, r(2), 'trace from A', AX.amp, (v) => v.toFixed(1));
+    drawWiggle(ctx, r(3), D.traceB, AX.amp, CRIM, 'rgba(132,22,23,.20)');
+    trackLabel(ctx, r(3), 'trace from B', AX.amp, (v) => v.toFixed(1));
+  }
+
+  /* --- step 1 -------------------------------------------------------------- */
+
+  function draw1() {
+    const pa = panel('c1a', 0.9);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const rect = { x: 50, y: 30, w: w - 70, h: h - 62 };
+      timeScale(ctx, rect, true);
+      PANEL.downArrow(ctx, rect, 'deeper');
+      stepCurve(ctx, rect, D.zA, AX.z, TEAL, 2.8);
+      stepCurve(ctx, rect, D.zB, AX.z, CRIM, 2.4);
+      PANEL.quantity(ctx, rect, 'impedance', '(m/s)(g/cc)', AX.z[0], AX.z[1], fmt0);
+      PANEL.curveLabel(ctx, rect, D.zA, AX.z, 0.24, 'model A', TEAL);
+      PANEL.curveLabel(ctx, rect, D.zB, AX.z, 0.66, 'model B', CRIM);
+      trackLabel(ctx, rect, 'two clearly different rocks', [0, 0], () => '');
+    }
+    const pb = panel('c1b', 0.9);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const rect = { x: 50, y: 30, w: w - 70, h: h - 62 };
+      timeScale(ctx, rect, true);
+      drawWiggle(ctx, rect, D.traceA, AX.amp, TEAL, 'rgba(11,114,133,.22)', 3.6);
+      drawWiggle(ctx, rect, D.traceB, AX.amp, CRIM, null, 1.4);
+      PANEL.quantity(ctx, rect, 'the trace', 'amplitude', AX.amp[0], AX.amp[1], (v) => v.toFixed(1));
+      PANEL.tagAt(ctx, rect.x + rect.w * 0.52, rect.y + rect.h * 0.12,
+                  'A and B, one on the other', CRIM, 'left');
+      trackLabel(ctx, rect, 'the survey cannot tell them apart', [0, 0], () => '');
+    }
+
+    set('s1a', fmt0(D.sandA));
+    set('s1b', fmt0(D.sandB));
+    set('s1c', fmt0(D.modelGap) + ' apart on average');
+    set('s1d', fmt3(D.rcA));
+    set('s1e', fmt3(D.rcB));
+    set('s1f', D.gapPct < 0.001 ? 'none — identical to the last decimal'
+                                : D.gapPct.toFixed(2) + '% of the trace');
+  }
+
+  /* --- step 2 -------------------------------------------------------------- */
+
+  function draw2() {
+    const pa = panel('c2a', 0.9);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const pad = 48, top = 30, gap = 22;
+      const cw = (w - pad - 16 - gap) / 2;
+      const H = h - top - 34;
+      const ra = { x: pad, y: top, w: cw, h: H };
+      const rb = { x: pad + cw + gap, y: top, w: cw, h: H };
+      const drawBed = (rect, thick, z, label) => {
+        const two = 2 * thick / SAND_VP;
+        const y0 = yOf(BED_TOP, rect), y1 = yOf(BED_TOP + two, rect);
+        ctx.save();
+        ctx.fillStyle = 'rgba(198,166,100,.30)';
+        ctx.fillRect(rect.x, y0, rect.w, Math.max(1.2, y1 - y0));
+        ctx.restore();
+        const zs = PHYS.impedanceSeries(bedLayers(thick, z), T0, DT, NT);
+        stepCurve(ctx, rect, zs, AX.zbed, TEAL, 2.6);
+        drawWiggle(ctx, rect, bedTrace(thick, z, D.fr), AX.amp, INK, null, 1.6);
+        trackLabel(ctx, rect, label, AX.zbed, fmt0);
+      };
+      drawBed(ra, REF_THICK, REF_Z, REF_THICK + ' m at ' + fmt0(REF_Z));
+      drawBed(rb, D.thick, D.myZ, D.thick + ' m at ' + fmt0(D.myZ));
+    }
+    const pb = panel('c2b', 0.9);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const rect = { x: 62, y: 30, w: w - 84, h: h - 66 };
+      SEIS.frame(ctx, rect);
+      SEIS.axisBottom(ctx, rect, AX.thick[0], AX.thick[1], 'bed thickness, m', (v) => v.toFixed(0));
+      SEIS.axisLeft(ctx, rect, AX.zbed[0], AX.zbed[1], 'impedance it would need',
+                    (v) => fmt0(v), { flip: true });
+      const xOf = (v) => rect.x + (v - AX.thick[0]) / (AX.thick[1] - AX.thick[0]) * rect.w;
+      const yV = (v) => rect.y + (AX.zbed[1] - Math.max(AX.zbed[0], Math.min(AX.zbed[1], v)))
+                       / (AX.zbed[1] - AX.zbed[0]) * rect.h;
+      ctx.save();
+      ctx.strokeStyle = CRIM; ctx.lineWidth = 2.4; ctx.beginPath();
+      let started = false;
+      D.family.forEach((p) => {
+        if (!p.fits) return;
+        const x = xOf(p.thick), y = yV(p.z);
+        started ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+        started = true;
+      });
+      ctx.stroke(); ctx.restore();
+      // the reference and your bed
+      ctx.save();
+      ctx.fillStyle = SLATE;
+      ctx.beginPath(); ctx.arc(xOf(REF_THICK), yV(REF_Z), 4.4, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = INK;
+      ctx.beginPath(); ctx.arc(xOf(D.thick), yV(D.myZ), 5, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+      SEIS.tag(ctx, xOf(D.thick), yV(D.myZ) - 16, 'yours', INK, 'center');
+      SEIS.tag(ctx, rect.x + rect.w - 6, rect.y + 14,
+               'every point makes the same bright spot', CRIM, 'right');
+    }
+
+    set('s2a', REF_THICK + ' m at ' + fmt0(REF_Z));
+    set('s2b', D.thick + ' m');
+    set('s2c', fmt0(D.myZ));
+    set('s2d', fmt3(D.myRC));
+    set('s2e', D.myPeak.toFixed(4) + ' against ' + D.refPeak.toFixed(4));
+    set('s2f', D.fitting.length
+      ? D.thinnest + ' m and ' + D.thickest + ' m — a ' +
+        (D.thickest / D.thinnest).toFixed(1) + ' times range'
+      : 'none at this frequency');
+  }
+
+  /* --- step 3 -------------------------------------------------------------- */
+
+  function draw3() {
+    const pa = panel('c3a', 0.9);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const rect = { x: 62, y: 30, w: w - 84, h: h - 66 };
+      SEIS.frame(ctx, rect);
+      SEIS.axisBottom(ctx, rect, AX.thick[0], AX.thick[1], 'bed thickness, m', (v) => v.toFixed(0));
+      SEIS.axisLeft(ctx, rect, AX.zbed[0], AX.zbed[1], 'impedance', (v) => fmt0(v), { flip: true });
+      const xOf = (v) => rect.x + (v - AX.thick[0]) / (AX.thick[1] - AX.thick[0]) * rect.w;
+      const yV = (v) => rect.y + (AX.zbed[1] - Math.max(AX.zbed[0], Math.min(AX.zbed[1], v)))
+                       / (AX.zbed[1] - AX.zbed[0]) * rect.h;
+      // everything the peak alone allowed, in grey
+      ctx.save();
+      D.family.forEach((p) => {
+        if (!p.fits) return;
+        ctx.fillStyle = 'rgba(92,102,112,.30)';
+        ctx.beginPath(); ctx.arc(xOf(p.thick), yV(p.z), 3.4, 0, Math.PI * 2); ctx.fill();
+      });
+      // what survives the constraints, in red
+      D.kept.forEach((p) => {
+        ctx.fillStyle = CRIM;
+        ctx.beginPath(); ctx.arc(xOf(p.thick), yV(p.z), 4.6, 0, Math.PI * 2); ctx.fill();
+      });
+      ctx.restore();
+      if (D.tLo !== null) {
+        ctx.save();
+        ctx.fillStyle = 'rgba(132,22,23,.10)';
+        ctx.fillRect(xOf(D.tLo) - 4, rect.y, (xOf(D.tHi) - xOf(D.tLo)) + 8, rect.h);
+        ctx.restore();
+      }
+      SEIS.tag(ctx, rect.x + rect.w - 6, rect.y + 14, 'grey allowed, red still allowed', SLATE, 'right');
+    }
+    const pb = panel('c3b', 0.9);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const rect = { x: 50, y: 30, w: w - 70, h: h - 62 };
+      // every surviving model's trace, drawn together
+      D.kept.forEach((p) => {
+        drawWiggle(ctx, rect, bedTrace(p.thick, p.z, D.fr), AX.amp,
+                   'rgba(132,22,23,.40)', null, 1.2);
+      });
+      drawWiggle(ctx, rect, D.refTrace, AX.amp, INK, null, 2);
+      PANEL.quantity(ctx, rect, 'the trace', 'amplitude', AX.amp[0], AX.amp[1], (v) => v.toFixed(1));
+      PANEL.tagAt(ctx, rect.x + 8, rect.y + rect.h * 0.10, 'the recording', INK, 'left');
+      PANEL.tagAt(ctx, rect.x + 8, rect.y + rect.h * 0.86,
+                  'every model still allowed', CRIM, 'left');
+      trackLabel(ctx, rect, 'all of them fit', [0, 0], () => '');
+    }
+
+    set('s3a', String(D.fitting.length));
+    set('s3b', String(D.kept.length));
+    set('s3c', D.tLo === null ? 'nothing fits' : D.tLo + ' to ' + D.tHi + ' m');
+    set('s3d', D.zLo === null ? 'nothing fits' : fmt0(D.zLo) + ' to ' + fmt0(D.zHi));
+    set('s3e', D.cShape ? 'the whole wiggle, by a long way'
+                        : 'try the whole wiggle — it is the big one');
+    set('s3f', D.kept.length > 1
+      ? 'which of ' + D.kept.length + ' beds it is'
+      : (D.kept.length === 1 ? 'nothing, on this simple model' : 'the constraints disagree'));
+  }
+
+  /* --- check yourself ------------------------------------------------------ */
+
+  (function wireCheck() {
+    const list = $('checkList');
+    if (!list) return;
+    list.addEventListener('click', (ev) => {
+      const btn = ev.target.closest('.opt');
+      if (!btn) return;
+      const li = btn.closest('li');
+      const right = li.getAttribute('data-right');
+      li.querySelectorAll('.opt').forEach((b) => {
+        b.classList.remove('right', 'wrong');
+        if (b.getAttribute('data-opt') === right) b.classList.add('right');
+      });
+      if (btn.getAttribute('data-opt') !== right) btn.classList.add('wrong');
+      const why = li.querySelector('.why');
+      if (why) why.hidden = false;
+    });
+  })();
+
+  /* --- wiring -------------------------------------------------------------- */
+
+  function syncControls() {
+    if ($('mult')) $('mult').value = S.mult;
+    set('multV', Number(S.mult).toFixed(2) + '\u00D7');
+    if ($('add')) $('add').value = S.add;
+    set('addV', (S.add >= 0 ? '+' : '') + fmt0(S.add));
+    if ($('fr')) $('fr').value = S.fr;
+    set('frV', Math.round(S.fr) + ' Hz');
+    if ($('nz')) $('nz').value = S.nz;
+    set('nzV', Math.round(S.nz) + '% of trace');
+    if ($('thick')) $('thick').value = S.thick;
+    set('thickV', Math.round(S.thick) + ' m');
+    ['cShape', 'cWell', 'cRock'].forEach((k) => {
+      const el = $(k); if (el) el.checked = !!Number(S[k]);
+    });
+  }
+
+  function drawAll() {
+    syncControls();
+    drawHead();
+    if (visible('p1')) draw1();
+    if (visible('p2')) draw2();
+    if (visible('p3')) draw3();
+  }
+
+  const PANES = ['p1', 'p2', 'p3', 'pw', 'pc', 'pm'];
+
+  function showTab(id) {
+    PANES.forEach((q) => { const el = $(q); if (el) el.hidden = q !== id; });
+    document.querySelectorAll('#tabs button').forEach((b) => {
+      b.setAttribute('aria-selected', b.dataset.tab === id);
+    });
+    const lab = document.querySelector('.labhead');
+    if (lab) lab.hidden = (id === 'pw' || id === 'pc' || id === 'pm');
+    const cc = $('constrainControls');
+    if (cc) cc.hidden = (id !== 'p3');
+    const last = (id === 'pc' || id === 'pm');
+    if ($('nextup')) $('nextup').hidden = !last;
+    if ($('pager')) $('pager').hidden = !last;
+    S.tab = id;
+    drawAll();
+    saveState();
+  }
+  document.querySelectorAll('#tabs button').forEach((b) => {
+    b.addEventListener('click', () => showTab(b.dataset.tab));
+  });
+
+  document.addEventListener('input', (ev) => {
+    const t = ev.target;
+    if (!t || !t.dataset) return;
+    if (t.dataset.check) {
+      S[t.dataset.check] = t.checked ? 1 : 0;
+      recompute(); drawAll(); saveState();
+      return;
+    }
+    const key = t.dataset.key;
+    if (!key) return;
+    const v = parseFloat(t.value);
+    if (!isFinite(v)) return;
+    S[key] = v;
+    recompute(); drawAll(); saveState();
+  });
+
+  if ($('resetBtn')) {
+    $('resetBtn').addEventListener('click', () => {
+      Object.keys(DEF).forEach((k) => { if (k !== 'tab') S[k] = DEF[k]; });
+      D.familyKey = null;
+      recompute(); drawAll(); saveState();
+    });
+  }
+
+  let rt;
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(drawAll, 140); });
+
+  recompute();
+  showTab(PANES.indexOf(S.tab) >= 0 ? S.tab : 'p1');
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawAll);
+
+  window.__MOD = { S, get D() { return D; }, recompute, drawAll, showTab };
+})();
+</script>
+</body>
+</html>

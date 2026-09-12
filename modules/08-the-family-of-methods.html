@@ -1,0 +1,1744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>8 · The family of methods | Seismic Inversion, from the start</title>
+<meta name="description" content="Relative or absolute, deterministic or stochastic, post-stack or pre-stack. What the names on a software menu mean, with four methods run on the same trace so the differences can be seen.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .provenance { font: 12px/1.6 "IBM Plex Mono", monospace; color: #5C6670;
+                border-left: 3px solid #0B7285; padding: 6px 0 6px 12px; margin: 14px 0 0; }
+  table.menu { width: 100%; border-collapse: collapse; margin: 18px 0 0; font-size: 14px; }
+  table.menu th {
+    text-align: left; font: 600 11px/1.4 "IBM Plex Mono", monospace;
+    letter-spacing: .08em; text-transform: uppercase; color: #841617;
+    border-bottom: 2px solid #16191C; padding: 0 12px 7px 0;
+  }
+  table.menu td { padding: 10px 12px 10px 0; border-bottom: 1px solid #E4E6E9;
+                  vertical-align: top; line-height: 1.55; color: #40474E; }
+  table.menu td:first-child { font-weight: 600; color: #16191C; white-space: nowrap; }
+  table.menu tr.other td:first-child { color: #5C6670; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="masthead">
+    <a class="brand" href="../index.html"><span class="dot"></span>Seismic inversion, <b>from the start</b></a>
+    <nav>
+      <a href="../index.html">All modules</a>
+      <a href="../glossary.html">Glossary</a>
+      <a href="#pm">How this page works</a>
+    </nav>
+  </header>
+
+  <div class="mod-head">
+    <p class="eyebrow">Module 8 &nbsp;·&nbsp; The family of methods</p>
+    <h1>The names on the menu, and what separates them</h1>
+    <p class="sub">A software menu offers half a dozen kinds of inversion and rarely says what makes
+      them different. Two questions sort almost all of it. <b>What data goes in</b> — the stacked
+      volume, or the angles kept separate. <b>How the algorithm works</b> — one best answer, or many.
+      Answer those two and you have four kinds of inversion, which is the whole beginner's map. Step 1
+      builds it, the next two show each division happening, and the names on a real menu come last,
+      placed on the map rather than listed cold.</p>
+  </div>
+
+  <div class="labhead">
+    <div class="labgrid">
+      <div>
+        <p class="cap">Four methods, one trace <span>&mdash; Maui-4</span></p>
+        <canvas id="cHead" aria-label="Four inversion methods run on the same seismic trace"></canvas>
+      </div>
+      <div>
+        <p class="cap">The survey and the settings <span>&mdash; the rock never changes</span></p>
+        <div class="controls" id="mainControls">
+          <div class="ctl-col">
+            <h2>The survey</h2>
+            <div class="ctl">
+              <label for="fr">Wavelet frequency <span class="val" id="frV">30 Hz</span></label>
+              <input type="range" data-key="fr" id="fr" min="15" max="60" step="1" value="30">
+            </div>
+            <div class="ctl">
+              <label for="nz">Noise <span class="val" id="nzV">4% of trace</span></label>
+              <input type="range" data-key="nz" id="nz" min="0" max="20" step="1" value="4">
+            </div>
+
+            <h2>Settings somebody chooses</h2>
+            <div class="ctl">
+              <label for="spikes">Sparse spike: how many spikes
+                <span class="val" id="spikesV">15</span></label>
+              <input type="range" data-key="spikes" id="spikes" min="4" max="60" step="1" value="15">
+            </div>
+
+            <div class="modbar" style="margin-top:14px">
+              <button class="btn ghost small reset" id="resetBtn" type="button">Reset</button>
+              <button class="btn ghost small" id="copyBtn" type="button">Copy link to this setup</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="tabhint">A map, two short steps that build it, then the names and the tables.</p>
+
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Module steps">
+    <button role="tab" data-tab="pmap" aria-selected="false">1 · The map</button>
+    <button role="tab" data-tab="pps" aria-selected="false">2 · Post- or pre-stack</button>
+    <button role="tab" data-tab="p3" aria-selected="false">3 · One or many</button>
+    <button role="tab" data-tab="p2" aria-selected="false">4 · The names</button>
+    <button role="tab" data-tab="p4" aria-selected="false">5 · The menu</button>
+    <span class="gap"></span>
+    <span class="tabs-meta">
+      <button role="tab" data-tab="pc" aria-selected="false">Check yourself</button>
+      <button role="tab" data-tab="pm" aria-selected="false">How this page works</button>
+    </span>
+  </nav>
+
+  <!-- ================================ THE MAP ============================== -->
+  <section class="tabpane" id="pmap" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">1</span>Two questions sort the whole menu</h3>
+      <span class="hint">Answer both and you have named a kind of inversion</span>
+    </div>
+
+    <p class="lede">Before any of the names, there are two questions. Everything on a software menu is
+      an answer to both of them, and a beginner who can ask them can place a method they have never
+      heard of.</p>
+
+    <p class="lede"><b>Question one: what data goes in?</b> A survey records each reflection many times,
+      from source-receiver pairs at different distances, which means at different angles. Ordinary
+      processing <em>stacks</em> those together into one average trace per location. A <b>post-stack</b>
+      inversion uses that stacked volume. A <b>pre-stack</b> inversion keeps the angles separate,
+      because how a reflection changes with angle carries information that averaging destroys.</p>
+
+    <p class="lede"><b>Question two: how does the algorithm work?</b> A <b>deterministic</b> inversion
+      looks for the single model that best fits the recording and returns it. A <b>stochastic</b> one
+      accepts that many models fit — which module 4 showed — and returns a whole set of them instead,
+      so the spread between them can be counted.</p>
+
+    <p class="lede">Two questions with two answers each makes four kinds. Move the controls below the
+      grid to choose an answer to each, and the cell you land on says what that combination returns,
+      what it needs before it can be run, and what it is worth using for.</p>
+
+    <div class="sec-row" id="rowmap">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> The four kinds
+          <span class="note">data across, algorithm down</span></p>
+        <canvas id="cmap" aria-label="A two by two grid of inversion types: post-stack or pre-stack across, deterministic or stochastic down"></canvas>
+      </div>
+    </div>
+
+    <div class="controls" id="mapControls" style="margin-top:14px">
+      <div class="ctl-col">
+        <h2>Your two answers</h2>
+        <div class="ctl">
+          <label for="mdata">What data goes in <span class="val" id="mdataV">stacked</span></label>
+          <input type="range" data-key="mdata" id="mdata" min="0" max="1" step="1" value="0">
+        </div>
+        <div class="ctl">
+          <label for="malgo">How the algorithm works <span class="val" id="malgoV">one answer</span></label>
+          <input type="range" data-key="malgo" id="malgo" min="0" max="1" step="1" value="0">
+        </div>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat wide key"><span>You have chosen</span><b id="sm1">&mdash;</b></div>
+      <div class="stat wide"><span>What it gives you</span><b id="sm2">&mdash;</b></div>
+      <div class="stat wide"><span>What it needs first</span><b id="sm3">&mdash;</b></div>
+      <div class="stat wide"><span>What it is worth using for</span><b id="sm4">&mdash;</b></div>
+      <div class="stat wide"><span>Where it is shown in this module</span><b id="sm5">&mdash;</b></div>
+    </div>
+
+    <div class="miscon">
+      <h4>Common misconception</h4>
+      <p class="said">"The four kinds are four methods, so a piece of software does one of them."</p>
+      <p class="fix">They are two independent choices, not a list. A post-stack deterministic inversion
+        is the ordinary case and a pre-stack stochastic one exists and is expensive; every combination
+        on the grid is a real thing somebody sells. <b>The names on a menu are not the four kinds.</b>
+        They are particular recipes, and each one sits in a cell of this grid. Step 4 puts the common
+        ones where they belong.</p>
+    </div>
+  </section>
+
+  <!-- =============================== STEP 1 =============================== -->
+  <!-- =============================== STEP 2 =============================== -->
+  <section class="tabpane" id="p2" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">4</span>The names you will actually see</h3>
+      <span class="hint">The differences are assumptions, not cleverness</span>
+    </div>
+
+    <p class="lede">Step 1 gave four <em>kinds</em> of inversion. The names below are not those four
+      again. They are the recipes a menu actually offers, and every one of them lives in the top-left
+      cell of that grid: <b>post-stack and deterministic</b>. They differ from each other in what they
+      assume and what they need, not in which data goes in or how many answers come back.</p>
+
+    <p class="lede">That is worth being blunt about, because two sets of four are easy to confuse.
+      Post-stack against pre-stack is a question about the data. Deterministic against stochastic is a
+      question about the algorithm. Relative against absolute, which the paragraphs below take up, is a
+      question about the output. The names here are the choices left over once all three are settled the ordinary
+      way.</p>
+
+    <p class="lede">All four run on one trace from one well, so what you see between them is the method
+      and nothing else.</p>
+
+    <p class="lede"><b>Read the tags under the curves first.</b> Three of the four say <em>rel</em> and
+      one says <em>abs</em>, and that is the third question worth asking about any result: does it come
+      with impedance values on the axis, or only a shape? It is not the same question as either of the
+      two on the map, because it is about the <em>output</em> rather than the data or the algorithm, and
+      any cell of the grid can produce either.</p>
+
+    <p class="lede">A <b>relative</b> result has the right shape and no absolute value. Summing the trace
+      gives one, as module 1 had you do: the recording and the wavelet, and nothing else. No well logs go
+      into it. What it cannot tell you is whether this rock sits at 6,000 or at 11,000, because a
+      reflection records only the difference between two rocks.</p>
+
+    <p class="lede">An <b>absolute</b> result has impedance values on the axis. Getting there means
+      adding a low-frequency model built from well logs, which module 6 measured at about 86 percent of
+      the final number. Only model-based, of the four here, does that — which is why it is the only one
+      tagged <em>abs</em>, and why its score is the one measured against the whole log rather than
+      against the seismic band.</p>
+
+    <p class="lede">The thing to notice is what the background model did <em>not</em> do. It moved the
+      curve along the impedance axis and left its shape alone. A background model says where a curve
+      sits; it does not sharpen it, add detail, or make it follow the log more closely. So if the
+      question is where a body is rather than what its impedance value is, a relative result has already
+      answered it — which is the first thing to establish about any result somebody hands you.</p>
+
+    <p class="lede"><b>Relative, or band-limited.</b> Sum the trace. No inputs, no assumptions past the
+      wavelet, no absolute value.</p>
+
+    <p class="lede"><b>Colored.</b> Pass the whole volume through a single filter and call the output
+      impedance. The filter is designed once, by comparing seismic traces against impedance logs from
+      wells in the area and working out what would have to be done to the one to make it resemble the
+      other. After that it is applied everywhere without looking at a well again. It runs on a whole
+      volume in minutes, which is why interpreters like it, and it is relative: no well logs go in per
+      trace, so no absolute values come out.</p>
+
+    <p class="lede"><b>Sparse spike.</b> Assume the earth has only a few significant boundaries and find
+      them. A real one deconvolves the wavelet out of the trace first, then searches for the smallest
+      set of reflection coefficients that still reproduces the recording. The panel here takes a
+      shortcut and keeps the largest samples of the trace itself, which shows the assumption at work
+      without the machinery. The <b>how many spikes</b> control is that assumption, and it is somebody's
+      choice.</p>
+
+    <p class="lede">Move it across its whole range and watch the score. It does not simply climb. Too few
+      spikes throws away real layering and the answer goes blocky and wrong. Too many starts fitting the
+      noise as though it were geology. There is a best setting in between, and nothing in the seismic
+      tells you where it is. You would find it by trying values at a well.</p>
+
+    <p class="lede"><b>Model-based.</b> Start from a background model built from wells, adjust it until
+      its synthetic matches the recording, and hand back the result. This is the workhorse and the one
+      most commercial products mean by inversion. It is the only one of the four that returns absolute
+      values.</p>
+
+    <div class="sec-row" id="row2">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> All four, against the log
+          <span class="note">log in grey behind</span></p>
+        <canvas id="c2a" aria-label="Four inversion methods drawn against the true log"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> How well each does, and what it needs
+          <span class="note">agreement against inputs required</span></p>
+        <canvas id="c2b" aria-label="Agreement with the log plotted against the number of inputs each method needs"></canvas>
+      </div>
+    </div>
+
+    <p class="lede">One trace shows what each method does to the arithmetic. A line shows what each one
+      looks like when it is delivered, which is how a geologist meets them. The three panels below are the
+      same synthetic line used in module 6: a low-relief anticline with a wedge sand across it and a sand
+      at 412 ms holding gas over the crest.</p>
+
+    <p class="lede">The relative panel finds the gas sand and puts it in the right place with no wells at
+      all, and its color bar has no units on it. The sparse-spike panel puts the same body back as a small
+      number of blocky boundaries, which is easy to pick a horizon on and has lost the internal detail.
+      The model-based panel has impedance values, and those values rest on a low-frequency model built at
+      the well marked on the panels. All three are made from the same recording.</p>
+
+    <p class="lede">Move the <b>how many spikes</b> control while watching the sparse-spike panel. Too
+      few and the section falls to a handful of thick blocks with the thin beds gone. Too many and the
+      noise is being fitted along with the geology, and the score falls again.</p>
+
+    <details class="aside">
+      <summary>Why the three scores are not compared with each other</summary>
+      <p>Relative and sparse spike return only the band the survey recorded, so they are scored against
+        the seismic-band part of the true impedance — the part they set out to recover. Model-based
+        returns absolute values and is scored against the whole log. Scoring a relative result against a
+        full log would count the missing low frequencies against a method that never claimed to have
+        them, and would make it look poor when what it is is incomplete. The readout labels say which
+        comparison each score is.</p>
+    </details>
+
+    <div class="sec-row" id="row2b" style="margin-top:6px">
+      <div class="panel-col">
+        <p class="sublabel"><b>3</b> Relative
+          <span class="note">no wells &mdash; no units</span></p>
+        <canvas id="c2c" aria-label="Relative acoustic impedance on the 2D line"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>4</b> Sparse spike
+          <span class="note">a few boundaries, blocky between them</span></p>
+        <canvas id="c2d" aria-label="A sparse-spike result on the same 2D line"></canvas>
+      </div>
+    </div>
+
+    <div class="sec-row" id="row2c" style="margin-top:16px">
+      <div class="panel-col">
+        <p class="sublabel"><b>5</b> Model-based
+          <span class="note">absolute impedance, on a low-frequency model</span></p>
+        <canvas id="c2e" aria-label="A model-based absolute impedance result on the same 2D line"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>6</b> The earth
+          <span class="note">true impedance, for comparison</span></p>
+        <canvas id="c2f" aria-label="The true impedance of the 2D model, for comparison"></canvas>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Relative</span><b id="s2a">&mdash;</b></div>
+      <div class="stat"><span>Colored</span><b id="s2b">&mdash;</b></div>
+      <div class="stat"><span>Sparse spike</span><b id="s2c">&mdash;</b></div>
+      <div class="stat"><span>Model-based, shape</span><b id="s2d">&mdash;</b></div>
+      <div class="stat key"><span>Best of the four</span><b id="s2e">&mdash;</b></div>
+      <div class="stat wide"><span>Does shape improve with inputs</span><b id="s2f">&mdash;</b></div>
+      <div class="stat"><span>On the line: relative, shape</span><b id="s2g">&mdash;</b></div>
+      <div class="stat"><span>On the line: sparse spike, shape</span><b id="s2h">&mdash;</b></div>
+      <div class="stat key"><span>On the line: model-based, shape</span><b id="s2i">&mdash;</b></div>
+    </div>
+
+    <div class="whymatters">
+      <h4>Why this matters</h4>
+      <p>The differences between these methods are assumptions rather than accuracy. Sparse spike is not
+        worse than the others; it answers a different question, one about where the significant
+        boundaries are. Choosing a method means choosing which assumption you are willing to make, and
+        that is a decision a geologist can take part in.</p>
+    </div>
+  </section>
+
+  <!-- =============================== STEP 3 =============================== -->
+  <!-- ====================== POST-STACK OR PRE-STACK ======================= -->
+  <section class="tabpane" id="pps" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">2</span>Post-stack or pre-stack</h3>
+      <span class="hint">The first division on the menu, and the one that decides what you get</span>
+    </div>
+
+    <p class="lede">Stacking adds together the traces that reflected from the same subsurface point at
+      different source-receiver distances. It raises signal against noise, and it averages away the
+      change of amplitude with angle. <b>Post-stack inversion</b> runs on that stacked volume. It is
+      faster, needs less of everything, and returns acoustic impedance, which is one number about the
+      rock.</p>
+
+    <p class="lede"><b>Pre-stack inversion</b> keeps the angles separate instead of averaging them.
+      Amplitude changes with angle in a way that depends on more than acoustic impedance, so keeping the
+      angles allows a second elastic property to be estimated alongside it: shear impedance, and from
+      the two together the ratio Vp/Vs. It needs angle gathers, a wavelet for each angle stack, wells
+      with a shear sonic, and more of everybody's time.</p>
+
+    <p class="lede">The panels show what that extra work makes possible. The line has two soft bodies in the
+      same interval. On the left, near the crest, is the <b>gas sand</b>. On the right flank is a lens
+      of <b>soft organic shale</b>. Their acoustic impedances are within a hundred units of each other,
+      which is nothing.</p>
+
+    <p class="lede">On the acoustic impedance panel they are the same color. Anything read off that
+      panel — a bright body, a soft anomaly, an impedance value carried into a rock physics model — says
+      the same thing about both. On the shear impedance panel they are plainly different, because gas in
+      the pore space drops the compressional velocity sharply and leaves the shear velocity almost
+      alone. The shale has no gas in it and no reason to behave that way.</p>
+
+    <p class="lede">That is the case for pre-stack inversion in one picture. Not that it is more
+      accurate, but that it answers a question acoustic impedance cannot be asked. Move the wavelet
+      frequency and the two bodies stay just as hard to tell apart on the left and just as easy on the
+      right — this is not a resolution problem and a better survey does not fix it.</p>
+
+    <div class="sec-row" id="rowps">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> What post-stack returns
+          <span class="note">acoustic impedance</span></p>
+        <canvas id="cpsA" aria-label="The acoustic impedance section, on which the gas sand and the soft shale lens look the same"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> What pre-stack adds
+          <span class="note">shear impedance</span></p>
+        <canvas id="cpsB" aria-label="The shear impedance section, on which the gas sand and the soft shale lens are clearly different"></canvas>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Gas sand, acoustic impedance</span><b id="sp1">&mdash;</b></div>
+      <div class="stat"><span>Shale lens, acoustic impedance</span><b id="sp2">&mdash;</b></div>
+      <div class="stat key"><span>How far apart post-stack puts them</span><b id="sp3">&mdash;</b></div>
+      <div class="stat"><span>Gas sand, shear impedance</span><b id="sp4">&mdash;</b></div>
+      <div class="stat"><span>Shale lens, shear impedance</span><b id="sp5">&mdash;</b></div>
+      <div class="stat key"><span>How far apart pre-stack puts them</span><b id="sp6">&mdash;</b></div>
+      <div class="stat wide"><span>Vp/Vs, which is what actually separates them</span><b id="sp7">&mdash;</b></div>
+    </div>
+
+    <div class="miscon">
+      <h4>Common misconception</h4>
+      <p class="said">"Pre-stack inversion is the better one, so use it if you can afford it."</p>
+      <p class="fix">It is not a better version of the same measurement, it is a different one. If the
+        question is where a body is and how it compares with its surroundings, post-stack answers it and
+        pre-stack takes more of everything to answer it no better. <b>Pre-stack is the one to reach
+        for when the question is what the rock is, or what is in its pores</b>, which is the case on
+        this panel. It also needs
+        inputs that many projects do not have: angle gathers that survived processing in good order, and
+        at least one well with a shear sonic.</p>
+    </div>
+  </section>
+
+  <section class="tabpane" id="p3" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">3</span>One answer, or a range of them</h3>
+      <span class="hint">The second division on the menu</span>
+    </div>
+
+    <p class="lede">Everything so far returned one answer. That is called <b>deterministic</b> inversion, and it is what most projects use.</p>
+
+    <p class="lede">Module 4 showed that many models fit the same data. A <b>stochastic</b> inversion
+      takes that seriously and returns a set of them instead of one, all fitting the recording equally
+      well. The left panel draws as many as you ask for.</p>
+
+    <p class="lede">The value is not the individual curves. It is that you can count them. If eight
+      realizations out of twelve put this interval below 8,000, that is a number you can carry into a
+      decision, and it is a kind of number a single deterministic answer cannot give you at all.</p>
+
+    <p class="lede">It takes considerably more computing than a single answer, and the spread you get depends entirely on what the realizations were allowed to vary. Limits chosen badly produce a narrow, confident-looking spread that means very little.</p>
+
+    <div class="sec-row" id="row3">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> Many answers, all fitting the same trace
+          <span class="note">the deterministic one in red</span></p>
+        <canvas id="c3a" aria-label="Many stochastic realizations drawn together with the deterministic answer"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> What you can count from them
+          <span class="note">the spread at each depth</span></p>
+        <canvas id="c3b" aria-label="The spread across realizations at each depth, and the fraction below a threshold"></canvas>
+      </div>
+    </div>
+
+    <div class="controls" id="realsControls" style="margin-bottom:14px">
+      <div class="ctl-col">
+        <h2>How many realizations</h2>
+            <div class="ctl">
+              <label for="reals">Stochastic: how many answers
+                <span class="val" id="realsV">12</span></label>
+              <input type="range" data-key="reals" id="reals" min="2" max="30" step="1" value="12">
+            </div>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Realizations drawn</span><b id="s3a">&mdash;</b></div>
+      <div class="stat"><span>Their fit, against the single answer</span><b id="s3b">&mdash;</b></div>
+      <div class="stat"><span>Spread at the softest interval</span><b id="s3c">&mdash;</b></div>
+      <div class="stat"><span>Share below 8,000 there</span><b id="s3d">&mdash;</b></div>
+      <div class="stat key"><span>What the deterministic answer said</span><b id="s3e">&mdash;</b></div>
+      <div class="stat wide"><span>What the set adds</span><b id="s3f">&mdash;</b></div>
+    </div>
+
+    <div class="miscon">
+      <h4>Common misconception</h4>
+      <p class="said">"Stochastic inversion is more accurate."</p>
+      <p class="fix">It is not more accurate. It is more <b>honest about what it does not know</b>. Every
+        realization on this page fits the recording as well as the deterministic answer does, and one of
+        them is no more likely to be right than another. What you gain is the ability to say how wide the
+        range is, and to count how much of it falls on one side of a number that matters to you.</p>
+    </div>
+  </section>
+
+  <!-- =============================== STEP 4 =============================== -->
+  <section class="tabpane" id="p4" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">5</span>The whole menu</h3>
+      <span class="hint">Every name you are likely to meet, and what it is for</span>
+    </div>
+
+    <p class="lede">You now have all three questions. What data goes in, from step 2. How many answers
+      come back, from step 3. Whether the output carries impedance values, from step 4. Every name on
+      the tables below is a combination of those three answers, and nothing more.</p>
+
+    <p class="lede">The first two questions are the ones worth carrying away, because between them they
+      account for four names that turn up constantly. One is about the <b>data</b> that goes in, and step
+      2 showed what it decides. The other is about the <b>algorithm</b> that processes it, and step 3
+      showed what that decides.</p>
+
+    <table class="reqtable fourtypes">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Input or approach</th>
+          <th>What comes out</th>
+          <th>Best used for</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="grouphead"><td colspan="4">Divided by the data that goes in</td></tr>
+        <tr>
+          <td>Post-stack</td>
+          <td>Stacked seismic, with the angles already averaged together</td>
+          <td class="out">Acoustic impedance</td>
+          <td>Mapping a body and comparing it with its surroundings; most projects, most of the
+            time</td>
+        </tr>
+        <tr>
+          <td>Pre-stack</td>
+          <td>Angle gathers, kept separate</td>
+          <td class="out">Acoustic and shear impedance, and Vp/Vs</td>
+          <td>Telling a fluid from a lithology, which acoustic impedance alone cannot do</td>
+        </tr>
+        <tr class="grouphead"><td colspan="4">Divided by how the algorithm works</td></tr>
+        <tr>
+          <td>Deterministic</td>
+          <td>One model, adjusted until its synthetic matches the recording</td>
+          <td class="out">A single smooth answer</td>
+          <td>Broad trends, and anything that has to be repeatable</td>
+        </tr>
+        <tr>
+          <td>Stochastic</td>
+          <td>Many models drawn from statistics, all of which fit</td>
+          <td class="out">A set of detailed answers</td>
+          <td>Thin beds below the resolution of a single answer, and putting a number on risk</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="lede">The two divisions are independent, so any pairing is possible: a post-stack
+      deterministic inversion is the ordinary case, and a pre-stack stochastic one exists and is
+      expensive. The next table is the practical version of the same menu.</p>
+
+    <p class="lede">The first table sets out what has to exist before each method can be run at all. It is
+      the practical version of the question, because a method whose inputs are not available is not on
+      the menu whatever its merits. A project with one well, no shear sonic and a post-stack volume is
+      limited to the top four rows.</p>
+
+    <table class="reqtable">
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>Seismic</th>
+          <th>Wells</th>
+          <th>Wavelet</th>
+          <th>Horizons</th>
+          <th>Low-frequency model</th>
+          <th>Other</th>
+          <th>Output</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Relative</td>
+          <td>Stacked</td>
+          <td class="no">none</td>
+          <td class="no">not required</td>
+          <td class="no">none</td>
+          <td class="no">none</td>
+          <td class="no">&mdash;</td>
+          <td class="out">Relative Zp</td>
+        </tr>
+        <tr>
+          <td>Colored</td>
+          <td>Stacked</td>
+          <td class="need">a few, once</td>
+          <td class="no">not required</td>
+          <td class="no">none</td>
+          <td class="no">none</td>
+          <td>Log spectra, to design the filter</td>
+          <td class="out">Relative Zp</td>
+        </tr>
+        <tr>
+          <td>Sparse spike</td>
+          <td>Stacked</td>
+          <td class="need">one, to tune</td>
+          <td class="need">required</td>
+          <td class="no">none</td>
+          <td>Optional, for absolute values</td>
+          <td>A choice of how many spikes to allow</td>
+          <td class="out">Reflectivity, then Zp</td>
+        </tr>
+        <tr>
+          <td>Model-based</td>
+          <td>Stacked</td>
+          <td class="need">required</td>
+          <td class="need">required</td>
+          <td class="need">required</td>
+          <td class="need">required</td>
+          <td>Limits on how far the answer may move</td>
+          <td class="out">Absolute Zp</td>
+        </tr>
+        <tr>
+          <td>Stochastic</td>
+          <td>Stacked</td>
+          <td class="need">several</td>
+          <td class="need">required</td>
+          <td class="need">required</td>
+          <td class="need">required</td>
+          <td>Variograms and property distributions</td>
+          <td class="out">Many Zp models</td>
+        </tr>
+        <tr>
+          <td>Pre-stack</td>
+          <td class="need">Angle gathers</td>
+          <td class="need">with shear sonic</td>
+          <td class="need">one per angle stack</td>
+          <td class="need">required</td>
+          <td class="need">one per property</td>
+          <td>Angle-dependent wavelets, gather conditioning</td>
+          <td class="out">Zp, Zs, density</td>
+        </tr>
+        <tr>
+          <td>Full-waveform</td>
+          <td class="need">Long-offset shot records</td>
+          <td>For quality control</td>
+          <td class="need">source signature</td>
+          <td class="no">none</td>
+          <td class="need">starting velocity model</td>
+          <td>Usable energy below about 5 Hz, and large computing</td>
+          <td class="out">Velocity model</td>
+        </tr>
+        <tr>
+          <td>Machine learning</td>
+          <td>Stacked or gathers</td>
+          <td class="need">enough to train on</td>
+          <td class="no">not required</td>
+          <td>For the training window</td>
+          <td class="no">none</td>
+          <td>A property in the wells worth predicting, and wells that span its range</td>
+          <td class="out">Predicted property</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="lede"><b>Where to go beyond this.</b> These four are the ones worth knowing before anything
+      else. The methods a contractor actually runs are variations within them. The machinery that makes
+      those work is a course of its own: wavelet estimation, the iterative model-based loop, building a
+      background model across a survey, and the rock physics that turns an elastic property into a
+      lithology. The companion set, <i>How Seismic Inversion Actually Works</i>, covers those on real
+      well data. For the theory behind the angle dependence that pre-stack inversion uses, the standard
+      references are the Zoeppritz equations and the linear approximations to them.</p>
+
+    <p class="lede">Two things in that table are worth reading twice. The low-frequency model column is
+      required for every method that returns absolute values and for none of the methods that do not,
+      which is the same division module 6 measured. And the wells column never reaches zero except in the
+      first row: every method that puts numbers on a color bar got those numbers, in the end, from a
+      well.</p>
+
+    <p class="lede">The second table describes what each one is for.</p>
+
+    <table class="menu">
+      <thead>
+        <tr><th>Name</th><th>What it needs</th><th>What it gives you</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Relative<br><span style="font-weight:400;color:#5C6670">band-limited, recursive</span></td>
+          <td>The stacked seismic. Nothing else.</td>
+          <td>Impedance shape with no values on the axis. Immediate, and a sound first look at where the contrasts are.</td>
+        </tr>
+        <tr>
+          <td>Colored</td>
+          <td>Well logs once, to design one filter.</td>
+          <td>The same kind of result as relative, with a more log-like frequency character. Very fast
+            over a whole volume.</td>
+        </tr>
+        <tr>
+          <td>Sparse spike</td>
+          <td>The seismic, a wavelet, and a decision about how many reflectors to allow.</td>
+          <td>A blocky reflectivity and the impedance built from it. Good for locating significant
+            boundaries.</td>
+        </tr>
+        <tr>
+          <td>Model-based</td>
+          <td>A background model from wells, a wavelet, and limits on how far the answer may move.</td>
+          <td>Absolute impedance. The workhorse, and what most products mean by inversion.</td>
+        </tr>
+        <tr>
+          <td>Stochastic<br><span style="font-weight:400;color:#5C6670">geostatistical</span></td>
+          <td>Everything model-based needs, plus a statistical description of the rock.</td>
+          <td>Many answers rather than one, so a range and a probability can be quoted.</td>
+        </tr>
+        <tr>
+          <td>Pre-stack<br><span style="font-weight:400;color:#5C6670">simultaneous, elastic, AVO inversion</span></td>
+          <td>The angle information the stack throws away, plus everything above.</td>
+          <td>Two or three rock properties instead of one, which can separate rocks a single property
+            cannot. The extra properties are less reliable than the first.</td>
+        </tr>
+        <tr class="other">
+          <td>Full-waveform<br><span style="font-weight:400;color:#5C6670">FWI</span></td>
+          <td>Long offsets, low frequencies, a good starting velocity model, and a great deal of
+            computing.</td>
+          <td>A detailed velocity model. This is used mostly to build a better seismic image rather than to estimate reservoir properties, so it answers a different question from every method above it in this table.</td>
+        </tr>
+        <tr class="other">
+          <td>Machine learning</td>
+          <td>Wells with the property you want, and seismic at those wells to learn from.</td>
+          <td>A predicted property volume. It carries every dependence on wells that the methods above have, and adds one that is hard to detect. It can only reproduce relationships that were present in the wells it learned from.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="whymatters">
+      <h4>Choosing, in practice</h4>
+      <p>There is no best method. The question is which one matches the data you have and the decision
+        you are making. One well and a post-stack volume rules out most of the list. A question about
+        fluid rather than lithology points at pre-stack. A decision that needs a probability rather than
+        a value points at stochastic. And a quick look, before anybody is paid, is nearly always
+        relative.</p>
+    </div>
+  </section>
+
+  <!-- ============================ CHECK YOURSELF =========================== -->
+  <section class="tabpane" id="pc" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">C</span>Check yourself</h3>
+      <span class="hint">Six questions</span>
+    </div>
+
+    <ol class="check" id="checkList">
+      <li data-q="q0" data-right="c">
+        <p class="qtext">A contractor offers you a "pre-stack stochastic" inversion. Without knowing
+          anything else about it, what two things does that name already tell you?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">That it is accurate, and expensive</button>
+          <button class="opt" data-opt="b" type="button">That it uses wells, and returns impedance</button>
+          <button class="opt" data-opt="c" type="button">That the angles were kept separate, and that it returns many models rather than one</button>
+        </div>
+        <p class="why" hidden><b>The angles were kept separate, and it returns many models.</b> That is
+          all the two words mean, and it is enough to know that a second elastic property is available
+          and that the spread between the models can be counted. It says nothing about whether it is
+          accurate — a name on a menu never does. Every method sits in one cell of step 1's grid, and
+          reading the name is reading the cell.</p>
+      </li>
+
+      <li data-q="q1" data-right="b">
+        <p class="qtext">What is the main difference between a relative and an absolute result?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">Relative has worse resolution</button>
+          <button class="opt" data-opt="b" type="button">Relative has no absolute values on the axis</button>
+          <button class="opt" data-opt="c" type="button">Relative uses a different wavelet</button>
+        </div>
+        <p class="why" hidden><b>Relative has no values on the axis.</b> Its shape is just as good —
+          the curves in step 4 take their shape from the same recording, and the background model moves
+          the model-based one along the axis without changing its form. What a relative result lacks is
+          the level, which has to come from wells. Everything that makes an inversion slow and arguable
+          is about supplying that level.</p>
+      </li>
+
+      <li data-q="q2" data-right="c">
+        <p class="qtext">You move the sparse-spike setting across its whole range. How does the
+          agreement with the log behave?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">It climbs steadily with more spikes</button>
+          <button class="opt" data-opt="b" type="button">It peaks somewhere in the middle</button>
+          <button class="opt" data-opt="c" type="button">It falls steadily with more spikes</button>
+        </div>
+        <p class="why" hidden><b>It peaks in the middle.</b> Too few spikes throws away real layering, so
+          the answer goes blocky and wrong. Too many starts fitting noise as though it were geology. The
+          spike count is an assumption about the earth rather than a quality dial, and nothing in the
+          seismic tells you the right value. You would find it by trying values at a well. Note also
+          that a tidy, blocky result is not evidence of a good one.</p>
+      </li>
+
+      <li data-q="q3" data-right="a">
+        <p class="qtext">A contractor offers stochastic inversion. What does it give you that a single answer does not?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">A range of answers you can count</button>
+          <button class="opt" data-opt="b" type="button">A more accurate single answer</button>
+          <button class="opt" data-opt="c" type="button">Higher resolution</button>
+        </div>
+        <p class="why" hidden><b>A range you can count.</b> Every realization fits the data as well as the
+          deterministic answer, and none is more likely to be right. What you gain is the ability to say
+          that eight realizations out of twelve put the reservoir below some threshold, which is the kind
+          of statement a single answer cannot make.</p>
+      </li>
+
+      <li data-q="q4" data-right="c">
+        <p class="qtext">Your team proposes full-waveform inversion to get better reservoir impedance.
+          What is the concern?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">It is too slow</button>
+          <button class="opt" data-opt="b" type="button">It needs too many wells</button>
+          <button class="opt" data-opt="c" type="button">It mostly builds velocity models for imaging, not reservoir properties</button>
+        </div>
+        <p class="why" hidden><b>It answers a different question.</b> FWI is aimed at a detailed velocity
+          model, which mainly improves the image. It is not a drop-in replacement for the reservoir
+          methods above, and it needs long offsets, low frequencies and a good starting model that many
+          surveys do not have. It also takes far more computing than the reservoir methods, though the mismatch of purpose is the more important point.</p>
+      </li>
+
+      <li data-q="q5" data-right="b">
+        <p class="qtext">You have one well and a post-stack volume, and you want a first look at where
+          the soft rock is. What would you start with?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">Pre-stack elastic inversion</button>
+          <button class="opt" data-opt="b" type="button">Relative impedance</button>
+          <button class="opt" data-opt="c" type="button">Stochastic inversion</button>
+        </div>
+        <p class="why" hidden><b>Relative impedance.</b> It needs no background model and answers exactly the question asked, which is where the soft rock is rather than what its impedance value is. Pre-stack inversion needs angle data you do not have. Stochastic inversion needs a statistical description of the rock that one well will not support. Begin with the method that needs least, and add inputs only when a question arrives that it cannot settle.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- =============================== METHOD =============================== -->
+  <section class="tabpane" id="pm" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">M</span>How this page works</h3>
+      <span class="hint">The arithmetic, and what it leaves out</span>
+    </div>
+
+    <p class="lede"><b>Everything on this page is computed while you watch</b>, from the Maui-4
+      impedance log. All four methods run on the same trace with the same wavelet, so the comparison is
+      between methods and not between setups.</p>
+
+    <p class="lede"><b>Scoring.</b> The three relative methods are scored against the log filtered to the
+      band the wavelet actually carries, using a zero-phase filter. That is the fair test, because none
+      of them can hold the frequencies the seismic never recorded. The model-based result is also scored
+      against the full log, where its extra input shows up as an absolute level the others lack.</p>
+
+    <p class="lede"><b>The four implementations are deliberately plain.</b> Relative is a running sum.
+      Colored is the summed trace passed through one filter shaped toward the log's own spectrum.
+      Model-based is the summed trace added to a smoothed version of the log, as in module 6, rather
+      than the iterative loop a contractor runs.</p>
+
+    <p class="lede"><b>The sparse-spike panel is the loosest of the four.</b> It keeps the largest
+      samples of the trace, separated by at least a few samples, and sums those. A real sparse-spike
+      inversion does something the page does not: it deconvolves the wavelet out first and looks for a
+      small number of reflection coefficients that, once the wavelet is put back on them, reproduce the
+      recording. That deconvolution is the method. What survives here is the assumption behind it, that
+      the earth can be described by a few strong boundaries, and the effect of choosing how many. A
+      trace sample is not a reflection coefficient, and module 1 is where the difference between the two
+      is built.</p>
+
+    <p class="lede"><b>Model-based and relative score the same on shape, exactly.</b> That is not a
+      coincidence and not a bug in the readout. The model-based result on this page is the relative
+      result plus a background, so subtracting the background to score its shape gives the relative
+      result back. It is the arithmetic form of what the panels show: a background model moves a curve
+      along the impedance axis and does nothing to its shape.</p>
+
+    <p class="lede"><b>The stochastic realizations</b> are made by multiplying the answer by a slowly
+      varying factor near one, built from random numbers with everything inside the recorded band removed.
+      Multiplying rather than adding matters, and module 4 is where that comes from. Adding to every
+      impedance changes the reflection coefficients through their denominators; multiplying leaves them
+      alone. So each realization moves the values a long way while barely touching the synthetic.</p>
+
+    <p class="lede"><b>How the fit is reported.</b> Not as a raw misfit. The deterministic answer is
+      itself band-limited, so its own synthetic already differs from the recording by around 29 percent
+      while the noise floor is about 4 percent. Quoting the realizations' raw misfit would just repeat
+      that baseline. The readout gives how much <em>worse</em> the worst realization fits than the single
+      answer does, which comes out at a couple of percentage points.</p>
+
+    <p class="lede"><b>Where this page simplifies.</b></p>
+    <ul class="lede" style="padding-left:20px">
+      <li><b>One trace, one well.</b> The differences between methods are clearer on a section, and some
+        of them, colored inversion in particular, exist mainly because they are cheap over a whole
+        volume.</li>
+      <li><b>The wavelet is known exactly.</b> Every method here would suffer from an error in it, and
+        they would not suffer equally.</li>
+      <li><b>Pre-stack, FWI and machine learning are named but not run.</b> Each needs data this page
+        does not have. The companion set demonstrates pre-stack inversion on a real well.</li>
+      <li><b>The scores depend on the scoring choice.</b> Scored against the full log instead of the
+        recorded band, every relative method looks much worse and the comparison stops being about the
+        methods.</li>
+    </ul>
+
+    <p class="provenance">Well data: NZP&amp;M Geodata Catalogue, Petroleum Report 543; composite log
+      compiled by GNS Science, version 04.08.2010. New Zealand Petroleum &amp; Minerals, Ministry of
+      Business, Innovation &amp; Employment. Open file and used with acknowledgement.</p>
+
+    <details class="instr">
+      <summary>Instructor notes</summary>
+      <div class="instr-body">
+        <h5>Learning objectives</h5>
+        <ul>
+          <li>State the two questions that sort a menu: what data goes in, and how the algorithm
+            works.</li>
+          <li>Name the four kinds those two questions produce, and place a method in one of them.</li>
+          <li>Say what pre-stack inversion returns that post-stack cannot, and why.</li>
+          <li>Explain what a stochastic inversion provides that a deterministic one cannot.</li>
+          <li>Distinguish a relative from an absolute result, and say which of the named methods
+            returns which.</li>
+          <li>Say what full-waveform inversion is actually for.</li>
+        </ul>
+
+        <h5>Summary</h5>
+        <p>Two questions sort the whole menu, and the names on it are recipes within one cell of that
+          grid rather than alternatives to it. What separates the methods is the assumptions they make
+          and the inputs they need, not how accurate they are. Adding a background model puts the curve
+          on an impedance axis; it does not change the shape of the curve.</p>
+
+        <h5>Suggested discussion questions</h5>
+        <ul>
+          <li>A vendor quotes for model-based inversion on a survey with no wells. What have they
+            actually offered to do?</li>
+          <li>When would a blocky sparse-spike result be exactly what you want, rather than a loss?</li>
+          <li>Machine-learning inversion trained on three wells in the crest of a structure is applied
+            to the flank. What could go wrong, and would you see it in the result?</li>
+        </ul>
+
+        <h5>Common misconceptions this page addresses</h5>
+        <ul>
+          <li>That the expensive method gives a better-shaped answer.</li>
+          <li>That stochastic inversion is more accurate rather than more honest.</li>
+          <li>That FWI is a better version of reservoir inversion.</li>
+        </ul>
+
+        <h5>Approximate completion time</h5>
+        <p>Twenty minutes. Step 5's tables work well as a handout on their own, and step 4's spike
+          control is the demonstration worth doing together. Step 1 is the one to open with on a
+          projector: set the two controls to each combination in turn and read the cell out.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="nextup" id="nextup" hidden>
+    <p class="eyebrow">That is the set</p>
+    <h3>Eight modules, from one boundary to a menu of methods</h3>
+    <p>From velocity and density making a wiggle, through what a survey never records, to the questions
+      worth asking about somebody else's volume and the names they will use for it.</p>
+    <a class="btn" href="../index.html">All modules →</a>
+    <a class="btn ghost" href="../glossary.html">Glossary</a>
+  </section>
+
+  <div class="pager" id="pager" hidden>
+    <a class="btn ghost" href="07-reading-a-result.html">← Module 7: reading a result</a>
+    <a class="btn ghost" href="../index.html">All modules →</a>
+  </div>
+
+  <footer>
+    <div class="foot-grid">
+      <p>Built for teaching by Dr. Heather Bedle and Dr. April Moreno-Ward, School of Geosciences,
+        University of Oklahoma, with the
+        <a href="https://www.ou.edu/mcee/labs/aaspi">AASPI</a> consortium.</p>
+      <p class="lic">Licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+        — free to use, adapt and share, including commercially, provided the source is credited and
+        adaptations carry the same license.</p>
+      <p class="lic">Well data from the New Zealand Petroleum &amp; Minerals Geodata Catalogue, Ministry
+        of Business, Innovation &amp; Employment. Open file and used with acknowledgement.</p>
+      <p class="lic">To cite: H. Bedle and A. Moreno-Ward, <i>Seismic Inversion, from the start</i>,
+        University of Oklahoma. <span class="k">SSRN: [article link to follow]</span></p>
+    </div>
+  </footer>
+</div>
+
+<script src="../assets/count.js"></script>
+<script src="../assets/glossary.js"></script>
+<script src="../assets/panelout.js"></script>
+<script src="../assets/seismic.js"></script>
+<script src="../assets/physics.js"></script>
+<script src="../assets/panels.js"></script>
+<script src="../assets/synth2d.js"></script>
+<script src="../data/maui-4.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  if (typeof SEIS === 'undefined' || typeof PHYS === 'undefined' || typeof MAUI4 === 'undefined') {
+    const el = document.createElement('div');
+    el.setAttribute('style', 'background:#841617;color:#fff;padding:14px 18px;font:14px/1.5 monospace');
+    el.textContent = 'This module needs seismic.js, physics.js and data/maui-4.js.';
+    const w = document.querySelector('.wrap');
+    (w || document.body).insertBefore(el, w ? w.firstChild : null);
+    return;
+  }
+
+  const $ = (id) => document.getElementById(id);
+  const visible = (id) => { const el = $(id); return el && !el.hidden; };
+  const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+  const CRIM = '#841617', TEAL = '#0B7285', SLATE = '#5C6670', INK = '#16191C';
+  const OLIVE = '#6B7A2E', ORANGE = '#B5451B', GRID = '#C9CDD2';
+
+  const DEF = { fr: 30, nz: 4, spikes: 15, reals: 12, mdata: 0, malgo: 0, tab: 'pmap' };
+  const S = SEIS.readState(DEF);
+  (function sanitize() {
+    const num = (k, lo, hi) => {
+      let v = Number(S[k]);
+      if (!isFinite(v)) v = DEF[k];
+      S[k] = Math.min(hi, Math.max(lo, v));
+    };
+    num('fr', 15, 60); num('nz', 0, 20); num('spikes', 4, 60); num('reals', 2, 30);
+    num('mdata', 0, 1); num('malgo', 0, 1);
+  })();
+  const saveState = () => SEIS.writeState(S, DEF);
+  if ($('copyBtn')) $('copyBtn').addEventListener('click', (e) => SEIS.copyLink(e.currentTarget));
+
+  const DT = 0.001, NT = 204, T0 = 0;
+  const C = MAUI4.curves;
+  const TOP_M = 2000, SPAN_M = 400;
+
+  // Exactly one place converts a sample index to a y position.
+  const yAt = (i, R) => R.y + (i / (NT - 1)) * R.h;
+
+  /* Fixed axes across the module. */
+  const AX = {
+    z:    [6000, 14000],
+    dev:  [-2600, 2600],
+    score:[0, 1],
+    inputs: [0, 4],
+  };
+
+  const fmt0 = (v) => Math.round(v).toLocaleString();
+
+  let D = {};
+
+  function logWindow() {
+    let i0 = C.DEPT.findIndex((d) => d >= TOP_M);
+    let i1 = C.DEPT.findIndex((d) => d >= TOP_M + SPAN_M);
+    if (i0 < 0) i0 = 0;
+    if (i1 < 0) i1 = C.DEPT.length - 1;
+    const twt = C.TWT.slice(i0, i1 + 1), ai = C.AI.slice(i0, i1 + 1);
+    const ta = twt[0], tb = twt[twt.length - 1];
+    const z = new Float64Array(NT);
+    for (let i = 0; i < NT; i++) {
+      const t = ta + (tb - ta) * i / (NT - 1);
+      let k = 0;
+      while (k < twt.length - 1 && twt[k + 1] < t) k++;
+      const f = (t - twt[k]) / ((twt[k + 1] - twt[k]) || 1);
+      z[i] = ai[k] + (ai[Math.min(k + 1, ai.length - 1)] - ai[k]) * f;
+    }
+    return z;
+  }
+
+  function smoothed(x, N) {
+    const n = x.length, out = new Float64Array(n);
+    for (let i = 0; i < n; i++) {
+      let s = 0, c = 0;
+      for (let j = Math.max(0, i - N); j <= Math.min(n - 1, i + N); j++) { s += x[j]; c++; }
+      out[i] = s / c;
+    }
+    return out;
+  }
+
+  // put a curve on the same footing as a reference, so shapes can be compared
+  function scaleTo(a, ref) {
+    const s = PHYS.rms(ref) / (PHYS.rms(a) || 1);
+    return Float64Array.from(a, (v) => v * s);
+  }
+
+  function recompute() {
+    lineRecompute();
+    D.fr = Math.round(S.fr);
+    D.nz = Math.round(S.nz);
+    D.spikes = Math.round(S.spikes);
+    D.reals = Math.round(S.reals);
+
+    D.z = logWindow();
+    D.bg = smoothed(D.z, 50);
+    D.band = PHYS.waveletBand(D.fr);
+    // the log as the seismic could ever have recorded it
+    D.truthBand = PHYS.bandpass(D.z, DT, D.band.f1, D.band.f2, D.band.f3, D.band.f4);
+
+    const r = new Float64Array(NT);
+    for (let i = 1; i < NT; i++) {
+      r[i] = 0.5 * (D.z[i] - D.z[i - 1]) / (0.5 * (D.z[i] + D.z[i - 1]));
+    }
+    const clean = PHYS.convolve(r, PHYS.wavelet(D.fr, DT));
+    D.trace = D.nz ? PHYS.addNoise(clean, D.nz, 70701) : clean;
+
+    /* --- the four methods ----------------------------------------------- */
+    // 1. relative: sum the trace and stop
+    D.relative = scaleTo(PHYS.runningSum(D.trace, { removeDrift: true }), D.truthBand);
+
+    // 2. colored: one filter, shaped so the output looks like an impedance log
+    D.colored = scaleTo(
+      PHYS.bandpass(PHYS.runningSum(D.trace, { removeDrift: true }), DT,
+                    D.band.f1, D.band.f2, D.band.f3 * 1.15, D.band.f4 * 1.15),
+      D.truthBand);
+
+    // 3. sparse spike: keep only the largest reflections, then sum those
+    const order = Array.from(D.trace.keys())
+      .sort((a, b) => Math.abs(D.trace[b]) - Math.abs(D.trace[a]));
+    const kept = new Float64Array(NT);
+    const used = [];
+    for (const i of order) {
+      if (used.length >= D.spikes) break;
+      if (used.some((u) => Math.abs(u - i) < 5)) continue;   // one spike per event
+      kept[i] = D.trace[i];
+      used.push(i);
+    }
+    D.spikeCount = used.length;
+    D.sparse = scaleTo(PHYS.runningSum(kept, { removeDrift: true }), D.truthBand);
+
+    // 4. model-based: the seismic part, on a background from wells
+    D.modelBased = Float64Array.from(D.relative, (v, i) => v + D.bg[i]);
+
+    D.scores = {
+      relative: PHYS.agreement(D.relative, D.truthBand),
+      colored: PHYS.agreement(D.colored, D.truthBand),
+      sparse: PHYS.agreement(D.sparse, D.truthBand),
+      modelShape: PHYS.agreement(
+        Float64Array.from(D.modelBased, (v, i) => v - D.bg[i]), D.truthBand),
+    };
+    D.modelAbsolute = PHYS.agreement(D.modelBased, D.z);
+    const list = [
+      { name: 'relative', score: D.scores.relative, inputs: 0 },
+      { name: 'colored', score: D.scores.colored, inputs: 1 },
+      { name: 'sparse spike', score: D.scores.sparse, inputs: 1 },
+      { name: 'model-based', score: D.scores.modelShape, inputs: 3 },
+    ];
+    D.methods = list;
+    D.best = list.reduce((a, b) => (b.score > a.score ? b : a));
+    D.shapeSpread = Math.max.apply(null, list.map((m) => m.score))
+                  - Math.min.apply(null, list.map((m) => m.score));
+
+    /* --- stochastic: many answers that all fit the same trace ------------ */
+    // Vary the background below the recorded band. That part was never in the
+    // trace, so every realization matches the recording just as well.
+    D.realizations = [];
+    for (let k = 0; k < D.reals; k++) {
+      const rnd = PHYS.randomSeed(9100 + k * 37);
+      // Build a random field, then keep only what falls BELOW the band the
+      // seismic recorded. Anything inside the band would change the synthetic
+      // and the realization would stop fitting the trace, which is the one
+      // thing every realization has to keep doing.
+      const raw = new Float64Array(NT);
+      for (let i = 0; i < NT; i++) raw[i] = PHYS.gaussian(rnd);
+      const inBand = PHYS.bandpass(raw, DT, D.band.f1 * 0.5, D.band.f1,
+                                   D.band.f4, D.band.f4 * 1.3);
+      let slow = Float64Array.from(raw, (v, i) => v - inBand[i]);
+      // Module 4 showed that ADDING to every impedance changes the reflection
+      // coefficients, because it changes the sums in the denominators. Only
+      // MULTIPLYING leaves them alone. So each realization scales the answer by
+      // a slowly varying factor near one, which keeps the synthetic essentially
+      // unchanged while moving the values a long way.
+      const sm = PHYS.rms(slow) || 1;
+      slow = Float64Array.from(slow, (v) => v * 0.09 / sm);      // +/- ~9 percent
+      D.realizations.push(Float64Array.from(D.modelBased, (v, i) => v * (1 + slow[i])));
+    }
+    /* Every realization has to keep fitting the recording. The number that
+       matters is not the raw misfit but how much WORSE it is than the
+       deterministic answer, because that answer is band-limited and already
+       misfits the fine detail by a good deal on its own. */
+    const synOf = (z) => {
+      const rr = new Float64Array(NT);
+      for (let i = 1; i < NT; i++) {
+        rr[i] = 0.5 * (z[i] - z[i - 1]) / (0.5 * (z[i] + z[i - 1]));
+      }
+      return PHYS.convolve(rr, PHYS.wavelet(D.fr, DT));
+    };
+    const traceScale = PHYS.rms(D.trace) || 1;
+    D.detFit = PHYS.misfit(synOf(D.modelBased), D.trace) / traceScale;
+    D.realFit = 0;
+    D.realizations.forEach((rz) => {
+      D.realFit = Math.max(D.realFit, PHYS.misfit(synOf(rz), D.trace) / traceScale);
+    });
+    D.fitPenalty = D.realFit - D.detFit;
+
+    // where the section is softest, and what the realizations say there
+    let si = 0, sv = Infinity;
+    for (let i = 10; i < NT - 10; i++) if (D.modelBased[i] < sv) { sv = D.modelBased[i]; si = i; }
+    D.softIdx = si;
+    const at = D.realizations.map((rz) => rz[si]);
+    D.softLo = Math.min.apply(null, at);
+    D.softHi = Math.max.apply(null, at);
+    D.softDet = D.modelBased[si];
+    D.belowShare = at.filter((v) => v < 8000).length / Math.max(1, at.length);
+
+    // spread at every depth, for the right-hand panel of step 3
+    D.spreadLo = new Float64Array(NT);
+    D.spreadHi = new Float64Array(NT);
+    for (let i = 0; i < NT; i++) {
+      let lo = Infinity, hi = -Infinity;
+      D.realizations.forEach((rz) => { lo = Math.min(lo, rz[i]); hi = Math.max(hi, rz[i]); });
+      D.spreadLo[i] = lo; D.spreadHi[i] = hi;
+    }
+  }
+
+  /* --- drawing ------------------------------------------------------------- */
+
+  function panel(id, hRatio) {
+    const c = $(id);
+    if (!c || !c.parentElement) return null;
+    const cs = window.getComputedStyle(c.parentElement);
+    const w = c.parentElement.clientWidth
+            - parseFloat(cs.paddingLeft || 0) - parseFloat(cs.paddingRight || 0);
+    const h = Math.max(240, Math.round(w * (hRatio || 0.8)));
+    const ctx = SEIS.fitCanvas(c, w, h);
+    ctx.clearRect(0, 0, w, h);
+    return { ctx, w, h };
+  }
+
+  function timeScale(ctx, rect, withUnits) {
+    const ticks = [];
+    for (let ms = 0; ms <= 200; ms += 50) {
+      ticks.push({ pos: ms / ((NT - 1) * 1000 * DT), label: String(ms) });
+    }
+    PANEL.sideScale(ctx, rect, ticks, withUnits ? 'ms' : '');
+  }
+
+  function trackLabel(ctx, rect, label, rng, fmt) {
+    SEIS.frame(ctx, rect);
+    ctx.save();
+    ctx.font = '10px "IBM Plex Mono", monospace';
+    ctx.fillStyle = SLATE; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText(label, rect.x + rect.w / 2, rect.y + rect.h + 6);
+    if (fmt) {
+      ctx.textAlign = 'left'; ctx.fillText(fmt(rng[0]), rect.x, rect.y - 13);
+      ctx.textAlign = 'right'; ctx.fillText(fmt(rng[1]), rect.x + rect.w, rect.y - 13);
+    }
+    ctx.restore();
+  }
+
+  function curve(ctx, rect, values, rng, color, width) {
+    ctx.save();
+    ctx.beginPath(); ctx.rect(rect.x, rect.y, rect.w, rect.h); ctx.clip();
+    ctx.strokeStyle = color; ctx.lineWidth = width || 1.8;
+    ctx.beginPath();
+    for (let i = 0; i < values.length; i++) {
+      const f = (values[i] - rng[0]) / (rng[1] - rng[0]);
+      const x = rect.x + Math.max(-0.2, Math.min(1.2, f)) * rect.w;
+      const y = yAt(i, rect);
+      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }
+    ctx.stroke(); ctx.restore();
+  }
+
+  function drawHead() {
+    const p = panel('cHead', 0.5); if (!p) return;
+    const { ctx, w, h } = p;
+    const pad = 56, top = 30, bot = 26, gap = 12;
+    const cw = (w - pad - 16 - 3 * gap) / 4;
+    const H = h - top - bot;
+    const r = (k) => ({ x: pad + k * (cw + gap), y: top, w: cw, h: H });
+    const items = [
+      ['relative', D.relative, AX.dev, TEAL],
+      ['colored', D.colored, AX.dev, OLIVE],
+      ['sparse spike', D.sparse, AX.dev, ORANGE],
+      ['model-based', D.modelBased, AX.z, CRIM],
+    ];
+    items.forEach((it, k) => {
+      const rect = r(k);
+      if (k === 0) { timeScale(ctx, rect, true); PANEL.downArrow(ctx, rect, 'deeper'); }
+      if (it[2] === AX.z) curve(ctx, rect, D.z, AX.z, 'rgba(92,102,112,.40)', 2.4);
+      else curve(ctx, rect, D.truthBand, AX.dev, 'rgba(92,102,112,.40)', 2.4);
+      curve(ctx, rect, it[1], it[2], it[3], 1.7);
+      PANEL.quantity(ctx, rect,
+        it[2] === AX.z ? 'impedance' : 'departure from the trend',
+        it[2] === AX.z ? '(m/s)(g/cc)' : '', it[2][0], it[2][1], fmt0);
+      // the method names already run long; the abs/rel note goes in short form
+      trackLabel(ctx, rect, it[0] + (it[2] === AX.z ? ' (abs)' : ' (rel)'),
+                 [0, 0], () => '');
+    });
+  }
+
+
+  function draw2() {
+    const pa = panel('c2a', 0.9);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const pad = 46, top = 30, gap = 10;
+      const cw = (w - pad - 16 - 3 * gap) / 4;
+      const H = h - top - 34;
+      const items = [
+        ['relative', D.relative, TEAL],
+        ['colored', D.colored, OLIVE],
+        ['sparse spike', D.sparse, ORANGE],
+        ['model-based', Float64Array.from(D.modelBased, (v, i) => v - D.bg[i]), CRIM],
+      ];
+      items.forEach((it, k) => {
+        const rect = { x: pad + k * (cw + gap), y: top, w: cw, h: H };
+        if (k === 0) timeScale(ctx, rect, true);
+        curve(ctx, rect, D.truthBand, AX.dev, 'rgba(92,102,112,.45)', 2.4);
+        curve(ctx, rect, it[1], AX.dev, it[2], 1.7);
+        if (k === 0) PANEL.curveLabel(ctx, rect, D.truthBand, AX.dev, 0.14,
+                                      'the log', SLATE);
+        trackLabel(ctx, rect, it[0], null, null);
+      });
+    }
+    const pb = panel('c2b', 0.9);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const rect = { x: 62, y: 30, w: w - 84, h: h - 66 };
+      SEIS.frame(ctx, rect);
+      SEIS.axisBottom(ctx, rect, AX.inputs[0], AX.inputs[1], 'inputs the method needs',
+                      (v) => v.toFixed(0));
+      SEIS.axisLeft(ctx, rect, AX.score[0], AX.score[1], 'agreement with the recorded band',
+                    (v) => v.toFixed(1), { flip: true });
+      const xOf = (v) => rect.x + (v - AX.inputs[0]) / (AX.inputs[1] - AX.inputs[0]) * rect.w;
+      const yV = (v) => rect.y + (AX.score[1] - Math.max(0, Math.min(1, v)))
+                       / (AX.score[1] - AX.score[0]) * rect.h;
+      const cols = [TEAL, OLIVE, ORANGE, CRIM];
+      D.methods.forEach((m, k) => {
+        ctx.save(); ctx.fillStyle = cols[k];
+        ctx.beginPath(); ctx.arc(xOf(m.inputs), yV(m.score), 5.5, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+        SEIS.tag(ctx, xOf(m.inputs), yV(m.score) - 16, m.name, cols[k], 'center');
+      });
+      SEIS.tag(ctx, rect.x + rect.w - 6, rect.y + rect.h - 12,
+               'shape does not climb with inputs', SLATE, 'right');
+    }
+    set('s2a', D.scores.relative.toFixed(3));
+    set('s2b', D.scores.colored.toFixed(3));
+    set('s2c', D.scores.sparse.toFixed(3) + ' with ' + D.spikeCount + ' spikes');
+    set('s2d', D.scores.modelShape.toFixed(3));
+    set('s2e', D.best.name + ', at ' + D.best.score.toFixed(3));
+    set('s2f', D.shapeSpread < 0.12 ? 'no — they are within ' + D.shapeSpread.toFixed(2)
+                                    : 'the spread is ' + D.shapeSpread.toFixed(2));
+  }
+
+  function draw3() {
+    const pa = panel('c3a', 0.9);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const rect = { x: 50, y: 30, w: w - 70, h: h - 62 };
+      D.realizations.forEach((rz) => curve(ctx, rect, rz, AX.z, 'rgba(11,114,133,.34)', 1.2));
+      curve(ctx, rect, D.modelBased, AX.z, CRIM, 2.2);
+      curve(ctx, rect, D.z, AX.z, 'rgba(92,102,112,.55)', 1.6);
+      PANEL.quantity(ctx, rect, 'impedance', '(m/s)(g/cc)', AX.z[0], AX.z[1], fmt0);
+      PANEL.tagAt(ctx, rect.x + 8, rect.y + rect.h * 0.10,
+                  'every realization', TEAL, 'left');
+      PANEL.curveLabel(ctx, rect, D.modelBased, AX.z, 0.52, 'the single answer', CRIM);
+      PANEL.curveLabel(ctx, rect, D.z, AX.z, 0.86, 'the real log', SLATE);
+      trackLabel(ctx, rect, 'all of them fit the same trace', [0, 0], () => '');
+    }
+    const pb = panel('c3b', 0.9);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const rect = { x: 50, y: 30, w: w - 70, h: h - 62 };
+      // the band the realizations span, at every depth
+      ctx.save();
+      ctx.beginPath(); ctx.rect(rect.x, rect.y, rect.w, rect.h); ctx.clip();
+      ctx.fillStyle = 'rgba(11,114,133,.22)';
+      ctx.beginPath();
+      const xOf = (v) => rect.x + (v - AX.z[0]) / (AX.z[1] - AX.z[0]) * rect.w;
+      for (let i = 0; i < NT; i++) {
+        const x = xOf(D.spreadLo[i]), y = yAt(i, rect);
+        i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      }
+      for (let i = NT - 1; i >= 0; i--) ctx.lineTo(xOf(D.spreadHi[i]), yAt(i, rect));
+      ctx.closePath(); ctx.fill();
+      ctx.restore();
+      timeScale(ctx, rect, true);
+      curve(ctx, rect, D.modelBased, AX.z, CRIM, 2);
+      PANEL.quantity(ctx, rect, 'impedance', '(m/s)(g/cc)', AX.z[0], AX.z[1], fmt0);
+      // the threshold a decision might turn on
+      SEIS.dashedLine(ctx, xOf(8000), rect.y, xOf(8000), rect.y + rect.h, INK, [4, 3], 1.4);
+      SEIS.tag(ctx, xOf(8000) + 6, rect.y + 14, '8,000', INK, 'left');
+      const ySoft = yAt(D.softIdx, rect);
+      SEIS.dashedLine(ctx, rect.x, ySoft, rect.x + rect.w, ySoft, ORANGE, [3, 3], 1.4);
+      SEIS.tag(ctx, rect.x + rect.w - 6, ySoft - 12, 'softest interval', ORANGE, 'right');
+      trackLabel(ctx, rect, 'the range the data allows', AX.z, fmt0);
+    }
+    set('s3a', String(D.reals));
+    set('s3b', 'within ' + (100 * D.fitPenalty).toFixed(1)
+      + ' points of the single answer');
+    set('s3c', fmt0(D.softLo) + ' to ' + fmt0(D.softHi));
+    set('s3d', Math.round(100 * D.belowShare) + '% of them');
+    set('s3e', 'one number — ' + fmt0(D.softDet));
+    set('s3f', 'a range you can count, instead of a value you must trust');
+  }
+
+  /* --- the same four methods, on a 2D line --------------------------------
+
+     The line is the shared model in assets/synth2d.js, which is the one module
+     5 uses, so a student meeting it here already knows the geology on it.
+
+     Sparse spike is done here the way the name describes: keep the largest few
+     reflection coefficients on each trace, throw the rest away, and rebuild the
+     impedance from what is left. A commercial implementation solves for the
+     spikes rather than picking them, and gets a better answer, but the shape of
+     the result and the reason it looks blocky are the same.
+     -------------------------------------------------------------------- */
+
+  const WELL_IX = 30;    // where the well sits on the line
+  const FLO = 8;         // the lowest frequency the synthetic survey holds, Hz
+
+  /* The two soft bodies the pre-stack step turns on, computed once. Neither
+     depends on any control, because the point is that no setting of the survey
+     tells them apart on acoustic impedance. */
+  const ELASTIC = (function () {
+    if (typeof SYNTH2D === 'undefined') return null;
+    const z = SYNTH2D.impedanceField();
+    const vpvs = SYNTH2D.vpvsField();
+    const zs = SYNTH2D.shearImpedanceField(z, vpvs);
+    return {
+      z: z, zs: zs, vpvs: vpvs,
+      gasZp: SYNTH2D.meanInGasSand(z),   lensZp: SYNTH2D.meanInShaleLens(z),
+      gasZs: SYNTH2D.meanInGasSand(zs),  lensZs: SYNTH2D.meanInShaleLens(zs),
+      gasR: SYNTH2D.meanInGasSand(vpvs), lensR: SYNTH2D.meanInShaleLens(vpvs),
+    };
+  })();
+
+  /* Outline whichever of the two bodies is asked for, so the eye has the same
+     two shapes to follow on both panels. */
+  function outlineBody(ctx, rect, which) {
+    const frac = which === 'lens' ? SYNTH2D.shaleLensFraction : SYNTH2D.gasFraction;
+    const label = which === 'lens' ? 'soft shale' : 'gas sand';
+    let first = -1, last = -1;
+    for (let ix = 0; ix < SYNTH2D.NX; ix++) {
+      if (frac(ix) >= 0.5) { if (first < 0) first = ix; last = ix; }
+    }
+    if (first < 0) return;
+    const x0 = rect.x + rect.w * first / SYNTH2D.NX;
+    const x1 = rect.x + rect.w * (last + 1) / SYNTH2D.NX;
+    const mid = Math.round((first + last) / 2);
+    const yTop = SYNTH2D.yAt(SYNTH2D.T_SAND_TOP + SYNTH2D.structure(mid), rect) - 3;
+    const yBase = SYNTH2D.yAt(SYNTH2D.T_SAND_TOP + SYNTH2D.SAND_THICK
+                              + SYNTH2D.structure(mid), rect) + 3;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(255,255,255,.92)';
+    ctx.lineWidth = 1.6; ctx.setLineDash([4, 3]);
+    ctx.strokeRect(x0, yTop, x1 - x0, yBase - yTop);
+    ctx.setLineDash([]);
+    ctx.restore();
+    PANEL.tagAt(ctx, (x0 + x1) / 2 - 26, yTop - 10, label, INK, 'left');
+  }
+
+  /* --- the map ------------------------------------------------------------
+
+     A two-by-two grid: what data goes in across, how the algorithm works down.
+     It is the first thing in the module because the names further on are
+     meaningless without somewhere to put them, and a beginner handed a list of
+     six names memorizes six names instead of learning two questions.
+
+     Everything here is prose in a table. It is interactive anyway, because a
+     student who has moved the two controls and watched the highlight move has
+     understood that the questions are independent, which is the one thing a
+     printed table of four rows does not get across.
+     -------------------------------------------------------------------- */
+
+  const MAP = [
+    [ // deterministic
+      { name: 'Post-stack, deterministic',
+        gives: 'One acoustic impedance volume — a single best answer',
+        needs: 'A stacked volume, a wavelet, wells and a background model',
+        forWhat: 'Mapping a body and comparing it with its surroundings. The ordinary case, and most of what is run',
+        where: 'Steps 2 and 4' },
+      { name: 'Pre-stack, deterministic',
+        gives: 'Acoustic and shear impedance, and Vp/Vs — one answer each',
+        needs: 'Angle gathers, a wavelet per angle stack, and a well with a shear sonic',
+        forWhat: 'Telling a fluid from a lithology, which acoustic impedance alone cannot do',
+        where: 'Step 2' },
+    ],
+    [ // stochastic
+      { name: 'Post-stack, stochastic',
+        gives: 'Many acoustic impedance volumes, all of which fit the seismic',
+        needs: 'Everything the deterministic case needs, plus statistics describing how the rock varies',
+        forWhat: 'Beds too thin for a single answer to show, and putting a number on risk',
+        where: 'Step 3' },
+      { name: 'Pre-stack, stochastic',
+        gives: 'Many models, each holding two elastic properties',
+        needs: 'Everything above at once, and a great deal of computing',
+        forWhat: 'A reservoir worth the expense, late in a project. Rare, and never the first thing you run',
+        where: 'Named here, not demonstrated' },
+    ],
+  ];
+
+  function drawMap() {
+    const p = panel('cmap', 0.46); if (!p) return;
+    const { ctx, w, h } = p;
+    /* The row labels need room down the left, but on a phone that room is most
+       of the panel. Below about 620 px the labels go above each row instead
+       and the cells get the full width. */
+    const narrow = w < 620;
+    const padL = narrow ? 14 : 96, padT = narrow ? 54 : 40, padR = 12, padB = 16;
+    const gw = (w - padL - padR) / 2, gh = (h - padT - padB) / 2;
+    const di = Math.round(S.mdata), ai = Math.round(S.malgo);
+
+    ctx.save();
+    ctx.font = '600 11px "IBM Plex Sans", sans-serif';
+    ctx.fillStyle = INK; ctx.textBaseline = 'bottom'; ctx.textAlign = 'center';
+    ctx.fillText('stacked data', padL + gw * 0.5, padT - 20);
+    ctx.fillText('angles kept separate', padL + gw * 1.5, padT - 20);
+    ctx.font = '10px "IBM Plex Mono", monospace';
+    ctx.fillStyle = SLATE;
+    ctx.fillText('POST-STACK', padL + gw * 0.5, padT - 7);
+    ctx.fillText('PRE-STACK', padL + gw * 1.5, padT - 7);
+    ctx.textAlign = narrow ? 'left' : 'right';
+    ctx.textBaseline = narrow ? 'bottom' : 'middle';
+    const lx = narrow ? padL : padL - 10;
+    const ly = (row) => narrow ? padT + row * gh - 4 : padT + row * gh + gh * 0.5;
+    ctx.font = '10px "IBM Plex Mono", monospace';
+    ctx.fillStyle = SLATE;
+    if (narrow) {
+      ctx.fillText('DETERMINISTIC — ONE ANSWER', lx, ly(0));
+      ctx.fillText('STOCHASTIC — MANY ANSWERS', lx, ly(1));
+    } else {
+      ctx.font = '600 11px "IBM Plex Sans", sans-serif';
+      ctx.fillStyle = INK;
+      ctx.fillText('one answer', lx, ly(0) - 7);
+      ctx.fillText('many answers', lx, ly(1) - 7);
+      ctx.font = '10px "IBM Plex Mono", monospace';
+      ctx.fillStyle = SLATE;
+      ctx.fillText('DETERMINISTIC', lx, ly(0) + 7);
+      ctx.fillText('STOCHASTIC', lx, ly(1) + 7);
+    }
+    ctx.restore();
+
+    for (let a = 0; a < 2; a++) {
+      for (let d = 0; d < 2; d++) {
+        const cell = { x: padL + d * gw, y: padT + a * gh, w: gw - 6, h: gh - 6 };
+        const on = (d === di && a === ai);
+        ctx.save();
+        ctx.fillStyle = on ? 'rgba(132,22,23,.08)' : '#fff';
+        ctx.fillRect(cell.x, cell.y, cell.w, cell.h);
+        ctx.strokeStyle = on ? CRIM : 'rgba(22,25,28,.18)';
+        ctx.lineWidth = on ? 2 : 1;
+        ctx.strokeRect(cell.x, cell.y, cell.w, cell.h);
+        ctx.font = '600 12px "IBM Plex Sans", sans-serif';
+        ctx.fillStyle = on ? CRIM : INK;
+        ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+        const rows = wrapText(ctx, MAP[a][d].name, cell.x + 10, cell.y + 11, cell.w - 20, 14);
+        ctx.font = '11px "IBM Plex Sans", sans-serif';
+        ctx.fillStyle = on ? '#40474E' : SLATE;
+        wrapText(ctx, MAP[a][d].gives, cell.x + 10, cell.y + 15 + rows * 14, cell.w - 20, 15);
+        ctx.restore();
+      }
+    }
+
+    const c = MAP[ai][di];
+    set('sm1', c.name);
+    set('sm2', c.gives);
+    set('sm3', c.needs);
+    set('sm4', c.forWhat);
+    set('sm5', c.where);
+  }
+
+  /* Wrap a sentence into a box. Canvas has no line breaking of its own, and a
+     cell in the grid is too narrow for any of these to fit on one line. */
+  function wrapText(ctx, text, x, y, maxW, lh) {
+    const words = String(text).split(' ');
+    let line = '', row = 0;
+    for (let i = 0; i < words.length; i++) {
+      const test = line ? line + ' ' + words[i] : words[i];
+      if (ctx.measureText(test).width > maxW && line) {
+        ctx.fillText(line, x, y + row * lh); row++; line = words[i];
+      } else {
+        line = test;
+      }
+    }
+    if (line) { ctx.fillText(line, x, y + row * lh); row++; }
+    return row;
+  }
+
+  function drawPrestack() {
+    if (!ELASTIC) return;
+    lineSection('cpsA', ELASTIC.z, SYNTH2D.Z_RANGE, 'the two bodies are the same color');
+    lineSection('cpsB', ELASTIC.zs, SYNTH2D.ZS_RANGE, 'now they are not');
+    ['cpsA', 'cpsB'].forEach((id) => {
+      const c = $(id);
+      if (!c) return;
+      const ctx = c.getContext('2d');
+      const w = parseFloat(c.style.width), h = parseFloat(c.style.height);
+      const rect = { x: 46, y: 30, w: w - 62, h: h - 100 };
+      outlineBody(ctx, rect, 'gas');
+      outlineBody(ctx, rect, 'lens');
+    });
+
+    const f = (v) => Math.round(v).toLocaleString();
+    set('sp1', f(ELASTIC.gasZp));
+    set('sp2', f(ELASTIC.lensZp));
+    set('sp3', f(Math.abs(ELASTIC.gasZp - ELASTIC.lensZp)) + ' — indistinguishable');
+    set('sp4', f(ELASTIC.gasZs));
+    set('sp5', f(ELASTIC.lensZs));
+    set('sp6', f(Math.abs(ELASTIC.gasZs - ELASTIC.lensZs)) + ' — plainly different rocks');
+    set('sp7', 'gas sand ' + ELASTIC.gasR.toFixed(2) +
+               ', shale lens ' + ELASTIC.lensR.toFixed(2) +
+               ' — gas lowers Vp and leaves Vs alone');
+  }
+
+  const LINE = (function () {
+    if (typeof SYNTH2D === 'undefined') return null;
+    const z = SYNTH2D.impedanceField();
+    return { z: z, r: SYNTH2D.reflectivityFrom(z), fr: null, spikes: null };
+  })();
+
+  const IMP_RAMP = [
+    [68, 16, 92], [46, 62, 158], [24, 126, 196], [30, 176, 178], [92, 198, 110],
+    [190, 214, 62], [246, 208, 48], [238, 148, 38], [208, 70, 34], [138, 18, 22],
+  ];
+  function impCmap(v) {
+    const f = Math.max(0, Math.min(1, (v + 1) / 2));
+    const p = f * (IMP_RAMP.length - 1);
+    const i = Math.min(IMP_RAMP.length - 2, Math.floor(p));
+    const t = p - i, a = IMP_RAMP[i], b = IMP_RAMP[i + 1];
+    return [Math.round(a[0] + (b[0] - a[0]) * t),
+            Math.round(a[1] + (b[1] - a[1]) * t),
+            Math.round(a[2] + (b[2] - a[2]) * t)];
+  }
+
+  /* Keep the n largest reflections on each trace and rebuild from those. */
+  function sparseField(section, n, flo) {
+    const NX = SYNTH2D.NX, NT = SYNTH2D.NT;
+    const kept = new Float32Array(NX * NT);
+    for (let ix = 0; ix < NX; ix++) {
+      const off = ix * NT;
+      const idx = [];
+      for (let it = 0; it < NT; it++) idx.push(it);
+      idx.sort((a, b) => Math.abs(section[off + b]) - Math.abs(section[off + a]));
+      const take = Math.max(2, Math.min(NT, n));
+      for (let k = 0; k < take; k++) {
+        const it = idx[k];
+        kept[off + it] = section[off + it];
+      }
+    }
+    return SYNTH2D.relativeImpedance(kept, flo);
+  }
+
+  function lineRecompute() {
+    if (!LINE) return;
+    const fr = Math.round(S.fr);
+    const spikes = Math.round(S.spikes);
+
+    if (LINE.fr !== fr) {
+      LINE.section = SYNTH2D.sectionFrom(LINE.r, fr).field;
+      const rel0 = SYNTH2D.relativeImpedance(LINE.section, FLO);
+      // Scaling fixed against the whole line, so the display does not rescale
+      // when a control moves.
+      LINE.k = SYNTH2D.calibrateAtWell(rel0, LINE.z, null, FLO);
+      LINE.rel = SYNTH2D.scaleField(rel0, LINE.k);
+      LINE.bg = SYNTH2D.backgroundModel(LINE.z, WELL_IX, FLO, 1);
+      LINE.model = SYNTH2D.absoluteImpedance(LINE.rel, LINE.bg);
+      LINE.fr = fr;
+      LINE.spikes = null;
+    }
+
+    if (LINE.spikes !== spikes) {
+      // Scaled by the same constant as the relative result, so the two panels
+      // are directly comparable rather than each fitted to itself.
+      LINE.sparse = SYNTH2D.scaleField(sparseField(LINE.section, spikes, FLO), LINE.k);
+      LINE.spikes = spikes;
+    }
+
+    LINE.relShape = SYNTH2D.agreement(LINE.z, LINE.rel);
+    LINE.sparseShape = SYNTH2D.agreement(LINE.z, LINE.sparse);
+    LINE.modelShape = SYNTH2D.agreement(LINE.z, LINE.model);
+  }
+
+  function linePanel(id) {
+    const c = $(id);
+    if (!c || !c.parentElement) return null;
+    const cs = window.getComputedStyle(c.parentElement);
+    const w = c.parentElement.clientWidth
+            - parseFloat(cs.paddingLeft || 0) - parseFloat(cs.paddingRight || 0);
+    const h = Math.max(200, Math.round(w * 0.64));
+    const ctx = SEIS.fitCanvas(c, w, h);
+    ctx.clearRect(0, 0, w, h);
+    return { ctx, rect: { x: 46, y: 30, w: w - 62, h: h - 70 } };
+  }
+
+  function lineSection(id, field, rng, note) {
+    const p = linePanel(id);
+    if (!p || !field) return;
+    const { ctx, rect } = p;
+    SYNTH2D.timeScale(ctx, rect);
+    SYNTH2D.drawField(ctx, field, rect, impCmap, rng);
+    SYNTH2D.outlineGasSand(ctx, rect, 'rgba(255,255,255,.85)');
+    SYNTH2D.traceScale(ctx, rect, WELL_IX, SLATE);
+    if (note) SEIS.tag(ctx, rect.x + 6, rect.y + rect.h + 26, note, SLATE, 'left');
+  }
+
+  function draw2Line() {
+    if (!LINE) return;
+    lineSection('c2c', LINE.rel, SYNTH2D.R_RANGE, 'no units on the scale');
+    lineSection('c2d', LINE.sparse, SYNTH2D.R_RANGE,
+                Math.round(S.spikes) + ' reflections kept per trace');
+    lineSection('c2e', LINE.model, SYNTH2D.Z_RANGE, '(m/s)(g/cc), level from the well');
+    lineSection('c2f', LINE.z, SYNTH2D.Z_RANGE, '(m/s)(g/cc), the truth');
+    set('s2g', LINE.relShape.toFixed(3));
+    set('s2h', LINE.sparseShape.toFixed(3));
+    set('s2i', LINE.modelShape.toFixed(3));
+  }
+
+  /* --- check yourself ------------------------------------------------------ */
+
+  (function wireCheck() {
+    const list = $('checkList');
+    if (!list) return;
+    list.addEventListener('click', (ev) => {
+      const btn = ev.target.closest('.opt');
+      if (!btn) return;
+      const li = btn.closest('li');
+      const right = li.getAttribute('data-right');
+      li.querySelectorAll('.opt').forEach((b) => {
+        b.classList.remove('right', 'wrong');
+        if (b.getAttribute('data-opt') === right) b.classList.add('right');
+      });
+      if (btn.getAttribute('data-opt') !== right) btn.classList.add('wrong');
+      const why = li.querySelector('.why');
+      if (why) why.hidden = false;
+    });
+  })();
+
+  /* --- wiring -------------------------------------------------------------- */
+
+  function syncControls() {
+    if ($('mdata')) $('mdata').value = S.mdata;
+    set('mdataV', Math.round(S.mdata) ? 'angles kept separate' : 'stacked');
+    if ($('malgo')) $('malgo').value = S.malgo;
+    set('malgoV', Math.round(S.malgo) ? 'many answers' : 'one answer');
+    if ($('fr')) $('fr').value = S.fr;
+    set('frV', Math.round(S.fr) + ' Hz');
+    if ($('nz')) $('nz').value = S.nz;
+    set('nzV', Math.round(S.nz) + '% of trace');
+    if ($('spikes')) $('spikes').value = S.spikes;
+    set('spikesV', String(Math.round(S.spikes)));
+    if ($('reals')) $('reals').value = S.reals;
+    set('realsV', String(Math.round(S.reals)));
+  }
+
+  function drawAll() {
+    syncControls();
+    drawHead();
+    if (visible('p2')) { draw2(); draw2Line(); }
+    if (visible('pmap')) drawMap();
+    if (visible('pps')) drawPrestack();
+    if (visible('p3')) draw3();
+  }
+
+  const PANES = ['pmap', 'pps', 'p3', 'p2', 'p4', 'pc', 'pm'];
+
+  function showTab(id) {
+    PANES.forEach((q) => { const el = $(q); if (el) el.hidden = q !== id; });
+    document.querySelectorAll('#tabs button').forEach((b) => {
+      b.setAttribute('aria-selected', b.dataset.tab === id);
+    });
+    const lab = document.querySelector('.labhead');
+    if (lab) lab.hidden = (id === 'p4' || id === 'pc' || id === 'pm');
+    const last = (id === 'pc' || id === 'pm');
+    if ($('nextup')) $('nextup').hidden = !last;
+    if ($('pager')) $('pager').hidden = !last;
+    S.tab = id;
+    drawAll();
+    saveState();
+  }
+  document.querySelectorAll('#tabs button').forEach((b) => {
+    b.addEventListener('click', () => showTab(b.dataset.tab));
+  });
+
+  document.addEventListener('input', (ev) => {
+    const key = ev.target && ev.target.dataset && ev.target.dataset.key;
+    if (!key) return;
+    const v = parseFloat(ev.target.value);
+    if (!isFinite(v)) return;
+    S[key] = v;
+    recompute(); drawAll(); saveState();
+  });
+
+  if ($('resetBtn')) {
+    $('resetBtn').addEventListener('click', () => {
+      Object.keys(DEF).forEach((k) => { if (k !== 'tab') S[k] = DEF[k]; });
+      recompute(); drawAll(); saveState();
+    });
+  }
+
+  let rt;
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(drawAll, 140); });
+
+  recompute();
+  showTab(PANES.indexOf(S.tab) >= 0 ? S.tab : 'p1');
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawAll);
+
+  window.__MOD = { S, get D() { return D; }, recompute, drawAll, showTab };
+})();
+</script>
+</body>
+</html>

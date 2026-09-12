@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2 · A number about a rock | Seismic Inversion, from the start</title>
+<meta name="description" content="An amplitude describes a boundary between two rocks. An impedance describes one rock. Two different pairs of rocks can give exactly the same reflection, which is why a geologist would rather have the impedance.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<div class="wrap">
+  <header class="masthead">
+    <a class="brand" href="../index.html"><span class="dot"></span>Seismic inversion, <b>from the start</b></a>
+    <nav>
+      <a href="../index.html">All modules</a>
+      <a href="../glossary.html">Glossary</a>
+      <a href="#pm">How this page works</a>
+    </nav>
+  </header>
+
+  <div class="mod-head">
+    <p class="eyebrow">Module 2 &nbsp;·&nbsp; A number about a rock</p>
+    <h1>An amplitude describes a boundary. An impedance describes a rock.</h1>
+    <p class="sub">Impedance turned up in module 1 as a step in the arithmetic. Here it gets looked at on
+      its own. One number belongs to a rock. The other belongs to the contact between two rocks. That difference is why anyone converts a seismic volume into impedance in the first place.</p>
+  </div>
+
+  <div class="labhead">
+    <div class="labgrid">
+      <div>
+        <p class="cap">Two rocks, and the contact between them <span>&mdash; change either one</span></p>
+        <canvas id="cHead" aria-label="Two rock layers with their impedances, and the reflection at the boundary between them"></canvas>
+      </div>
+      <div>
+        <p class="cap">The rock <span>&mdash; type a number or use the arrows</span></p>
+        <div class="controls" id="mainControls">
+          <div class="ctl-col">
+            <h2>Upper rock</h2>
+            <div class="numrow layer-a">
+              <label for="vp1">Velocity</label>
+              <input type="number" id="vp1" data-key="vp1" min="1500" max="6000" step="50" value="2400">
+              <span class="unit">m/s</span>
+            </div>
+            <div class="numrow layer-a">
+              <label for="rho1">Density</label>
+              <input type="number" id="rho1" data-key="rho1" min="1.6" max="3.0" step="0.05" value="2.35">
+              <span class="unit">g/cc</span>
+            </div>
+
+            <h2>Lower rock</h2>
+            <div class="numrow layer-b">
+              <label for="vp2">Velocity</label>
+              <input type="number" id="vp2" data-key="vp2" min="1500" max="6000" step="50" value="3400">
+              <span class="unit">m/s</span>
+            </div>
+            <div class="numrow layer-b">
+              <label for="rho2">Density</label>
+              <input type="number" id="rho2" data-key="rho2" min="1.6" max="3.0" step="0.05" value="2.45">
+              <span class="unit">g/cc</span>
+            </div>
+
+            <div class="modbar" style="margin-top:14px">
+              <button class="btn ghost small reset" id="resetBtn" type="button">Reset the rock</button>
+              <button class="btn ghost small" id="copyBtn" type="button">Copy link to this setup</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="tabhint">Three short steps. Step 2 is the one to spend time on.</p>
+
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Module steps">
+    <button role="tab" data-tab="p1" aria-selected="false">1 · One rock</button>
+    <button role="tab" data-tab="p2" aria-selected="false">2 · Same wiggle</button>
+    <button role="tab" data-tab="p3" aria-selected="false">3 · Finding the sand</button>
+    <span class="gap"></span>
+    <span class="tabs-meta">
+  <button role="tab" data-tab="pw" aria-selected="false">Why this matters</button>
+      <button role="tab" data-tab="pc" aria-selected="false">Check yourself</button>
+      <button role="tab" data-tab="pm" aria-selected="false">How this page works</button>
+    </span>
+  </nav>
+
+  <!-- =============================== STEP 1 =============================== -->
+  <section class="tabpane" id="p1" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">1</span>A value at every depth, or a value at every boundary</h3>
+      <span class="hint">Change either rock and watch both panels</span>
+    </div>
+
+    <p class="lede">A well log gives a number at every depth. Impedance is that kind of number. Each rock has one, whether or not anything is next to it. A rock sitting on its own still has an
+      impedance.</p>
+
+    <p class="lede">A reflection coefficient is not that kind of number. It exists only where two rocks
+      meet, and it is made from the difference between them. One rock on its own has no reflection
+      coefficient, because there is nothing for it to differ from.</p>
+
+    <p class="lede">The left panel shows both rocks and their impedances. The right panel shows what
+      happens at the contact. Change the lower rock until the two impedances match and watch the
+      reflection vanish, even though there is still a real geological contact there.</p>
+
+    <div class="sec-row" id="row1">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> Two rocks, two impedances
+          <span class="note">each belongs to one rock</span></p>
+        <canvas id="c1a" aria-label="The two rock layers with their impedance values"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> The contact between them
+          <span class="note">one number, made from the difference</span></p>
+        <canvas id="c1b" aria-label="The reflection coefficient at the boundary and the wiggle it produces"></canvas>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Impedance, upper rock</span><b id="s1a">&mdash;</b></div>
+      <div class="stat"><span>Impedance, lower rock</span><b id="s1b">&mdash;</b></div>
+      <div class="stat"><span>Difference between them</span><b id="s1c">&mdash;</b></div>
+      <div class="stat"><span>Reflection coefficient</span><b id="s1d">&mdash;</b></div>
+      <div class="stat"><span>Which way it steps</span><b id="s1e">&mdash;</b></div>
+      <div class="stat key"><span>What the contact looks like on seismic</span><b id="s1f">&mdash;</b></div>
+    </div>
+
+    <div class="miscon">
+      <h4>Common misconception</h4>
+      <p class="said">"If there is a geological boundary, there will be a reflection."</p>
+      <p class="fix">Set the lower rock to 2,400 m/s and 2.35 g/cc, the same as the upper rock. The
+        reflection goes to zero. Now set it to 2,750 m/s and 2.05 g/cc. That is a different velocity, a different
+        density and a different rock, and the impedance still comes to about the same number, so there
+        is still almost no reflection. <b>A real contact can be invisible on seismic</b>, and a sand can sit
+        against a shale with nothing to show for it.</p>
+    </div>
+  </section>
+
+  <!-- =============================== STEP 2 =============================== -->
+  <section class="tabpane" id="p2" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">2</span>The same wiggle from different rocks</h3>
+      <span class="hint">Move the multiplier and watch the two traces stay identical</span>
+    </div>
+
+    <p class="lede">The second pair of rocks on the control panel is your pair with both impedances
+      multiplied by the same number. Set the multiplier to 1.8 and the second pair is 80 percent harder
+      than the first, top and bottom.</p>
+
+    <p class="lede">Those are plainly different rocks. The panels show the two pairs side by side, with
+      the trace each one produces. The traces are identical, and the readouts give the difference between
+      them, which stays at zero however far you move the multiplier.</p>
+
+    <p class="lede">The reason is in the arithmetic. A reflection coefficient is the difference in
+      impedance divided by the sum. Multiply both impedances by the same number and the difference and
+      the sum both grow by that number, so the answer does not change at all. <b>An amplitude tells you
+      about the ratio between two rocks, not about either one.</b></p>
+
+    <div class="sec-row" id="row2">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> Two different pairs of rocks
+          <span class="note">yours on the left, multiplied on the right</span></p>
+        <canvas id="c2a" aria-label="Two pairs of rocks with different impedances shown side by side"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> The traces they produce
+          <span class="note">the second is drawn over the first</span></p>
+        <canvas id="c2b" aria-label="The seismic traces from both pairs, which lie on top of each other"></canvas>
+      </div>
+    </div>
+
+    <div class="controls" id="multControls" style="margin-bottom:14px">
+      <div class="ctl-col">
+        <h2>The second pair of rocks</h2>
+            <div class="ctl">
+              <label for="mult">Both of them, multiplied by
+                <span class="val" id="multV">1.80&times;</span></label>
+              <input type="range" data-key="mult" id="mult" min="0.5" max="2.5" step="0.05" value="1.80">
+            </div>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Your pair</span><b id="s2a">&mdash;</b></div>
+      <div class="stat"><span>The multiplied pair</span><b id="s2b">&mdash;</b></div>
+      <div class="stat"><span>Reflection, your pair</span><b id="s2c">&mdash;</b></div>
+      <div class="stat"><span>Reflection, multiplied pair</span><b id="s2d">&mdash;</b></div>
+      <div class="stat key"><span>Difference between the two traces</span><b id="s2e">&mdash;</b></div>
+      <div class="stat wide"><span>What an amplitude is telling you</span><b id="s2f">&mdash;</b></div>
+    </div>
+
+    <div class="whymatters">
+      <h4>Why this matters</h4>
+      <p>Amplitude maps are everywhere in interpretation, and this is their limit. A bright spot says
+        two rocks differ by a large ratio. It does not say which two rocks, or what either of them is.
+        An impedance volume answers a question an amplitude map cannot: what is this rock.</p>
+    </div>
+  </section>
+
+  <!-- =============================== STEP 3 =============================== -->
+  <section class="tabpane" id="p3" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">3</span>Finding the sand</h3>
+      <span class="hint">Same layers, two displays. Try each one</span>
+    </div>
+
+    <p class="lede">Here is a stack of six layers with one soft sand in it. The left panel is the trace a
+      survey would record. The right panel is the impedance of the same rock. The sand is in the same
+      place on both.</p>
+
+    <p class="lede">On the trace, look for the sand. You will find two wiggles, one at its top and one at
+      its base, with nothing between them, and the same kind of pair at every other contact in the
+      section. Nothing marks out which pair is the sand.</p>
+
+    <p class="lede">Now drag the <b>wavelet frequency</b> control from one end to the other. The sand is
+      24 ms thick. At 15 Hz its top and its base are well inside one wavelet of each other, so
+      their reflections overlap and what arrives is a single event. The sand is one wiggle, and nothing
+      about that wiggle says how thick the bed under it is. Drag up past about 45 Hz and the same two
+      reflections pull apart into two events a reader could pick separately.</p>
+
+    <p class="lede">While that happens, watch the impedance panel beside it. The block does not change at
+      all — same top, same base, same value, at every frequency. The trace is showing the rock through a
+      wavelet and the wavelet is what changed. Module 3 takes this apart properly; here it is the
+      sharpest reason to want the right-hand display.</p>
+
+    <p class="lede">On the impedance, the sand is a block that sits lower than everything around it. You
+      can point at it, measure how thick it is, and read a number off it that could be compared with a
+      well. Move the <b>how soft the sand is</b> control and watch what each display does.</p>
+
+    <div class="sec-row" id="row3">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> What the survey records
+          <span class="note">contacts, not layers</span></p>
+        <canvas id="c3a" aria-label="The seismic trace through the layered section"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> The impedance of the same rock
+          <span class="note">layers, with values</span></p>
+        <canvas id="c3b" aria-label="The impedance of the same layered section, with the sand marked"></canvas>
+      </div>
+    </div>
+
+    <div class="controls" id="sandControls" style="margin-top:14px">
+      <div class="ctl-col">
+        <h2>The sand</h2>
+        <div class="ctl">
+          <label for="soft">How soft it is <span class="val" id="softV">28%</span></label>
+          <input type="range" data-key="soft" id="soft" min="0" max="45" step="1" value="28">
+        </div>
+        <div class="ctl">
+          <label for="fr">Wavelet frequency <span class="val" id="frV">32 Hz</span></label>
+          <input type="range" data-key="fr" id="fr" min="12" max="70" step="1" value="32">
+        </div>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Impedance of the sand</span><b id="s3a">&mdash;</b></div>
+      <div class="stat"><span>Impedance of the shale around it</span><b id="s3b">&mdash;</b></div>
+      <div class="stat"><span>Wiggles on the trace</span><b id="s3c">&mdash;</b></div>
+      <div class="stat"><span>Wiggles belonging to the sand</span><b id="s3d">&mdash;</b></div>
+      <div class="stat key"><span>Strongest wiggle on the trace</span><b id="s3e">&mdash;</b></div>
+      <div class="stat"><span>The sand, and where it tunes</span><b id="s3g">&mdash;</b></div>
+      <div class="stat wide"><span>What each display lets you do</span><b id="s3f">&mdash;</b></div>
+    </div>
+
+    <div class="miscon">
+      <h4>Common misconception</h4>
+      <p class="said">"The brightest reflection is the most interesting rock."</p>
+      <p class="fix">Leave the sand at its default softness and read the strongest-wiggle line below.
+        It names the top of the limestone, not the sand, because the limestone sits against a much
+        bigger contrast than the sand does. The sand only wins once you soften it past about a third.
+        <b>Amplitude ranks contacts by how different the two rocks are, not by how much anyone cares
+        about them.</b> That mismatch is the problem inversion exists to fix.</p>
+    </div>
+
+    <div class="whymatters">
+      <h4>Why this matters</h4>
+      <p>A geologist thinks in layers with properties: this is a sand, it is fifteen meters thick, it
+        has this porosity. An amplitude section shows contacts between layers, which is the wrong shape
+        of information for that question. Impedance is the right shape, which is why turning one into
+        the other is worth the trouble.</p>
+    </div>
+  </section>
+
+  <!-- ============================ WHY IT MATTERS =========================== -->
+  <section class="tabpane" id="pw" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">W</span>Why this matters</h3>
+      <span class="hint">What the module is for</span>
+    </div>
+    <p class="lede">Three things follow from impedance being a property of a rock.</p>
+    <p class="lede"><b>It can be tied to a well.</b> A well gives velocity and density at every depth,
+      so it gives impedance at every depth. An inverted volume and a well log hold the same quantity and
+      can be laid side by side. An amplitude and a well log do not.</p>
+    <p class="lede"><b>It can be mapped and compared.</b> An impedance value in one place means the same
+      thing as an impedance value in another. Amplitudes depend on what happens to sit next to what, so
+      comparing them across a survey is harder than it looks.</p>
+    <p class="lede"><b>It can be turned into geology.</b> Porosity and lithology relationships are
+      fitted against impedance at wells, and then applied to an impedance volume. That sequence does not
+      start from an amplitude.</p>
+    <p class="lede">None of this makes amplitude useless. It is what was recorded, and everything else
+      is derived from it. The point is that it answers a question about pairs of rocks when the question
+      you usually have is about one rock.</p>
+  </section>
+
+  <!-- ============================ CHECK YOURSELF =========================== -->
+  <section class="tabpane" id="pc" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">C</span>Check yourself</h3>
+      <span class="hint">Four questions. Wrong answers are the useful ones</span>
+    </div>
+
+    <ol class="check" id="checkList">
+      <li data-q="q1" data-right="b">
+        <p class="qtext">A sandstone has an impedance of 6,200. What does that number describe?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">The contact at the top of the sandstone</button>
+          <button class="opt" data-opt="b" type="button">The sandstone itself</button>
+          <button class="opt" data-opt="c" type="button">The difference from the rock above it</button>
+        </div>
+        <p class="why" hidden><b>The sandstone itself.</b> Impedance belongs to a rock the way porosity
+          or density does. It has a value whether or not there is anything next to it. The contact at
+          its top has a different kind of number, a reflection coefficient, and that one needs two rocks
+          before it means anything.</p>
+      </li>
+
+      <li data-q="q2" data-right="c">
+        <p class="qtext">Pair A is 4,000 over 6,000. Pair B is 8,000 over 12,000. How do their
+          reflections compare?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">B reflects twice as strongly</button>
+          <button class="opt" data-opt="b" type="button">B reflects more, but not twice as much</button>
+          <button class="opt" data-opt="c" type="button">They reflect exactly the same</button>
+        </div>
+        <p class="why" hidden><b>Exactly the same, at 0.200 each.</b> The reflection coefficient is the
+          difference divided by the sum. For pair A that is 2,000 over 10,000. For pair B it is 4,000
+          over 20,000. Both come to one fifth. Doubling both rocks doubled the difference and the sum
+          together, so nothing changed. Step 2 lets you slide this and watch the two traces stay on top
+          of each other.</p>
+      </li>
+
+      <li data-q="q3" data-right="a">
+        <p class="qtext">Two rocks are geologically different but happen to have the same impedance.
+          What does the seismic show at the contact?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">Nothing</button>
+          <button class="opt" data-opt="b" type="button">A weak reflection</button>
+          <button class="opt" data-opt="c" type="button">A reflection with reversed polarity</button>
+        </div>
+        <p class="why" hidden><b>Nothing at all.</b> The wave carries straight on as though the contact
+          were not there. This happens in real sections. A sand can sit against a shale with no
+          reflection to mark it, because a faster rock that is also less dense can end up with the same
+          impedance as a slower, denser one. The geology is still there. The seismic just has nothing to
+          say about it.</p>
+      </li>
+
+      <li data-q="q4" data-right="c">
+        <p class="qtext">Why would an interpreter want an impedance volume rather than the amplitude
+          volume it was made from?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">It has better resolution</button>
+          <button class="opt" data-opt="b" type="button">It contains more data</button>
+          <button class="opt" data-opt="c" type="button">It describes layers rather than contacts</button>
+        </div>
+        <p class="why" hidden><b>It describes layers rather than contacts.</b> It does not hold more data,
+          and it does not have better resolution. The impedance was made from the amplitude, so it
+          cannot contain anything the amplitude did not have, and later modules show it actually needs help from outside the
+          seismic. What changes is the shape of the information. Layers with values are what a geologist
+          can tie to a well, map, and turn into porosity.</p>
+      </li>
+    </ol>
+
+    <div class="whymatters">
+      <h4>If question 2 surprised you</h4>
+      <p>Go to step 2 and move the multiplier slowly from 0.5 to 2.5 with the trace-difference readout in
+        view. It stays at zero the whole way. That single fact is the reason this module exists.</p>
+    </div>
+  </section>
+
+  <!-- =============================== METHOD =============================== -->
+  <section class="tabpane" id="pm" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">M</span>How this page works</h3>
+      <span class="hint">The arithmetic, and what it leaves out</span>
+    </div>
+
+    <p class="lede"><b>Everything on this page is computed while you watch</b>, in your browser. The
+      functions are in <code>assets/physics.js</code> and each is a few lines long.</p>
+
+    <p class="lede"><b>The arithmetic.</b> Impedance is velocity times density. The reflection
+      coefficient at a contact is the difference in impedance divided by the sum. The second pair in
+      step 2 is made by multiplying both impedances by the slider value, which is why its reflection is
+      identical to the first pair's. The multiplier cancels top and bottom.</p>
+
+    <p class="lede"><b>The layer stack in step 3</b> is six layers of plausible clastic-section
+      impedances with a soft sand near the middle and a hard limestone at the base. The values are made
+      up rather than taken from a well, because a made-up section can be changed while you watch.</p>
+
+    <p class="lede"><b>Where this page simplifies.</b></p>
+    <ul class="lede" style="padding-left:20px">
+      <li><b>The wave arrives straight down.</b> Real reflections change with angle, which is a whole
+        subject of its own and is not needed here.</li>
+      <li><b>The wavelet is symmetrical and known exactly.</b> Real wavelets are neither.</li>
+      <li><b>No noise, no multiples, no absorption.</b> Nothing arrives that did not reflect once.</li>
+      <li><b>Impedance here is the acoustic one</b>, made from P velocity and density. Rocks also have a
+        shear impedance, which carries different information and belongs in the advanced set.</li>
+      <li><b>Getting an impedance from a real trace is much harder than reading it off this page.</b>
+        Modules 3 to 6 are about why.</li>
+      <li><b>The impedance axis in step 2 is fixed and does not stretch to hold everything.</b> Hard
+        rock at a large multiplier runs off the top of it, and the panel says so rather than pinning the
+        curve against the edge and letting it look as though it had stopped moving. The reflection
+        coefficients and the traces are unaffected: they are what the step is about, and they never
+        leave their own axes.</li>
+    </ul>
+
+    <details class="instr">
+      <summary>Instructor notes</summary>
+      <div class="instr-body">
+        <h5>Learning objectives</h5>
+        <ul>
+          <li>State that impedance is a property of one rock and a reflection coefficient is a property
+            of a pair.</li>
+          <li>Show that scaling both impedances leaves the reflection unchanged.</li>
+          <li>Give a reason why a real geological contact might produce no reflection.</li>
+          <li>Say what an impedance volume allows that an amplitude volume does not.</li>
+        </ul>
+
+        <h5>Summary</h5>
+        <p>An amplitude carries the ratio between two rocks. An impedance carries the rock. That is what an inversion converts one into the other for.</p>
+
+        <h5>Suggested discussion questions</h5>
+        <ul>
+          <li>You map a bright amplitude across a prospect. List three things other than hydrocarbons
+            that could cause it.</li>
+          <li>A well finds a good sand that produced no reflection. What happened, and what would you
+            do differently on the next well?</li>
+          <li>Why can amplitudes be difficult to compare between two surveys, when impedances are
+            easier?</li>
+        </ul>
+
+        <h5>Common misconceptions this page addresses</h5>
+        <ul>
+          <li>That a geological boundary always makes a reflection.</li>
+          <li>That the brightest reflection marks the most interesting rock.</li>
+        </ul>
+
+        <h5>Approximate completion time</h5>
+        <p>Fifteen minutes. Step 2 is the one to do together if you are short of time: the multiplier
+          moving while the traces stay identical is the whole argument in one gesture.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="nextup" id="nextup" hidden>
+    <p class="eyebrow">Next up</p>
+    <h3>3 · What the wavelet does</h3>
+    <p>If impedance is what a geologist wants, why not read it straight off the trace? Because the trace is the rock seen through a wavelet. The next module is about what that wavelet does to a thin bed.</p>
+    <a class="btn" href="03-what-the-wavelet-does.html">Go to module 3 →</a>
+    <a class="btn ghost" href="../index.html">All modules</a>
+  </section>
+
+  <div class="pager" id="pager" hidden>
+    <a class="btn ghost" href="01-rock-makes-seismic.html">← Module 1: rock makes seismic</a>
+    <a class="btn ghost" href="03-what-the-wavelet-does.html">Module 3: what the wavelet does →</a>
+  </div>
+
+  <footer>
+    <div class="foot-grid">
+      <p>Built for teaching by Dr. Heather Bedle and Dr. April Moreno-Ward, School of Geosciences,
+        University of Oklahoma, with the
+        <a href="https://www.ou.edu/mcee/labs/aaspi">AASPI</a> consortium.</p>
+      <p class="lic">Licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+        — free to use, adapt and share, including commercially, provided the source is credited and
+        adaptations carry the same license.</p>
+      <p class="lic">Nothing you do in this module leaves your browser. The only thing recorded is that
+        the page was opened — no cookie, no account, nothing about you.</p>
+      <p class="lic">To cite: H. Bedle and A. Moreno-Ward, <i>Seismic Inversion, from the start</i>,
+        University of Oklahoma. <span class="k">SSRN: [article link to follow]</span></p>
+    </div>
+  </footer>
+</div>
+
+<script src="../assets/count.js"></script>
+<script src="../assets/glossary.js"></script>
+<script src="../assets/panelout.js"></script>
+<script src="../assets/seismic.js"></script>
+<script src="../assets/physics.js"></script>
+<script src="../assets/panels.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  if (typeof SEIS === 'undefined' || typeof PHYS === 'undefined') {
+    const el = document.createElement('div');
+    el.setAttribute('style', 'background:#841617;color:#fff;padding:14px 18px;font:14px/1.5 monospace');
+    el.textContent = 'This module needs assets/seismic.js and assets/physics.js.';
+    const w = document.querySelector('.wrap');
+    (w || document.body).insertBefore(el, w ? w.firstChild : null);
+    return;
+  }
+
+  const $ = (id) => document.getElementById(id);
+  const visible = (id) => { const el = $(id); return el && !el.hidden; };
+  const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+  const CRIM = '#841617', TEAL = '#0B7285', SLATE = '#5C6670', INK = '#16191C';
+  const GRID = '#C9CDD2';
+
+  const DEF = {
+    vp1: 2400, rho1: 2.35, vp2: 3400, rho2: 2.45,
+    mult: 1.80, soft: 28, fr: 32, tab: 'p1',
+  };
+  const S = SEIS.readState(DEF);
+  (function sanitize() {
+    const num = (k, lo, hi) => {
+      let v = Number(S[k]);
+      if (!isFinite(v)) v = DEF[k];
+      S[k] = Math.min(hi, Math.max(lo, v));
+    };
+    num('vp1', 1500, 6000); num('vp2', 1500, 6000);
+    num('rho1', 1.6, 3.0); num('rho2', 1.6, 3.0);
+    num('mult', 0.5, 2.5); num('soft', 0, 45); num('fr', 12, 70);
+  })();
+  const saveState = () => SEIS.writeState(S, DEF);
+  if ($('copyBtn')) $('copyBtn').addEventListener('click', (e) => SEIS.copyLink(e.currentTarget));
+
+  const DT = 0.001, NT = 300, T0 = 0;
+  const BND = 0.110;                         // the single contact, in seconds
+
+  // Exactly one place converts a time into a y position.
+  const yOf = (t, R) => R.y + ((t - T0) / ((NT - 1) * DT)) * R.h;
+  const yAt = (i, R) => yOf(T0 + i * DT, R);
+
+  /* Fixed axes, wide enough to hold the multiplied pair as well as yours. */
+  const AX = {
+    z:    [2000, 22000],
+    zsec: [4000, 14000],
+    rc:   [-0.5, 0.5],
+    amp:  [-0.6, 0.6],
+  };
+
+  const fmt0 = (v) => Math.round(v).toLocaleString();
+  const fmt3 = (v) => (v >= 0 ? '+' : '') + v.toFixed(3);
+
+  // The six-layer section in step 3. Shale with a soft sand in it and a hard
+  // limestone at the base, in the order a clastic section usually arrives.
+  const SECTION = [
+    { name: 'shale',     t0: 0.000, t1: 0.048, z: 8600 },
+    { name: 'silt',      t0: 0.048, t1: 0.092, z: 9400 },
+    { name: 'shale',     t0: 0.092, t1: 0.132, z: 8900 },
+    { name: 'sand',      t0: 0.132, t1: 0.156, z: 8900 },   // softened below
+    { name: 'shale',     t0: 0.156, t1: 0.232, z: 9100 },
+    { name: 'limestone', t0: 0.232, t1: 0.400, z: 13400 },
+  ];
+  const SAND_INDEX = 3;
+
+  let D = {};
+
+  function recompute() {
+    D.z1 = PHYS.impedance(S.vp1, S.rho1);
+    D.z2 = PHYS.impedance(S.vp2, S.rho2);
+    D.diff = D.z2 - D.z1;
+    D.rc = PHYS.reflectionCoefficient(D.z1, D.z2);
+
+    D.mult = Number(S.mult);
+    D.mz1 = D.z1 * D.mult;
+    D.mz2 = D.z2 * D.mult;
+    D.mrc = PHYS.reflectionCoefficient(D.mz1, D.mz2);
+
+    // Impedance is velocity times density, so a pair of impedances is enough to
+    // build a trace: hold density at 1 and let the impedance be the velocity.
+    const pair = (za, zb) => ([
+      { t0: T0, t1: BND, vp: za, density: 1 },
+      { t0: BND, t1: 999, vp: zb, density: 1 },
+    ]);
+    const opts = { t0: T0, dt: DT, n: NT, frequency: 32 };
+    D.traceA = PHYS.syntheticTrace(pair(D.z1, D.z2), opts).trace;
+    D.traceB = PHYS.syntheticTrace(pair(D.mz1, D.mz2), opts).trace;
+    D.zA = PHYS.impedanceSeries(pair(D.z1, D.z2), T0, DT, NT);
+    D.zB = PHYS.impedanceSeries(pair(D.mz1, D.mz2), T0, DT, NT);
+
+    // How far apart the two traces are, in the traces' own units.
+    D.traceGap = PHYS.misfit(D.traceA, D.traceB);
+    D.traceScale = PHYS.rms(D.traceA) || 1;
+
+    /* --- step 3 ---------------------------------------------------------- */
+    D.soft = Math.round(S.soft);
+    D.fr = Math.round(S.fr);
+    const layers = SECTION.map((L, k) => ({
+      t0: L.t0, t1: L.t1,
+      vp: k === SAND_INDEX ? L.z * (1 - D.soft / 100) : L.z,
+      density: 1,
+    }));
+    D.secLayers = layers;
+    D.sandZ = layers[SAND_INDEX].vp;
+    D.shaleZ = layers[SAND_INDEX - 1].vp;
+    const sout = PHYS.syntheticTrace(layers, { t0: T0, dt: DT, n: NT, frequency: D.fr });
+    D.secTrace = sout.trace;
+    D.secRefl = sout.reflectivity;
+    D.secZ = PHYS.impedanceSeries(layers, T0, DT, NT);
+
+    // Which contact gives the strongest wiggle, and does it belong to the sand?
+    let best = 0, bestI = -1;
+    for (let i = 0; i < NT; i++) {
+      if (Math.abs(D.secRefl[i]) > best) { best = Math.abs(D.secRefl[i]); bestI = i; }
+    }
+    D.bestRC = best;
+    const bt = T0 + bestI * DT;
+    D.bestName = 'a contact';
+    for (let k = 1; k < layers.length; k++) {
+      if (Math.abs(bt - SECTION[k].t0) < 0.003) {
+        // the top of one layer is the base of the one above it; name it after
+        // the sand where that is the clearer description
+        D.bestName = (k - 1 === SAND_INDEX)
+          ? 'base of the sand'
+          : 'top of the ' + SECTION[k].name;
+      }
+    }
+    D.bestIsSand = /sand/.test(D.bestName);
+    D.nContacts = SECTION.length - 1;
+
+    D.cache = {};
+  }
+
+  /* --- drawing helpers ---------------------------------------------------- */
+
+  function panel(id, hRatio) {
+    const c = $(id);
+    if (!c || !c.parentElement) return null;
+    const cs = window.getComputedStyle(c.parentElement);
+    const w = c.parentElement.clientWidth
+            - parseFloat(cs.paddingLeft || 0) - parseFloat(cs.paddingRight || 0);
+    const h = Math.max(240, Math.round(w * (hRatio || 0.8)));
+    const ctx = SEIS.fitCanvas(c, w, h);
+    ctx.clearRect(0, 0, w, h);
+    return { ctx, w, h };
+  }
+
+  // Time down the side, so a student can see which way the panels run.
+  function timeScale(ctx, rect, withUnits) {
+    const ticks = [];
+    for (let ms = 0; ms <= 280; ms += 60) {
+      ticks.push({ pos: ms / ((NT - 1) * 1000 * DT), label: String(ms) });
+    }
+    PANEL.sideScale(ctx, rect, ticks, withUnits ? 'ms' : '');
+  }
+
+  function trackLabel(ctx, rect, label, rng, fmt) {
+    SEIS.frame(ctx, rect);
+    ctx.save();
+    ctx.font = '10px "IBM Plex Mono", monospace';
+    ctx.fillStyle = SLATE; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText(label, rect.x + rect.w / 2, rect.y + rect.h + 6);
+    if (fmt) {
+      ctx.textAlign = 'left'; ctx.fillText(fmt(rng[0]), rect.x, rect.y - 13);
+      ctx.textAlign = 'right'; ctx.fillText(fmt(rng[1]), rect.x + rect.w, rect.y - 13);
+    }
+    ctx.restore();
+  }
+
+  function stepCurve(ctx, rect, values, rng, color, width) {
+    ctx.save();
+    ctx.beginPath(); ctx.rect(rect.x, rect.y, rect.w, rect.h); ctx.clip();
+    ctx.strokeStyle = color; ctx.lineWidth = width || 2.2;
+    ctx.beginPath();
+    for (let i = 0; i < values.length; i++) {
+      const f = (values[i] - rng[0]) / (rng[1] - rng[0]);
+      const x = rect.x + Math.max(-0.2, Math.min(1.2, f)) * rect.w;
+      const y = yAt(i, rect);
+      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }
+    ctx.stroke(); ctx.restore();
+  }
+
+  /* The axes on this site are fixed on purpose: a student watching a curve move
+     should not have the scale moving underneath it. The cost is that a curve
+     can be asked to go somewhere the panel does not reach — the hardest rock
+     the controls allow, multiplied by 2.5, is twice the top of this axis — and
+     a curve clipped against the edge looks like a curve that has stopped
+     changing. So it is labeled rather than left to be misread. */
+  function offScaleNote(ctx, rect, series, rng) {
+    let hi = false, lo = false;
+    series.forEach((vals) => {
+      for (let i = 0; i < vals.length; i++) {
+        if (vals[i] > rng[1]) hi = true;
+        if (vals[i] < rng[0]) lo = true;
+      }
+    });
+    if (hi) PANEL.tagAt(ctx, rect.x + rect.w - 4, rect.y + 12,
+                        'off the scale \u2192', CRIM, 'right');
+    if (lo) PANEL.tagAt(ctx, rect.x + 4, rect.y + 12,
+                        '\u2190 off the scale', CRIM, 'left');
+  }
+
+  function drawWiggle(ctx, rect, trace, rng, color, fill, width) {
+    const xm = rect.x + rect.w * (0 - rng[0]) / (rng[1] - rng[0]);
+    const xOf = (v) => rect.x + rect.w
+      * (Math.max(rng[0], Math.min(rng[1], v)) - rng[0]) / (rng[1] - rng[0]);
+    ctx.save();
+    ctx.beginPath(); ctx.rect(rect.x, rect.y, rect.w, rect.h); ctx.clip();
+    if (fill) {
+      ctx.fillStyle = fill;
+      ctx.beginPath(); ctx.moveTo(xm, yAt(0, rect));
+      for (let i = 0; i < trace.length; i++) ctx.lineTo(Math.max(xm, xOf(trace[i])), yAt(i, rect));
+      ctx.lineTo(xm, yAt(trace.length - 1, rect)); ctx.closePath(); ctx.fill();
+    }
+    ctx.strokeStyle = color; ctx.lineWidth = width || 1.7; ctx.beginPath();
+    for (let i = 0; i < trace.length; i++) {
+      const x = xOf(trace[i]), y = yAt(i, rect);
+      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }
+    ctx.stroke(); ctx.restore();
+    SEIS.dashedLine(ctx, xm, rect.y, xm, rect.y + rect.h, GRID, [3, 3], 1);
+  }
+
+  // Two blocks of rock with the contact drawn between them.
+  function drawPair(ctx, rect, za, zb, labelA, labelB) {
+    const yb = yOf(BND, rect);
+    const shade = (z) => {
+      // harder rock, darker block — a scale that stays put whatever you type
+      const f = Math.max(0, Math.min(1, (z - AX.z[0]) / (AX.z[1] - AX.z[0])));
+      const g = Math.round(232 - f * 120);
+      return 'rgb(' + g + ',' + Math.round(g * 0.97) + ',' + Math.round(g * 0.92) + ')';
+    };
+    ctx.fillStyle = shade(za); ctx.fillRect(rect.x, rect.y, rect.w, yb - rect.y);
+    ctx.fillStyle = shade(zb); ctx.fillRect(rect.x, yb, rect.w, rect.y + rect.h - yb);
+    ctx.save();
+    ctx.strokeStyle = INK; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(rect.x, yb); ctx.lineTo(rect.x + rect.w, yb); ctx.stroke();
+    ctx.font = '11px "IBM Plex Mono", monospace';
+    ctx.fillStyle = INK; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(labelA, rect.x + rect.w / 2, (rect.y + yb) / 2);
+    ctx.fillText(labelB, rect.x + rect.w / 2, (yb + rect.y + rect.h) / 2);
+    ctx.restore();
+    SEIS.frame(ctx, rect);
+  }
+
+  /* --- the sticky head ---------------------------------------------------- */
+
+  function drawHead() {
+    const p = panel('cHead', 0.5); if (!p) return;
+    const { ctx, w, h } = p;
+    const pad = 52, top = 30, bot = 26, gap = 14;
+    const cw = (w - pad - 16 - 2 * gap) / 3;
+    const H = h - top - bot;
+    const r = (k) => ({ x: pad + k * (cw + gap), y: top, w: cw, h: H });
+
+    drawPair(ctx, r(0), D.z1, D.z2, fmt0(D.z1), fmt0(D.z2));
+    trackLabel(ctx, r(0), 'the two rocks', null, null);
+
+    stepCurve(ctx, r(1), D.zA, AX.z, TEAL, 2.6);
+    trackLabel(ctx, r(1), 'impedance', AX.z, fmt0);
+
+    drawWiggle(ctx, r(2), D.traceA, AX.amp, INK, 'rgba(22,25,28,.30)');
+    trackLabel(ctx, r(2), 'the trace', AX.amp, (v) => v.toFixed(1));
+  }
+
+  /* --- step 1 -------------------------------------------------------------- */
+
+  function draw1() {
+    const pa = panel('c1a', 0.9);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const pad = 48, top = 30, gap = 22;
+      const cw = (w - pad - 16 - gap) / 2;
+      const H = h - top - 34;
+      const ra = { x: pad, y: top, w: cw, h: H };
+      const rb = { x: pad + cw + gap, y: top, w: cw, h: H };
+      timeScale(ctx, ra, true);
+      PANEL.downArrow(ctx, ra, 'deeper');
+      drawPair(ctx, ra, D.z1, D.z2, 'upper', 'lower');
+      trackLabel(ctx, ra, 'the rocks', null, null);
+      stepCurve(ctx, rb, D.zA, AX.z, TEAL, 2.6);
+      trackLabel(ctx, rb, 'impedance, one value per rock', AX.z, fmt0);
+    }
+    const pb = panel('c1b', 0.9);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const pad = 48, top = 30, gap = 22;
+      const cw = (w - pad - 16 - gap) / 2;
+      const H = h - top - 34;
+      const ra = { x: pad, y: top, w: cw, h: H };
+      const rb = { x: pad + cw + gap, y: top, w: cw, h: H };
+      // the reflection as a single stick at the contact
+      const xm = ra.x + ra.w * (0 - AX.rc[0]) / (AX.rc[1] - AX.rc[0]);
+      SEIS.dashedLine(ctx, xm, ra.y, xm, ra.y + ra.h, GRID, [3, 3], 1);
+      const f = (D.rc - AX.rc[0]) / (AX.rc[1] - AX.rc[0]);
+      const x = ra.x + Math.max(0, Math.min(1, f)) * ra.w;
+      const y = yOf(BND, ra);
+      ctx.save();
+      ctx.strokeStyle = D.rc >= 0 ? TEAL : CRIM; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(xm, y); ctx.lineTo(x, y); ctx.stroke();
+      ctx.fillStyle = D.rc >= 0 ? TEAL : CRIM;
+      ctx.beginPath(); ctx.arc(x, y, 4.2, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+      SEIS.frame(ctx, ra);
+      trackLabel(ctx, ra, 'one number, at the contact', AX.rc, (v) => v.toFixed(1));
+      drawWiggle(ctx, rb, D.traceA, AX.amp, INK, 'rgba(22,25,28,.30)');
+      trackLabel(ctx, rb, 'the wiggle it makes', AX.amp, (v) => v.toFixed(1));
+    }
+
+    set('s1a', fmt0(D.z1));
+    set('s1b', fmt0(D.z2));
+    set('s1c', (D.diff >= 0 ? '+' : '') + fmt0(D.diff));
+    set('s1d', fmt3(D.rc));
+    set('s1e', Math.abs(D.rc) < 0.005 ? 'neither — they are the same'
+             : D.rc > 0 ? 'up — harder rock below' : 'down — softer rock below');
+    set('s1f', Math.abs(D.rc) < 0.005 ? 'nothing at all, though the contact is real'
+             : Math.abs(D.rc) < 0.05 ? 'a faint wiggle' : 'a clear wiggle');
+  }
+
+  /* --- step 2 -------------------------------------------------------------- */
+
+  function draw2() {
+    const pa = panel('c2a', 0.9);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const pad = 48, top = 30, gap = 22;
+      const cw = (w - pad - 16 - gap) / 2;
+      const H = h - top - 34;
+      const ra = { x: pad, y: top, w: cw, h: H };
+      const rb = { x: pad + cw + gap, y: top, w: cw, h: H };
+      drawPair(ctx, ra, D.z1, D.z2, fmt0(D.z1), fmt0(D.z2));
+      trackLabel(ctx, ra, 'your pair', null, null);
+      drawPair(ctx, rb, D.mz1, D.mz2, fmt0(D.mz1), fmt0(D.mz2));
+      trackLabel(ctx, rb, 'multiplied by ' + D.mult.toFixed(2), null, null);
+    }
+    const pb = panel('c2b', 0.9);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const pad = 48, top = 30, gap = 22;
+      const cw = (w - pad - 16 - gap) / 2;
+      const H = h - top - 34;
+      const ra = { x: pad, y: top, w: cw, h: H };
+      const rb = { x: pad + cw + gap, y: top, w: cw, h: H };
+      timeScale(ctx, ra, true);
+      stepCurve(ctx, ra, D.zA, AX.z, TEAL, 2.6);
+      stepCurve(ctx, ra, D.zB, AX.z, CRIM, 2.2);
+      PANEL.quantity(ctx, ra, 'impedance', '(m/s)(g/cc)', AX.z[0], AX.z[1], fmt0);
+      PANEL.curveLabel(ctx, ra, D.zA, AX.z, 0.22, 'your pair', TEAL);
+      PANEL.curveLabel(ctx, ra, D.zB, AX.z, 0.68, 'multiplied', CRIM);
+      offScaleNote(ctx, ra, [D.zA, D.zB], AX.z);
+      trackLabel(ctx, ra, 'both pairs of rocks', [0, 0], () => '');
+      // the second trace drawn thin over the first, so overlap is obvious
+      drawWiggle(ctx, rb, D.traceA, AX.amp, TEAL, 'rgba(11,114,133,.22)', 3.4);
+      drawWiggle(ctx, rb, D.traceB, AX.amp, CRIM, null, 1.4);
+      PANEL.quantity(ctx, rb, 'the trace', 'amplitude', AX.amp[0], AX.amp[1], (v) => v.toFixed(1));
+      PANEL.tagAt(ctx, rb.x + rb.w * 0.5, rb.y + rb.h * 0.14,
+                  'the two traces, one line', CRIM, 'left');
+      trackLabel(ctx, rb, 'one line — they are identical', [0, 0], () => '');
+    }
+
+    set('s2a', fmt0(D.z1) + ' over ' + fmt0(D.z2));
+    set('s2b', fmt0(D.mz1) + ' over ' + fmt0(D.mz2));
+    set('s2c', fmt3(D.rc));
+    set('s2d', fmt3(D.mrc));
+    const rel = D.traceGap / D.traceScale;
+    set('s2e', rel < 0.0005 ? 'none — they are identical'
+                            : (100 * rel).toFixed(2) + '% of the trace');
+    set('s2f', 'the ratio between two rocks, not either one');
+  }
+
+  /* --- step 3 -------------------------------------------------------------- */
+
+  function draw3() {
+    // shared: mark the sand on whichever panel gets it
+    const markSand = (ctx, rect) => {
+      const y0 = yOf(SECTION[SAND_INDEX].t0, rect);
+      const y1 = yOf(SECTION[SAND_INDEX].t1, rect);
+      ctx.save();
+      ctx.fillStyle = 'rgba(198,166,100,.22)';
+      ctx.fillRect(rect.x, y0, rect.w, y1 - y0);
+      ctx.font = '10px "IBM Plex Mono", monospace';
+      ctx.fillStyle = '#7A6320'; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      ctx.fillText('sand', rect.x + rect.w - 6, (y0 + y1) / 2);
+      ctx.restore();
+    };
+
+    const pa = panel('c3a', 0.9);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const rect = { x: 50, y: 30, w: w - 70, h: h - 62 };
+      drawWiggle(ctx, rect, D.secTrace, AX.amp, INK, 'rgba(22,25,28,.30)');
+      trackLabel(ctx, rect, 'the trace — no layer is marked', AX.amp, (v) => v.toFixed(1));
+    }
+    const pb = panel('c3b', 0.9);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const rect = { x: 50, y: 30, w: w - 70, h: h - 62 };
+      timeScale(ctx, rect, true);
+      markSand(ctx, rect);
+      stepCurve(ctx, rect, D.secZ, AX.zsec, TEAL, 2.6);
+      trackLabel(ctx, rect, 'impedance — the sand is a block', AX.zsec, fmt0);
+    }
+
+    set('s3a', fmt0(D.sandZ));
+    set('s3b', fmt0(D.shaleZ));
+    set('s3c', String(D.nContacts) + ', one per contact');
+    /* Whether the sand's top and base arrive as two events a reader could pick
+       separately, or as one.
+
+       Two thresholds are in play and they are not the same number. Half a
+       wavelet period apart is where the two reflections begin to interfere,
+       which is the tuning thickness module 3 builds on, and for this 24 ms bed
+       that is about 21 Hz. Pulling apart into two events an interpreter would
+       actually pick takes roughly a full period, about 42 Hz here. The readout
+       uses the second, because it is the one the student can see happening on
+       the panel while dragging the control. */
+    const sandMs = (SECTION[SAND_INDEX].t1 - SECTION[SAND_INDEX].t0) * 1000;
+    D.tuneHz = Math.round(500 / sandMs);        // where interference starts
+    D.splitHz = Math.round(1000 / sandMs);      // where two events are visible
+    D.sandResolved = D.fr >= D.splitHz;
+    set('s3d', D.soft <= 1
+      ? '0 — it matches the shale'
+      : (D.sandResolved ? '2 — its top and its base, separately'
+                        : '1 — top and base arrive as a single event'));
+    set('s3g', fmt0(sandMs) + ' ms thick; two events above about ' + D.splitHz + ' Hz');
+    set('s3e', D.bestName + ', at ' + D.bestRC.toFixed(3));
+    set('s3f', 'the trace says where things change; the impedance says what they are');
+  }
+
+  /* --- check yourself ------------------------------------------------------ */
+
+  (function wireCheck() {
+    const list = $('checkList');
+    if (!list) return;
+    list.addEventListener('click', (ev) => {
+      const btn = ev.target.closest('.opt');
+      if (!btn) return;
+      const li = btn.closest('li');
+      const right = li.getAttribute('data-right');
+      li.querySelectorAll('.opt').forEach((b) => {
+        b.classList.remove('right', 'wrong');
+        if (b.getAttribute('data-opt') === right) b.classList.add('right');
+      });
+      if (btn.getAttribute('data-opt') !== right) btn.classList.add('wrong');
+      const why = li.querySelector('.why');
+      if (why) why.hidden = false;
+    });
+  })();
+
+  /* --- wiring -------------------------------------------------------------- */
+
+  function syncControls() {
+    ['vp1', 'vp2'].forEach((k) => { const el = $(k); if (el) el.value = Math.round(S[k]); });
+    ['rho1', 'rho2'].forEach((k) => {
+      const el = $(k); if (el) el.value = Number(S[k]).toFixed(2);
+    });
+    if ($('mult')) $('mult').value = S.mult;
+    set('multV', Number(S.mult).toFixed(2) + '\u00D7');
+    if ($('soft')) $('soft').value = S.soft;
+    set('softV', Math.round(S.soft) + '%');
+    if ($('fr')) $('fr').value = S.fr;
+    set('frV', Math.round(S.fr) + ' Hz');
+  }
+
+  function drawAll() {
+    syncControls();
+    drawHead();
+    if (visible('p1')) draw1();
+    if (visible('p2')) draw2();
+    if (visible('p3')) draw3();
+  }
+
+  const PANES = ['p1', 'p2', 'p3', 'pw', 'pc', 'pm'];
+
+  function showTab(id) {
+    PANES.forEach((q) => { const el = $(q); if (el) el.hidden = q !== id; });
+    document.querySelectorAll('#tabs button').forEach((b) => {
+      b.setAttribute('aria-selected', b.dataset.tab === id);
+    });
+    const lab = document.querySelector('.labhead');
+    if (lab) lab.hidden = (id === 'pw' || id === 'pc' || id === 'pm');
+    const sc = $('sandControls');
+    if (sc) sc.hidden = (id !== 'p3');
+    const last = (id === 'pc' || id === 'pm');
+    if ($('nextup')) $('nextup').hidden = !last;
+    if ($('pager')) $('pager').hidden = !last;
+    S.tab = id;
+    drawAll();
+    saveState();
+  }
+  document.querySelectorAll('#tabs button').forEach((b) => {
+    b.addEventListener('click', () => showTab(b.dataset.tab));
+  });
+
+  document.addEventListener('input', (ev) => {
+    const key = ev.target && ev.target.dataset && ev.target.dataset.key;
+    if (!key) return;
+    const v = parseFloat(ev.target.value);
+    if (!isFinite(v)) return;
+    S[key] = v;
+    recompute(); drawAll(); saveState();
+  });
+
+  if ($('resetBtn')) {
+    $('resetBtn').addEventListener('click', () => {
+      Object.keys(DEF).forEach((k) => { if (k !== 'tab') S[k] = DEF[k]; });
+      recompute(); drawAll(); saveState();
+    });
+  }
+
+  let rt;
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(drawAll, 140); });
+
+  recompute();
+  showTab(PANES.indexOf(S.tab) >= 0 ? S.tab : 'p1');
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawAll);
+
+  window.__MOD = { S, get D() { return D; }, recompute, drawAll, showTab };
+})();
+</script>
+</body>
+</html>

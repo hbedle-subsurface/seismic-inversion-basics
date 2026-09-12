@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5 · Tying a well | Seismic Inversion, from the start</title>
+<meta name="description" content="Well logs are measured in depth and seismic is recorded in time. The well tie is what connects them, and an inversion needs it before it can start.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .provenance { font: 12px/1.6 "IBM Plex Mono", monospace; color: #5C6670;
+                border-left: 3px solid #0B7285; padding: 6px 0 6px 12px; margin: 14px 0 0; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="masthead">
+    <a class="brand" href="../index.html"><span class="dot"></span>Seismic inversion, <b>from the start</b></a>
+    <nav>
+      <a href="../index.html">All modules</a>
+      <a href="../glossary.html">Glossary</a>
+      <a href="#pm">How this page works</a>
+    </nav>
+  </header>
+
+  <div class="mod-head">
+    <p class="eyebrow">Module 5 &nbsp;·&nbsp; Tying a well</p>
+    <h1>The logs are in depth. The seismic is in time.</h1>
+    <p class="sub">A well is measured down a hole, in meters. A survey is recorded at the surface, in
+      seconds. Nothing that uses both can happen until somebody works out which depth belongs to which
+      time. This module is about why that has to be done and what an inversion needs from it. It is a
+      short one.</p>
+  </div>
+
+  <div class="labhead">
+    <div class="labgrid">
+      <div>
+        <p class="cap">The log on two rulers, and your tie
+          <span>&mdash; Maui-4, Taranaki Basin</span></p>
+        <canvas id="cHead" aria-label="The Maui-4 impedance log against depth and against two-way time, and the synthetic seismogram against the seismic at the well"></canvas>
+      </div>
+      <div>
+        <p class="cap">The window, the survey, and your tie <span>&mdash; change any of them</span></p>
+        <div class="controls" id="mainControls">
+          <div class="ctl-col">
+            <h2>Where you are looking</h2>
+            <div class="ctl">
+              <label for="top">Top of window <span class="val" id="topV">2000 m</span></label>
+              <input type="range" data-key="top" id="top" min="1990" max="2300" step="10" value="2000">
+            </div>
+
+            <h2>The survey</h2>
+            <div class="ctl">
+              <label for="fr">Wavelet frequency <span class="val" id="frV">30 Hz</span></label>
+              <input type="range" data-key="fr" id="fr" min="15" max="60" step="1" value="30">
+            </div>
+
+            <h2>Your tie</h2>
+            <div class="ctl">
+              <label for="shift">Move the well down by
+                <span class="val" id="shiftV">0 ms</span></label>
+              <input type="range" data-key="shift" id="shift" min="-20" max="45" step="1" value="0">
+            </div>
+
+            <div class="modbar" style="margin-top:14px">
+              <button class="btn ghost small reset" id="resetBtn" type="button">Reset</button>
+              <button class="btn ghost small" id="copyBtn" type="button">Copy link to this setup</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="tabhint">Three short steps. Work them in order the first time.</p>
+
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Module steps">
+    <button role="tab" data-tab="p1" aria-selected="false">1 · Two rulers</button>
+    <button role="tab" data-tab="p2" aria-selected="false">2 · Making the tie</button>
+    <button role="tab" data-tab="p3" aria-selected="false">3 · What it is for</button>
+    <span class="gap"></span>
+    <span class="tabs-meta">
+  <button role="tab" data-tab="pw" aria-selected="false">Why this matters</button>
+      <button role="tab" data-tab="pc" aria-selected="false">Check yourself</button>
+      <button role="tab" data-tab="pm" aria-selected="false">How this page works</button>
+    </span>
+  </nav>
+
+  <!-- =============================== STEP 1 =============================== -->
+  <section class="tabpane" id="p1" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">1</span>Even meters are not even milliseconds</h3>
+      <span class="hint">Move the window and watch the spacing on the right change</span>
+    </div>
+
+    <p class="lede">Both panels hold the same impedance log from Maui-4. The left one is plotted against
+      depth, which is how the well was measured. The right one is plotted against two-way time, which is
+      where the seismic lives. The dashed rules run across both at the same places in the rock, so a bed
+      can be followed from one panel to the other.</p>
+
+    <p class="lede">The rules are evenly spaced in depth, every 100 m. On the time panel they are not
+      evenly spaced, because a wave crosses 100 m of one rock faster than 100 m of another. The readouts
+      name the slowest and the fastest hundred meters in the window and say where each one is. They
+      differ by a few percent, and the slow one is not reliably the shallow one: this well has a slow
+      interval around 2,100 m with faster rock above and below it.</p>
+
+    <p class="lede">That is the whole problem in one picture. There is no single number that turns the
+      left axis into the right one. Converting between them needs a velocity at every depth, and a sonic
+      log is exactly that. Adding up the travel time across each log sample, from the top of the window
+      downward, gives a two-way time for every depth. That list is the <b>time-depth curve</b>.</p>
+
+    <p class="lede">The coal at 2056 m is marked on both panels. It is 1.3 m thick and has the strongest
+      impedance contrast in this well, which makes it the bed an interpreter would reach for when tying
+      this log.</p>
+
+    <div class="sec-row" id="row1">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> The log in depth
+          <span class="note">what the well measured</span></p>
+        <canvas id="c1a" aria-label="The Maui-4 impedance log plotted against depth, with evenly spaced depth rules"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> The same log in time
+          <span class="note">where the seismic can see it</span></p>
+        <canvas id="c1b" aria-label="The same impedance log plotted against two-way time, with the same rules now unevenly spaced"></canvas>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Depth in the window</span><b id="s1a">&mdash;</b></div>
+      <div class="stat"><span>Two-way time it occupies</span><b id="s1b">&mdash;</b></div>
+      <div class="stat"><span>Slowest 100 m in the window</span><b id="s1c">&mdash;</b></div>
+      <div class="stat"><span>Fastest 100 m in the window</span><b id="s1d">&mdash;</b></div>
+      <div class="stat"><span>Average velocity in the window</span><b id="s1e">&mdash;</b></div>
+      <div class="stat key"><span>Are the two rulers proportional</span><b id="s1f">&mdash;</b></div>
+    </div>
+
+    <div class="miscon">
+      <h4>Common misconception</h4>
+      <p class="said">"You can convert depth to time by dividing by a velocity."</p>
+      <p class="fix">Only if the velocity is the same everywhere, and it never is. Read the slowest and
+        the fastest hundred meters in this window: they differ by a few percent across a few hundred
+        meters of one well, and moving the window moves both numbers. <b>Depth to time needs a velocity
+        at every depth, not a velocity for the section.</b></p>
+    </div>
+  </section>
+
+  <!-- =============================== STEP 2 =============================== -->
+  <section class="tabpane" id="p2" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">2</span>Slide the well until it fits</h3>
+      <span class="hint">Move the tie control until the two traces line up</span>
+    </div>
+
+    <p class="lede">The left panel has two traces on it. The gray one is the seismic recorded at the
+      well. The red one is the <b>synthetic seismogram</b>: impedance from the logs, reflection
+      coefficients from the impedance, a wavelet convolved onto them. That is module 1's calculation,
+      run on a real log and placed on the time axis from step 1.</p>
+
+    <p class="lede">They start out in the wrong place. Adding up the sonic gives the time <em>across</em>
+      the window and says nothing about the time down to the top of it, so the whole synthetic sits some
+      tens of milliseconds off until somebody puts it where it belongs. Move the tie control until the
+      strong coal event on the synthetic lands on the strong event in the seismic. The readout gives the
+      correlation between the two traces, and there is a setting where it goes close to 1.</p>
+
+    <p class="lede">That is a well tie. Everything else about ties is refinement of it. A
+      <b>checkshot</b> measures travel time directly at a few depths, which pins down that starting time
+      properly instead of leaving it to be found this way. A stretch applied across the window handles
+      the fact that a sonic reads the rock as slightly fast and the sum accumulates the error. Neither
+      changes what the tie is or what it is for.</p>
+
+    <p class="lede">The right panel is what the tie produces: the time-depth curve, now anchored. It is
+      read in both directions. A depth in the well gives a time on the seismic, and a time on the seismic
+      gives a depth in the ground.</p>
+
+    <div class="sec-row" id="row2">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> The synthetic against the seismic
+          <span class="note">seismic gray, your synthetic red</span></p>
+        <canvas id="c2a" aria-label="The synthetic seismogram plotted against the seismic recorded at the well"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> What the tie gives you
+          <span class="note">depth on one axis, time on the other</span></p>
+        <canvas id="c2b" aria-label="The time-depth curve produced by the tie, with depth on one axis and two-way time on the other"></canvas>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Your tie</span><b id="s2a">&mdash;</b></div>
+      <div class="stat"><span>Correlation with the seismic</span><b id="s2b">&mdash;</b></div>
+      <div class="stat"><span>The coal, in depth</span><b id="s2c">&mdash;</b></div>
+      <div class="stat"><span>The time your tie puts it at</span><b id="s2d">&mdash;</b></div>
+      <div class="stat"><span>Where the seismic event actually is</span><b id="s2e">&mdash;</b></div>
+      <div class="stat key"><span>How the tie stands</span><b id="s2f">&mdash;</b></div>
+    </div>
+
+    <div class="whymatters">
+      <h4>Why this matters</h4>
+      <p>A tie is the one thing on a project that connects a measurement of the rock to a recording of
+        the seismic. Until it exists, a well and a survey are two datasets about the same ground with no
+        way to compare them.</p>
+    </div>
+  </section>
+
+  <!-- =============================== STEP 3 =============================== -->
+  <section class="tabpane" id="p3" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">3</span>What an inversion needs from it</h3>
+      <span class="hint">Move the tie away from where you left it and watch the readouts</span>
+    </div>
+
+    <p class="lede">An inversion needs three things from the tie, and it needs all of them before it can
+      start.</p>
+
+    <p class="lede"><b>The logs, on the seismic's time axis.</b> Module 6 builds a low-frequency model by
+      filtering impedance logs and spreading them across a survey. Those logs arrive through the tie. A
+      log placed at the wrong time builds a model that is wrong at that time, and the inversion adds it
+      to the answer without ever checking it.</p>
+
+    <p class="lede"><b>The wavelet.</b> A wavelet is estimated by comparing the log's reflection
+      coefficients against the recorded trace at the well. That comparison only means anything once the
+      two are on the same time axis, so the tie comes first, and a wavelet estimated from a poor tie
+      carries the error into everything the inversion does with it.</p>
+
+    <p class="lede"><b>A depth for every time.</b> An inversion returns impedance against two-way time.
+      Turning that into a depth, a thickness or a volume goes back through the tie.</p>
+
+    <p class="lede">The panels show the first of those. Move the tie control away from the value you found
+      in step 2. The left panel puts the impedance log where your tie says it goes, against where it truly
+      sits. The right panel is the low-frequency model built from each, which is what module 6 would be
+      handed. The readouts give the depth the error is worth, the impedance you would report at the
+      target, and the bed you would actually be looking at.</p>
+
+    <p class="lede">Ten milliseconds is about twenty meters of depth in this section. The tested oil sand
+      at the top of the window is 21 m thick and the second oil sand below it is 9 m. A tie error of that
+      size is enough to move a target out of the bed it belongs to. The coal makes the point
+      hardest: it is 1.3 m thick with the lowest impedance anywhere in this window, and a tie a few
+      milliseconds out reports the sandstone beside it instead.</p>
+
+    <div class="sec-row" id="row3">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> The log, placed by your tie
+          <span class="note">your placement red, the truth gray</span></p>
+        <canvas id="c3a" aria-label="The impedance log placed on the time axis by the student's tie, against where it truly sits"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> The low-frequency model each one builds
+          <span class="note">what module 6 would be handed</span></p>
+        <canvas id="c3b" aria-label="The low-frequency model built from the mis-tied log against the one built from the true placement"></canvas>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Your tie is out by</span><b id="s3a">&mdash;</b></div>
+      <div class="stat"><span>In depth, that is</span><b id="s3b">&mdash;</b></div>
+      <div class="stat"><span>Impedance you would report</span><b id="s3c">&mdash;</b></div>
+      <div class="stat"><span>What is actually there</span><b id="s3d">&mdash;</b></div>
+      <div class="stat"><span>Difference</span><b id="s3e">&mdash;</b></div>
+      <div class="stat wide key"><span>The bed you would be reading</span><b id="s3f">&mdash;</b></div>
+    </div>
+
+    <div class="miscon">
+      <h4>Common misconception</h4>
+      <p class="said">"The tie is a formality. The inversion works on the seismic."</p>
+      <p class="fix">An inversion works on the seismic and on everything the wells supply, and module 6
+        measures the second of those at about 86 percent of the final number. All of it arrives through
+        the tie. <b>A tie that is out by ten milliseconds shifts the well-derived part of the answer by
+        the same amount, everywhere, consistently</b> — which is exactly the kind of error that does not
+        look like an error on a map.</p>
+    </div>
+  </section>
+
+  <!-- ============================ WHY IT MATTERS =========================== -->
+  <section class="tabpane" id="pw" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">W</span>Why this matters</h3>
+      <span class="hint">The whole module in one page</span>
+    </div>
+
+    <p class="lede"><b>The problem.</b> Wells are measured in depth. Seismic is recorded in two-way
+      time. The two are not proportional to each other, because velocity changes from bed to bed.</p>
+
+    <p class="lede"><b>The fix.</b> A sonic log gives a velocity at every depth. Adding up the travel
+      time across each sample gives a two-way time for every depth, which is the time-depth curve. Where
+      that curve starts is settled by matching a synthetic seismogram against the seismic at the well,
+      or, better, by a checkshot that measures the travel time directly.</p>
+
+    <p class="lede"><b>What it delivers.</b> Logs on the seismic's time axis, so they can be filtered
+      into a low-frequency model. A comparison that lets a wavelet be estimated. And a depth for every
+      time, so an inversion result can be turned into a thickness or a volume.</p>
+
+    <p class="lede"><b>What goes wrong.</b> An error in the tie moves everything downstream by the same
+      amount and stays consistent while doing it, which is why it is hard to spot afterwards. Module 7
+      asks what to check about a delivered inversion, and how the wells were tied belongs near the top of
+      that list.</p>
+  </section>
+
+  <!-- ============================ CHECK YOURSELF =========================== -->
+  <section class="tabpane" id="pc" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">C</span>Check yourself</h3>
+      <span class="hint">Four questions. Wrong answers are the useful ones</span>
+    </div>
+
+    <ol class="check" id="checkList">
+      <li data-q="q1" data-right="c">
+        <p class="qtext">Why can a well not be placed on a seismic section by dividing its depths by one
+          velocity?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">Because seismic is recorded in one-way time</button>
+          <button class="opt" data-opt="b" type="button">Because the well is not vertical</button>
+          <button class="opt" data-opt="c" type="button">Because velocity changes from bed to bed</button>
+        </div>
+        <p class="why" hidden><b>Because velocity changes from bed to bed.</b> Step 1 gives the numbers
+          for whatever window you have set: the slowest and the fastest hundred meters in it differ by a
+          few percent. One velocity would place some beds correctly and the rest wrongly, and moving the
+          window changes which ones.</p>
+      </li>
+
+      <li data-q="q2" data-right="a">
+        <p class="qtext">What does the sonic log contribute to the tie?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">A velocity at every depth, which adds up to a time</button>
+          <button class="opt" data-opt="b" type="button">The impedance of each bed</button>
+          <button class="opt" data-opt="c" type="button">The wavelet</button>
+        </div>
+        <p class="why" hidden><b>A velocity at every depth.</b> Adding up the travel time across each log
+          sample gives a two-way time for every depth, which is the time-depth curve. The sonic does also
+          go into impedance, alongside the density log, but that is a separate use of the same
+          measurement.</p>
+      </li>
+
+      <li data-q="q3" data-right="b">
+        <p class="qtext">Adding up the sonic gives the time across the logged interval. What is still
+          missing?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">The density log</button>
+          <button class="opt" data-opt="b" type="button">The time down to the top of it</button>
+          <button class="opt" data-opt="c" type="button">Nothing — the sum is the whole answer</button>
+        </div>
+        <p class="why" hidden><b>The time down to the top of it.</b> A sum has to start somewhere, and
+          the sonic says nothing about the section above where the tool was run. That starting time comes
+          from a checkshot, or is found by sliding the synthetic against the seismic until they agree,
+          which is what step 2 has you do.</p>
+      </li>
+
+      <li data-q="q4" data-right="c">
+        <p class="qtext">A tie is ten milliseconds out. What does that do to an inversion built on it?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">Nothing — the inversion uses the seismic</button>
+          <button class="opt" data-opt="b" type="button">It adds random scatter to the result</button>
+          <button class="opt" data-opt="c" type="button">It shifts the well-derived part, consistently</button>
+        </div>
+        <p class="why" hidden><b>It shifts the well-derived part, consistently.</b> The logs reach the
+          inversion through the tie, and module 6 measures the well-derived part at about 86 percent of
+          the final number. A consistent shift is the hard kind of error to notice, because the result
+          still looks orderly. Step 3 shows what ten milliseconds is worth in depth and in impedance.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ========================= HOW THIS PAGE WORKS ========================= -->
+  <section class="tabpane" id="pm" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">M</span>How this page works</h3>
+      <span class="hint">The arithmetic, and what it leaves out</span>
+    </div>
+
+    <p class="lede"><b>Everything on this page is computed while you watch</b>, from a real log.</p>
+
+    <p class="lede"><b>The well.</b> Maui-4, drilled in the Taranaki Basin in 1970. Velocity comes from
+      the sonic and density from the density log; their product is the impedance curve. The window runs
+      from the depth you set over about 400 m.</p>
+
+    <p class="lede"><b>The time-depth curve.</b> The travel time across each log sample is twice the
+      sample spacing divided by the velocity there. Those are added from the top of the window downward,
+      which gives the time across the window but not the time down to its top. This page starts that sum
+      18 ms early, so there is a real offset for the tie control to find.</p>
+
+    <p class="lede"><b>The seismic at the well.</b> Reflection coefficients from the impedance on the
+      correct time axis, resampled to a 1 ms grid, convolved with a zero-phase Ricker wavelet at the
+      frequency you set, with a small fixed amount of band-limited noise added. It is made the same way
+      the synthetic is, so a good tie is possible and the exercise is about finding it.</p>
+
+    <p class="lede"><b>The low-frequency model in step 3.</b> A running average of the impedance log,
+      wide enough to keep only what lies below the seismic band, computed on each of the two time axes.</p>
+
+    <h4 style="margin-top:22px">What this leaves out</h4>
+    <ul class="leftout-list">
+      <li><b>Drift.</b> A real sonic reads the rock as slightly fast and the sum accumulates that error,
+        so a tie usually needs a stretch across the window as well as a shift. One control here, because
+        this module is about what a tie is for rather than how one is made.</li>
+      <li><b>The checkshot itself.</b> It is described but not used as a control the student can move.
+        The two-way time supplied with this log is a sonic integration anchored to the checkshot at the
+        top of the interval, and over the 365 ms the log spans the integrated base differs from the
+        checkshot by about 5 ms. That residual is left in rather than corrected, and it is small enough
+        that nothing on this page turns on it.</li>
+      <li><b>Cycle skipping.</b> A tie can settle a whole wavelet period away from the truth and still
+        correlate well, which is the classic way a tie goes wrong. It does not happen on this log,
+        because a long window with many reflectors of different strengths gives a sharply peaked
+        correlation. It is worth knowing about anyway.</li>
+      <li><b>The wavelet is given.</b> In practice the tie and the wavelet are estimated together, each
+        depending on the other.</li>
+      <li><b>Phase.</b> The wavelet here is zero-phase throughout. A real tie usually involves a phase
+        rotation as well, and phase cannot be checked against the seismic alone.</li>
+      <li><b>One well, one trace.</b> A survey is tied at every well available and the ties are checked
+        against each other, which is where disagreements between them show up.</li>
+    </ul>
+
+    <p class="provenance">Maui-4 log data: New Zealand Petroleum &amp; Minerals Geodata Catalogue,
+      Ministry of Business, Innovation &amp; Employment. Open-file, used with acknowledgement.</p>
+
+    <details class="instr">
+      <summary>Instructor notes</summary>
+      <div class="instr-body">
+        <h5>Learning objectives</h5>
+        <ul>
+          <li>State why depth and two-way time are not proportional to each other.</li>
+          <li>Say what the sonic log contributes and what it cannot supply on its own.</li>
+          <li>Describe what a well tie is, in one sentence.</li>
+          <li>Name the three things an inversion needs from the tie.</li>
+        </ul>
+
+        <h5>Summary</h5>
+        <p>The tie is what connects a well to a survey. Everything an inversion gets from wells arrives
+          through it, and an error in it moves the answer consistently rather than visibly.</p>
+
+        <h5>Suggested discussion questions</h5>
+        <ul>
+          <li>Which bed in a section you know would you hang a tie on, and why that one?</li>
+          <li>A contractor reports a tie correlation above 0.9. What would you still want to know?</li>
+          <li>If a tie is out by 10 ms, what does the depth map made from it look like, and would
+            anybody notice?</li>
+        </ul>
+
+        <h5>Common misconceptions this page addresses</h5>
+        <ul>
+          <li>That depth converts to time with a single velocity.</li>
+          <li>That the tie is a formality because the inversion works on the seismic.</li>
+        </ul>
+
+        <h5>Approximate completion time</h5>
+        <p>Ten to fifteen minutes. This is the shortest module in the set and is meant to be. Step 3 is
+          the one to put on a projector: drag the tie away from its correct value and read the impedance
+          readouts changing.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="nextup" id="nextup" hidden>
+    <p class="eyebrow">Next up</p>
+    <h3>6 · The part that was never recorded</h3>
+    <p>The well is now on the same time axis as the seismic. The next module measures how much of an
+      impedance answer has to come from that well rather than from the survey.</p>
+    <a class="btn" href="06-never-recorded.html">Go to module 6 →</a>
+    <a class="btn ghost" href="04-more-than-one-answer.html">Back to module 4</a>
+  </section>
+
+  <div class="pager" id="pager" hidden>
+    <a class="btn ghost" href="04-more-than-one-answer.html">← Module 4: more than one answer fits</a>
+    <a class="btn ghost" href="06-never-recorded.html">Module 6: the part never recorded →</a>
+  </div>
+
+  <footer>
+    <div class="foot-grid">
+      <p>Built for teaching by Dr. Heather Bedle and Dr. April Moreno-Ward, School of Geosciences,
+        University of Oklahoma, with the
+        <a href="https://www.ou.edu/mcee/labs/aaspi">AASPI</a> consortium.</p>
+      <p class="lic">Licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+        — free to use, adapt and share, including commercially, provided the source is credited and
+        adaptations carry the same license.</p>
+      <p class="lic">Well data from the New Zealand Petroleum &amp; Minerals Geodata Catalogue, Ministry
+        of Business, Innovation &amp; Employment. Open-file and used with acknowledgement.</p>
+      <p class="lic">Nothing you do in this module leaves your browser. The only thing recorded is that
+        the page was opened — no cookie, no account, nothing about you.</p>
+      <p class="lic">To cite: H. Bedle and A. Moreno-Ward, <i>Seismic Inversion, from the start</i>,
+        University of Oklahoma. <span class="k">SSRN: [article link to follow]</span></p>
+    </div>
+  </footer>
+</div>
+
+<script src="../assets/count.js"></script>
+<script src="../assets/glossary.js"></script>
+<script src="../assets/panelout.js"></script>
+<script src="../assets/seismic.js"></script>
+<script src="../assets/physics.js"></script>
+<script src="../assets/panels.js"></script>
+<script src="../data/maui-4.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  if (typeof SEIS === 'undefined' || typeof PHYS === 'undefined' || typeof MAUI4 === 'undefined') {
+    const el = document.createElement('div');
+    el.setAttribute('style', 'background:#841617;color:#fff;padding:14px 18px;font:14px/1.5 monospace');
+    el.textContent = 'This module needs assets/seismic.js, assets/physics.js and data/maui-4.js.';
+    const w = document.querySelector('.wrap');
+    (w || document.body).insertBefore(el, w ? w.firstChild : null);
+    return;
+  }
+
+  const $ = (id) => document.getElementById(id);
+  const visible = (id) => { const el = $(id); return el && !el.hidden; };
+  const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+  const CRIM = '#841617', TEAL = '#0B7285', SLATE = '#5C6670', INK = '#16191C';
+
+  const DEF = { top: 2000, fr: 30, shift: 0, tab: 'p1' };
+  const S = SEIS.readState(DEF);
+  (function sanitize() {
+    const num = (k, lo, hi) => {
+      let v = Number(S[k]);
+      if (!isFinite(v)) v = DEF[k];
+      S[k] = Math.min(hi, Math.max(lo, v));
+    };
+    num('top', 1990, 2300); num('fr', 15, 60); num('shift', -20, 45);
+  })();
+  const saveState = () => SEIS.writeState(S, DEF);
+  if ($('copyBtn')) $('copyBtn').addEventListener('click', (e) => SEIS.copyLink(e.currentTarget));
+
+  const C = MAUI4.curves;
+  const NLOG = C.DEPT.length;
+  const SPAN = 400;                 // window length, in meters
+  const DT = 0.001;                 // the time grid the traces live on
+  const NT = 260;                   // samples drawn
+  const COAL = 2056.5;              // the coal marker, in meters
+
+  /* Adding up the sonic gives the time ACROSS the window and says nothing
+     about the time down to the top of it. This page starts the sum 18 ms
+     early, so the synthetic arrives in the wrong place and the tie control has
+     a real offset to find. In the field that starting time comes from a
+     checkshot, or from doing exactly what step 2 has the student do. */
+  const OFFSET = 18;                // ms
+
+  const fmt0 = (v) => Math.round(v).toLocaleString();
+  const fmt1 = (v) => v.toFixed(1);
+
+  /* Fixed axes everywhere. A student watching a curve move should never be
+     watching an axis move underneath it at the same time. */
+  const AX = { z: [3000, 15000] };
+
+  const D = {};
+
+  function indexAtDepth(z) {
+    let lo = 0, hi = NLOG - 1;
+    if (z <= C.DEPT[0]) return 0;
+    if (z >= C.DEPT[hi]) return hi;
+    while (hi - lo > 1) {
+      const mid = (lo + hi) >> 1;
+      if (C.DEPT[mid] < z) lo = mid; else hi = mid;
+    }
+    return lo;
+  }
+
+  /* The time-depth curve. Travel time across one log sample is twice the
+     sample spacing divided by the velocity there; those are added from the top
+     of the window downward. t0 is where the sum starts. */
+  function integrate(i0, i1, t0) {
+    const t = new Float64Array(i1 - i0 + 1);
+    t[0] = t0;
+    for (let i = i0 + 1; i <= i1; i++) {
+      const dz = C.DEPT[i] - C.DEPT[i - 1];
+      const v = 0.5 * (C.VP[i] + C.VP[i - 1]);
+      t[i - i0] = t[i - i0 - 1] + (v > 0 ? 2 * dz / v : 0);
+    }
+    return t;
+  }
+
+  /* Reflection coefficients between neighbouring log samples, each placed at
+     the two-way time of its boundary, then convolved with the wavelet. Module
+     1's calculation, on a real log. */
+  function traceFrom(i0, i1, times, tRef, freq) {
+    const spikes = [];
+    for (let i = i0; i < i1; i++) {
+      const a = C.AI[i], b = C.AI[i + 1];
+      if (!(a > 0) || !(b > 0)) continue;
+      const r = (b - a) / (b + a);
+      if (Math.abs(r) < 1e-6) continue;
+      spikes.push({ t: 0.5 * (times[i - i0] + times[i + 1 - i0]) - tRef, r: r });
+    }
+    return SEIS.traceFromSpikes(spikes, 0, DT, NT, SEIS.makeWavelet({ f: freq }));
+  }
+
+  function normalize(x) {
+    let peak = 0;
+    for (let i = 0; i < x.length; i++) peak = Math.max(peak, Math.abs(x[i]));
+    if (!peak) return Float64Array.from(x);
+    return Float64Array.from(x, (v) => v / peak);
+  }
+
+  function correlate(a, b) {
+    let ma = 0, mb = 0;
+    for (let i = 0; i < a.length; i++) { ma += a[i]; mb += b[i]; }
+    ma /= a.length; mb /= b.length;
+    let num = 0, va = 0, vb = 0;
+    for (let i = 0; i < a.length; i++) {
+      const da = a[i] - ma, db = b[i] - mb;
+      num += da * db; va += da * da; vb += db * db;
+    }
+    return (va > 0 && vb > 0) ? num / Math.sqrt(va * vb) : 0;
+  }
+
+  /* Impedance sampled onto the regular time grid, given a time for every log
+     sample. This is what a low-frequency model is built from, and it is where
+     a tie error turns into an impedance error. */
+  function onTimeGrid(i0, i1, times, tRef) {
+    const out = new Float64Array(NT);
+    let k = 0;
+    for (let it = 0; it < NT; it++) {
+      const t = tRef + it * DT;
+      while (k < i1 - i0 && times[k + 1] < t) k++;
+      out[it] = C.AI[i0 + Math.min(k, i1 - i0)];
+    }
+    return out;
+  }
+
+  /* A running average wide enough to keep only what lies below the seismic
+     band. The same operation module 6 does to a log, done here to both
+     placements so the two models can be compared. */
+  function lowPass(x, half) {
+    const out = new Float64Array(x.length);
+    for (let i = 0; i < x.length; i++) {
+      let sum = 0, n = 0;
+      for (let k = -half; k <= half; k++) {
+        sum += x[Math.max(0, Math.min(x.length - 1, i + k))]; n++;
+      }
+      out[i] = sum / n;
+    }
+    return out;
+  }
+
+  function recompute() {
+    D.top = Math.round(S.top);
+    D.fr = Math.round(S.fr);
+    D.shift = Math.round(S.shift);
+
+    const i0 = indexAtDepth(D.top);
+    const i1 = Math.min(NLOG - 1, indexAtDepth(D.top + SPAN));
+    D.i0 = i0; D.i1 = i1;
+    D.depth0 = C.DEPT[i0];
+    D.depth1 = C.DEPT[i1];
+
+    // where the log truly sits, and where the sum put it before the tie
+    D.trueT = integrate(i0, i1, C.TWT[i0]);
+    D.rawT = integrate(i0, i1, C.TWT[i0] - OFFSET / 1000);
+    D.yourT = Float64Array.from(D.rawT, (t) => t + D.shift / 1000);
+
+    D.t0 = D.trueT[0];
+    D.timeSpan = D.trueT[D.trueT.length - 1] - D.trueT[0];
+    D.vAvg = 2 * (D.depth1 - D.depth0) / D.timeSpan;
+
+    /* The slowest and the fastest hundred meters in the window. Quoting the top
+       against the base would sometimes show the deeper rock as the slower one,
+       which is true in this well — there is a slow interval near 2,100 m — and
+       would make a poor rule for a student to carry away. */
+    const n = D.trueT.length - 1;
+    const per100 = (depth) => {
+      const a = indexAtDepth(depth) - i0, b = indexAtDepth(depth + 100) - i0;
+      return (D.trueT[Math.max(0, Math.min(n, b))] - D.trueT[Math.max(0, Math.min(n, a))]) * 1000;
+    };
+    let slow = -Infinity, fast = Infinity;
+    for (let z = D.depth0; z <= D.depth1 - 100; z += 10) {
+      const ms = per100(z);
+      if (ms > slow) { slow = ms; D.slowZ = z; }
+      if (ms < fast) { fast = ms; D.fastZ = z; }
+    }
+    D.slow100 = slow; D.fast100 = fast;
+    D.spread100 = slow - fast;
+
+    // the two traces, and how well they agree
+    D.seismic = normalize(PHYS.addNoise(Array.from(traceFrom(i0, i1, D.trueT, D.t0, D.fr)), 6, 11));
+    D.synth = normalize(traceFrom(i0, i1, D.yourT, D.t0, D.fr));
+    D.corr = correlate(D.seismic, D.synth);
+
+    // how far the tie is from where it belongs
+    D.tieError = D.shift - OFFSET;
+    D.depthError = 0.5 * D.vAvg * Math.abs(D.tieError) / 1000;
+
+    // the coal, which is the bed a tie on this log would be hung on
+    D.coalIn = COAL >= D.depth0 && COAL <= D.depth1;
+    if (D.coalIn) {
+      const k = indexAtDepth(COAL) - i0;
+      D.coalTrue = D.trueT[k];
+      D.coalYours = D.yourT[k];
+    }
+
+    // impedance on the time grid, truly and as your tie places it
+    D.zTrue = onTimeGrid(i0, i1, D.trueT, D.t0);
+    D.zYours = onTimeGrid(i0, i1, D.yourT, D.t0);
+    const half = Math.max(2, Math.round(0.5 / (10 * DT)));      // below about 10 Hz
+    D.bgTrue = lowPass(D.zTrue, half);
+    D.bgYours = lowPass(D.zYours, half);
+
+    /* The target: the coal if it is in the window, otherwise the middle of it.
+       An inversion returns impedance against time, and the tie is what says
+       which depth that time is. Reading the truth and your placement at the
+       same time gives what a tie error costs. */
+    const tTarget = D.coalIn ? D.coalTrue : D.t0 + D.timeSpan / 2;
+    const it = Math.max(0, Math.min(NT - 1, Math.round((tTarget - D.t0) / DT)));
+    D.targetT = D.t0 + it * DT;
+    D.zAtTrue = D.zTrue[it];
+    D.zAtYours = D.zYours[it];
+
+    const depthAt = (times) => {
+      let j = 0;
+      while (j < times.length - 1 && times[j + 1] < D.targetT) j++;
+      return C.DEPT[i0 + j];
+    };
+    D.depthYouRead = depthAt(D.yourT);
+    D.depthTrue = depthAt(D.trueT);
+  }
+
+  /* --- drawing ------------------------------------------------------------- */
+
+  function panel(id, ratio) {
+    const c = $(id);
+    if (!c || !c.parentElement) return null;
+    const cs = window.getComputedStyle(c.parentElement);
+    const w = c.parentElement.clientWidth
+            - parseFloat(cs.paddingLeft || 0) - parseFloat(cs.paddingRight || 0);
+    const h = Math.max(240, Math.round(w * (ratio || 0.8)));
+    const ctx = SEIS.fitCanvas(c, w, h);
+    ctx.clearRect(0, 0, w, h);
+    return { ctx, w, h };
+  }
+
+  const yDepth = (z, r) => r.y + r.h * (z - D.depth0) / Math.max(1e-9, D.depth1 - D.depth0);
+  const yTime = (t, r) => r.y + r.h * (t - D.t0) / Math.max(1e-9, D.timeSpan);
+  const yTrace = (t, r) => r.y + r.h * t / Math.max(1e-9, (NT - 1) * DT);
+  const xOf = (v, rng, r) => r.x + r.w * (v - rng[0]) / (rng[1] - rng[0]);
+
+  function logCurve(ctx, r, yFn, ys, color, width) {
+    ctx.save();
+    ctx.strokeStyle = color; ctx.lineWidth = width || 1.5;
+    ctx.beginPath();
+    let started = false;
+    for (let i = D.i0; i <= D.i1; i += 2) {
+      const v = C.AI[i];
+      if (!(v > 0)) continue;
+      const y = yFn(ys[i - D.i0], r), x = xOf(v, AX.z, r);
+      if (!started) { ctx.moveTo(x, y); started = true; } else ctx.lineTo(x, y);
+    }
+    ctx.stroke(); ctx.restore();
+  }
+
+  /* Rules at the same places in the rock on both panels, labeled with depth on
+     one side and two-way time on the other, so a student can see that even
+     spacing on the left is uneven spacing on the right. */
+  function tieRules(ctx, r, yFn, ys, showTime) {
+    ctx.save();
+    for (let z = Math.ceil(D.depth0 / 100) * 100; z <= D.depth1; z += 100) {
+      const i = indexAtDepth(z) - D.i0;
+      if (i < 0 || i >= ys.length) continue;
+      const y = yFn(ys[i], r);
+      SEIS.dashedLine(ctx, r.x, y, r.x + r.w, y, 'rgba(92,102,112,.32)', [2, 4], 1);
+      ctx.font = '9.5px "IBM Plex Mono", monospace';
+      ctx.fillStyle = '#9AA1A8'; ctx.textBaseline = 'middle';
+      ctx.textAlign = 'right'; ctx.fillText(fmt0(z) + ' m', r.x - 6, y);
+      if (showTime) {
+        ctx.textAlign = 'left';
+        ctx.fillText(fmt0(ys[i] * 1000) + ' ms', r.x + r.w + 6, y);
+      }
+    }
+    ctx.restore();
+  }
+
+  function markCoal(ctx, r, yFn, ys) {
+    if (!D.coalIn) return;
+    const i = indexAtDepth(COAL) - D.i0;
+    if (i < 0 || i >= ys.length) return;
+    const y = yFn(ys[i], r);
+    ctx.save();
+    ctx.strokeStyle = 'rgba(132,22,23,.75)'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(r.x, y); ctx.lineTo(r.x + r.w, y); ctx.stroke();
+    ctx.font = '600 9.5px "IBM Plex Sans", sans-serif';
+    ctx.fillStyle = CRIM; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+    ctx.fillText('the coal', r.x + 6, y - 3);
+    ctx.restore();
+  }
+
+  /* The head carries three panels, not two, because all three controls have to
+     do something visible from the top of the page. The log in depth and the log
+     in time answer the window control; the third panel puts the synthetic
+     against the seismic, which is what the wavelet frequency and the tie
+     control change. A control that moves nothing on screen reads as broken. */
+  function drawHead() {
+    const p = panel('cHead', 0.46); if (!p) return;
+    const { ctx, w, h } = p;
+    const padL = 54, padR = 74, gap = 46, top = 34;
+    const cw = (w - padL - padR - 2 * gap) / 3, H = h - top - 34;
+    const ra = { x: padL, y: top, w: cw, h: H };
+    const rb = { x: padL + cw + gap, y: top, w: cw, h: H };
+    const rc = { x: padL + 2 * (cw + gap), y: top, w: cw, h: H };
+    const depths = C.DEPT.slice(D.i0, D.i1 + 1);
+
+    tieRules(ctx, ra, yDepth, depths, false);
+    logCurve(ctx, ra, yDepth, depths, INK, 1.4);
+    markCoal(ctx, ra, yDepth, depths);
+    SEIS.frame(ctx, ra);
+    PANEL.quantity(ctx, ra, 'impedance, in depth', '(m/s)(g/cc)', AX.z[0], AX.z[1], fmt0);
+
+    tieRules(ctx, rb, yTime, D.trueT, true);
+    logCurve(ctx, rb, yTime, D.trueT, INK, 1.4);
+    markCoal(ctx, rb, yTime, D.trueT);
+    SEIS.frame(ctx, rb);
+    PANEL.quantity(ctx, rb, 'impedance, in time', '(m/s)(g/cc)', AX.z[0], AX.z[1], fmt0);
+
+    /* The trace panel carries its own time scale down the right-hand side, and
+       the coal marked at the time the other two panels put it. Without those a
+       student cannot carry the bed across from the log panels, which is the one
+       thing the three panels are side by side to allow. */
+    drawTrace(ctx, rc, D.seismic, 'rgba(92,102,112,.85)', 2.4, true);
+    drawTrace(ctx, rc, D.synth, CRIM, 1.7, false);
+    if (D.coalIn) {
+      const y = yTrace(D.coalTrue - D.t0, rc);
+      if (y >= rc.y && y <= rc.y + rc.h) {
+        SEIS.dashedLine(ctx, rc.x, y, rc.x + rc.w, y, 'rgba(132,22,23,.55)', [4, 3], 1.2);
+      }
+    }
+    SEIS.frame(ctx, rc);
+    PANEL.quantity(ctx, rc, 'your tie', 'amplitude', -1, 1, (v) => v.toFixed(0));
+    // times down the right, so the numbers do not sit on top of the wiggle
+    ctx.save();
+    ctx.font = '9px "IBM Plex Mono", monospace';
+    ctx.fillStyle = '#9AA1A8';
+    ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    [0, 0.5, 1].forEach((f) => {
+      const y = rc.y + rc.h * f;
+      ctx.fillText(fmt0((D.t0 + f * (NT - 1) * DT) * 1000) + ' ms', rc.x + rc.w + 5, y);
+    });
+    ctx.restore();
+    // one line underneath, not two competing for the same corner
+    SEIS.tag(ctx, rc.x, rc.y + rc.h + 15,
+             'seismic gray, synthetic red — correlation ' + D.corr.toFixed(2),
+             Math.abs(D.tieError) <= 1 ? TEAL : SLATE, 'left');
+  }
+
+  function draw1() {
+    const depths = C.DEPT.slice(D.i0, D.i1 + 1);
+    const pa = panel('c1a', 0.95);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const r = { x: 58, y: 30, w: w - 76, h: h - 62 };
+      tieRules(ctx, r, yDepth, depths, false);
+      logCurve(ctx, r, yDepth, depths, INK, 1.5);
+      markCoal(ctx, r, yDepth, depths);
+      SEIS.frame(ctx, r);
+      PANEL.quantity(ctx, r, 'impedance', '(m/s)(g/cc)', AX.z[0], AX.z[1], fmt0);
+      SEIS.tag(ctx, r.x, r.y + r.h + 20, 'rules every 100 m — evenly spaced', SLATE, 'left');
+    }
+    const pb = panel('c1b', 0.95);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const r = { x: 58, y: 30, w: w - 122, h: h - 62 };
+      tieRules(ctx, r, yTime, D.trueT, true);
+      logCurve(ctx, r, yTime, D.trueT, INK, 1.5);
+      markCoal(ctx, r, yTime, D.trueT);
+      SEIS.frame(ctx, r);
+      PANEL.quantity(ctx, r, 'impedance', '(m/s)(g/cc)', AX.z[0], AX.z[1], fmt0);
+      SEIS.tag(ctx, r.x, r.y + r.h + 20, 'the same rules — no longer evenly spaced', CRIM, 'left');
+    }
+
+    set('s1a', fmt0(D.depth1 - D.depth0) + ' m, from ' + fmt0(D.depth0));
+    set('s1b', fmt0(D.timeSpan * 1000) + ' ms');
+    set('s1c', fmt1(D.slow100) + ' ms, at ' + fmt0(D.slowZ) + ' m');
+    set('s1d', fmt1(D.fast100) + ' ms, at ' + fmt0(D.fastZ) + ' m');
+    set('s1e', fmt0(D.vAvg) + ' m/s');
+    set('s1f', 'no — ' + fmt1(D.spread100) + ' ms apart, or ' +
+               fmt1(100 * D.spread100 / Math.max(1e-9, D.slow100)) + '%');
+  }
+
+  function drawTrace(ctx, r, x, color, width, fill) {
+    const mid = r.x + r.w / 2, half = r.w / 2;
+    ctx.save();
+    ctx.strokeStyle = color; ctx.lineWidth = width;
+    ctx.beginPath();
+    for (let i = 0; i < x.length; i++) {
+      const px = mid + half * Math.max(-1, Math.min(1, x[i]));
+      const py = yTrace(i * DT, r);
+      i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+    if (fill) {
+      ctx.globalAlpha = 0.18; ctx.fillStyle = color;
+      ctx.beginPath(); ctx.moveTo(mid, yTrace(0, r));
+      for (let i = 0; i < x.length; i++) {
+        ctx.lineTo(mid + half * Math.max(0, Math.min(1, x[i])), yTrace(i * DT, r));
+      }
+      ctx.lineTo(mid, yTrace((x.length - 1) * DT, r));
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function timeSide(ctx, r) {
+    PANEL.sideScale(ctx, r, [0, 0.25, 0.5, 0.75, 1].map((f) => ({
+      pos: f, label: fmt0(D.t0 * 1000 + f * (NT - 1) * DT * 1000),
+    })), 'ms');
+  }
+
+  function zCurve(ctx, r, z, color, width, dash) {
+    ctx.save();
+    ctx.strokeStyle = color; ctx.lineWidth = width;
+    if (dash) ctx.setLineDash(dash);
+    ctx.beginPath();
+    for (let i = 0; i < NT; i++) {
+      const x = xOf(z[i], AX.z, r), y = yTrace(i * DT, r);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+  }
+
+  function draw2() {
+    const pa = panel('c2a', 0.95);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const r = { x: 58, y: 30, w: w - 76, h: h - 62 };
+      SEIS.frame(ctx, r);
+      timeSide(ctx, r);
+      if (D.coalIn) {
+        const y = yTrace(D.coalTrue - D.t0, r);
+        if (y >= r.y && y <= r.y + r.h) {
+          SEIS.dashedLine(ctx, r.x, y, r.x + r.w, y, 'rgba(92,102,112,.55)', [4, 3], 1.3);
+          SEIS.tag(ctx, r.x + 6, y - 4, 'the coal event in the seismic', SLATE, 'left');
+        }
+      }
+      drawTrace(ctx, r, D.seismic, 'rgba(92,102,112,.85)', 2.6, true);
+      drawTrace(ctx, r, D.synth, CRIM, 1.8, false);
+      SEIS.tag(ctx, r.x + r.w - 6, r.y + 16, 'seismic at the well', SLATE, 'right');
+      SEIS.tag(ctx, r.x + r.w - 6, r.y + 34, 'your synthetic', CRIM, 'right');
+    }
+
+    const pb = panel('c2b', 0.95);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const r = { x: 58, y: 30, w: w - 76, h: h - 62 };
+      SEIS.frame(ctx, r);
+      const tLo = (D.t0 - 0.032) * 1000, tHi = (D.t0 + D.timeSpan + 0.012) * 1000;
+      const line = (ys, color, width, dash) => {
+        ctx.save();
+        ctx.strokeStyle = color; ctx.lineWidth = width;
+        if (dash) ctx.setLineDash(dash);
+        ctx.beginPath();
+        for (let i = 0; i < ys.length; i += 4) {
+          const x = r.x + r.w * (ys[i] * 1000 - tLo) / Math.max(1e-9, tHi - tLo);
+          const y = yDepth(C.DEPT[D.i0 + i], r);
+          i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+        ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+      };
+      line(D.trueT, 'rgba(92,102,112,.55)', 2.2, [4, 3]);
+      line(D.yourT, CRIM, 2.6);
+      SEIS.axisBottom(ctx, r, tLo, tHi, 'two-way time, ms', (v) => fmt0(v));
+      PANEL.sideScale(ctx, r, [0, 0.5, 1].map((f) => ({
+        pos: f, label: fmt0(D.depth0 + f * (D.depth1 - D.depth0)),
+      })), 'm');
+      SEIS.tag(ctx, r.x + r.w - 6, r.y + 16, 'where the seismic says it is', SLATE, 'right');
+      SEIS.tag(ctx, r.x + r.w - 6, r.y + 34, 'your time-depth curve', CRIM, 'right');
+    }
+
+    set('s2a', (D.shift > 0 ? '+' : '') + D.shift + ' ms');
+    set('s2b', D.corr.toFixed(3));
+    set('s2c', D.coalIn ? fmt0(COAL) + ' m' : 'not in this window');
+    set('s2d', D.coalIn ? fmt0(D.coalYours * 1000) + ' ms' : '—');
+    set('s2e', D.coalIn ? fmt0(D.coalTrue * 1000) + ' ms' : '—');
+    const off = Math.abs(D.tieError);
+    set('s2f', off <= 1 ? 'tied — the synthetic sits on the seismic'
+             : (off <= 5 ? 'close — about ' + off + ' ms to go'
+                         : off + ' ms out — keep moving it'));
+  }
+
+  function draw3() {
+    const pa = panel('c3a', 0.95);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const r = { x: 58, y: 30, w: w - 76, h: h - 62 };
+      SEIS.frame(ctx, r);
+      timeSide(ctx, r);
+      zCurve(ctx, r, D.zTrue, 'rgba(92,102,112,.6)', 2.2, [4, 3]);
+      zCurve(ctx, r, D.zYours, CRIM, 1.8);
+      const yT = yTrace(D.targetT - D.t0, r);
+      SEIS.dashedLine(ctx, r.x, yT, r.x + r.w, yT, 'rgba(22,25,28,.55)', [5, 4], 1.4);
+      SEIS.tag(ctx, r.x + 6, yT - 4, 'the target', INK, 'left');
+      PANEL.quantity(ctx, r, 'impedance', '(m/s)(g/cc)', AX.z[0], AX.z[1], fmt0);
+      SEIS.tag(ctx, r.x + r.w - 6, r.y + 16, 'where it truly sits', SLATE, 'right');
+      SEIS.tag(ctx, r.x + r.w - 6, r.y + 34, 'where your tie puts it', CRIM, 'right');
+    }
+
+    const pb = panel('c3b', 0.95);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const r = { x: 58, y: 30, w: w - 76, h: h - 62 };
+      SEIS.frame(ctx, r);
+      timeSide(ctx, r);
+      zCurve(ctx, r, D.bgTrue, TEAL, 2.6, [5, 4]);
+      zCurve(ctx, r, D.bgYours, CRIM, 2.6);
+      PANEL.quantity(ctx, r, 'low-frequency model', '(m/s)(g/cc)', AX.z[0], AX.z[1], fmt0);
+      SEIS.tag(ctx, r.x + r.w - 6, r.y + 16, 'from the true placement', TEAL, 'right');
+      SEIS.tag(ctx, r.x + r.w - 6, r.y + 34, 'from your tie', CRIM, 'right');
+    }
+
+    const off = Math.abs(D.tieError);
+    set('s3a', off === 0 ? 'nothing — it is tied' : off + ' ms');
+    set('s3b', off === 0 ? 'nothing' : fmt0(D.depthError) + ' m');
+    set('s3c', fmt0(D.zAtYours));
+    set('s3d', fmt0(D.zAtTrue));
+    set('s3e', fmt0(Math.abs(D.zAtYours - D.zAtTrue)) + ' impedance units');
+    set('s3f', off === 0
+      ? 'the right one — ' + fmt0(D.depthTrue) + ' m'
+      : fmt0(D.depthYouRead) + ' m, when the seismic is looking at ' + fmt0(D.depthTrue) + ' m');
+  }
+
+  /* --- check yourself ------------------------------------------------------ */
+
+  (function wireCheck() {
+    const list = $('checkList');
+    if (!list) return;
+    list.addEventListener('click', (ev) => {
+      const btn = ev.target.closest('.opt');
+      if (!btn) return;
+      const li = btn.closest('li');
+      const right = li.getAttribute('data-right');
+      li.querySelectorAll('.opt').forEach((b) => {
+        b.classList.remove('right', 'wrong');
+        if (b.getAttribute('data-opt') === right) b.classList.add('right');
+      });
+      if (btn.getAttribute('data-opt') !== right) btn.classList.add('wrong');
+      const why = li.querySelector('.why');
+      if (why) why.hidden = false;
+    });
+  })();
+
+  /* --- wiring -------------------------------------------------------------- */
+
+  function syncControls() {
+    if ($('top')) $('top').value = S.top;
+    set('topV', Math.round(S.top) + ' m');
+    if ($('fr')) $('fr').value = S.fr;
+    set('frV', Math.round(S.fr) + ' Hz');
+    if ($('shift')) $('shift').value = S.shift;
+    set('shiftV', (S.shift > 0 ? '+' : '') + Math.round(S.shift) + ' ms');
+  }
+
+  function drawAll() {
+    syncControls();
+    drawHead();
+    if (visible('p1')) draw1();
+    if (visible('p2')) draw2();
+    if (visible('p3')) draw3();
+  }
+
+  const PANES = ['p1', 'p2', 'p3', 'pw', 'pc', 'pm'];
+
+  function showTab(id) {
+    PANES.forEach((q) => { const el = $(q); if (el) el.hidden = q !== id; });
+    document.querySelectorAll('#tabs button').forEach((b) => {
+      b.setAttribute('aria-selected', b.dataset.tab === id);
+    });
+    const lab = document.querySelector('.labhead');
+    if (lab) lab.hidden = (id === 'pw' || id === 'pc' || id === 'pm');
+    const last = (id === 'pc' || id === 'pm');
+    if ($('nextup')) $('nextup').hidden = !last;
+    if ($('pager')) $('pager').hidden = !last;
+    S.tab = id;
+    drawAll();
+    saveState();
+  }
+  document.querySelectorAll('#tabs button').forEach((b) => {
+    b.addEventListener('click', () => showTab(b.dataset.tab));
+  });
+
+  document.addEventListener('input', (ev) => {
+    const key = ev.target && ev.target.dataset && ev.target.dataset.key;
+    if (!key) return;
+    const v = parseFloat(ev.target.value);
+    if (!isFinite(v)) return;
+    S[key] = v;
+    recompute(); drawAll(); saveState();
+  });
+
+  if ($('resetBtn')) {
+    $('resetBtn').addEventListener('click', () => {
+      Object.keys(DEF).forEach((k) => { if (k !== 'tab') S[k] = DEF[k]; });
+      recompute(); drawAll(); saveState();
+    });
+  }
+
+  let rt;
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(drawAll, 140); });
+
+  recompute();
+  showTab(PANES.indexOf(S.tab) >= 0 ? S.tab : 'p1');
+
+  window.__MOD = { S, get D() { return D; }, recompute, drawAll, showTab };
+})();
+</script>
+</body>
+</html>

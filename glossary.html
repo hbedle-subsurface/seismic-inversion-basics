@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glossary | Seismic Inversion, from the start</title>
+<meta name="description" content="Plain definitions of the words used across the eight modules, each linked back to the module where you can watch the idea happen.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-no-glossary>
+<div class="wrap">
+  <header class="masthead">
+    <a class="brand" href="index.html"><span class="dot"></span>Seismic inversion, <b>from the start</b></a>
+    <nav><a href="index.html">All modules</a><a href="glossary.html">Glossary</a></nav>
+  </header>
+
+  <div class="mod-head">
+    <p class="eyebrow">Glossary</p>
+    <h1>The words, in plain terms</h1>
+    <p class="sub">Each entry says what the thing is and points at the module where you can watch it
+      happen. Definitions are deliberately short — the modules are where the understanding comes from.
+      The list below is alphabetical; the entries under it run in the order the modules introduce them,
+      so it can also be read straight through.</p>
+  </div>
+
+  <nav class="gloss-index" aria-label="All terms, alphabetically">
+    <p class="idx-head">All 59 terms, A to Z</p>
+    <div class="idx-links">
+      <a href="#g-acoustic-impedance">Acoustic impedance</a>
+      <a href="#g-amplitude">Amplitude</a>
+      <a href="#g-amplitude-spectrum">Amplitude spectrum</a>
+      <a href="#g-angle-stack">Angle stack</a>
+      <a href="#g-avo">AVO</a>
+      <a href="#g-bandwidth">Bandwidth</a>
+      <a href="#g-bright-spot">Bright spot</a>
+      <a href="#g-checkshot">Checkshot</a>
+      <a href="#g-colored-inversion">Colored inversion</a>
+      <a href="#g-convolution">Convolution</a>
+      <a href="#g-cycle-skip">Cycle skip</a>
+      <a href="#g-deconvolution">Deconvolution</a>
+      <a href="#g-density-log">Density log</a>
+      <a href="#g-deterministic-inversion">Deterministic inversion</a>
+      <a href="#g-elastic-property">Elastic property</a>
+      <a href="#g-forward-problem">Forward problem</a>
+      <a href="#g-frequency">Frequency</a>
+      <a href="#g-full-waveform-inversion">Full-waveform inversion, FWI</a>
+      <a href="#g-gas-sand">Gas sand</a>
+      <a href="#g-gather">Gather</a>
+      <a href="#g-ground-roll">Ground roll</a>
+      <a href="#g-horizon">Horizon</a>
+      <a href="#g-inverse-problem">Inverse problem</a>
+      <a href="#g-low-frequency-component">Low-frequency component</a>
+      <a href="#g-low-frequency-model">Low-frequency model, or background model</a>
+      <a href="#g-migration">Migration</a>
+      <a href="#g-misfit">Misfit</a>
+      <a href="#g-model-based-inversion">Model-based inversion</a>
+      <a href="#g-non-uniqueness">Non-uniqueness</a>
+      <a href="#g-offset">Offset</a>
+      <a href="#g-phase">Phase</a>
+      <a href="#g-polarity">Polarity</a>
+      <a href="#g-post-stack-inversion">Post-stack inversion</a>
+      <a href="#g-pre-stack-inversion">Pre-stack inversion</a>
+      <a href="#g-prior-information">Prior information</a>
+      <a href="#g-realization">Realization</a>
+      <a href="#g-reflection-coefficient">Reflection coefficient</a>
+      <a href="#g-reflectivity-series">Reflectivity series</a>
+      <a href="#g-relative-acoustic-impedance">Relative acoustic impedance</a>
+      <a href="#g-resolution">Resolution</a>
+      <a href="#g-ricker-wavelet">Ricker wavelet</a>
+      <a href="#g-running-sum">Running sum</a>
+      <a href="#g-shear-impedance">Shear impedance</a>
+      <a href="#g-shear-sonic">Shear sonic</a>
+      <a href="#g-side-lobe">Side lobe</a>
+      <a href="#g-sonic-log">Sonic log</a>
+      <a href="#g-sparse-spike-inversion">Sparse-spike inversion</a>
+      <a href="#g-stacking">Stacking</a>
+      <a href="#g-stochastic-inversion">Stochastic inversion</a>
+      <a href="#g-synthetic-seismogram">Synthetic seismogram</a>
+      <a href="#g-time-depth-curve">Time-depth curve</a>
+      <a href="#g-trace">Trace</a>
+      <a href="#g-tuning">Tuning</a>
+      <a href="#g-two-way-time">Two-way time</a>
+      <a href="#g-vp-vs">Vp/Vs</a>
+      <a href="#g-wavelet">Wavelet</a>
+      <a href="#g-wedge-model">Wedge model</a>
+      <a href="#g-well-tie">Well tie</a>
+      <a href="#g-zero-phase">Zero-phase</a>
+      <a href="#g-zoeppritz-equations">Zoeppritz equations</a>
+    </div>
+  </nav>
+
+  <dl class="gloss">
+    <dt id="g-acoustic-impedance">Acoustic impedance</dt>
+    <dd>Velocity multiplied by density. One number that describes a rock, in the way a porosity does.
+      Written Zp or Ip. <a href="modules/01-rock-makes-seismic.html">Module 1</a></dd>
+
+    <dt id="g-reflection-coefficient">Reflection coefficient</dt>
+    <dd>How much of an arriving wave comes back from a boundary. It is the difference in impedance
+      across the boundary divided by their sum, so it describes a <em>pair</em> of rocks rather than
+      either one. <a href="modules/01-rock-makes-seismic.html">Module 1</a></dd>
+
+    <dt id="g-reflectivity-series">Reflectivity series</dt>
+    <dd>The reflection coefficients of a whole stack of layers, each placed at the time its boundary
+      sits at. Mostly zeros, with a value wherever the rock changes.
+      <a href="modules/01-rock-makes-seismic.html">Module 1</a></dd>
+
+    <dt id="g-wavelet">Wavelet</dt>
+    <dd>The short burst of energy a seismic source leaves on the record, a few cycles long. A survey
+      does not record a sharp spike at each boundary. It records one copy of this shape per boundary,
+      which is why boundaries close together interfere with one another.
+      <a href="modules/01-rock-makes-seismic.html">Module 1</a></dd>
+
+    <dt id="g-convolution">Convolution</dt>
+    <dd>Laying a copy of the wavelet on every reflection, scaled by that reflection's size, and adding up
+      wherever the copies overlap. It is how a reflectivity series becomes a trace.
+      <a href="modules/01-rock-makes-seismic.html">Module 1</a></dd>
+
+    <dt id="g-forward-problem">Forward problem</dt>
+    <dd>Working out the seismic from the rock. It has one answer and needs no judgment. A synthetic
+      seismogram is a forward calculation. <a href="modules/01-rock-makes-seismic.html">Module 1</a></dd>
+
+    <dt id="g-inverse-problem">Inverse problem</dt>
+    <dd>Working out the rock from the seismic. This is what seismic inversion is. It does not have one
+      answer. <a href="modules/01-rock-makes-seismic.html">Module 1</a></dd>
+
+    <dt id="g-non-uniqueness">Non-uniqueness</dt>
+    <dd>The fact that more than one arrangement of rock produces the same recording. Not a fault in the
+      method or the data: the information is genuinely not in the recording.
+      <a href="modules/04-more-than-one-answer.html">Module 4</a></dd>
+
+    <dt id="g-resolution">Resolution</dt>
+    <dd>How thin a bed can be before its top and base stop arriving as two separate events. Set by the
+      wavelet, not by the geology. <a href="modules/03-what-the-wavelet-does.html">Module 3</a></dd>
+
+    <dt id="g-wedge-model">Wedge model</dt>
+    <dd>The standard way to show what a wavelet does to a thinning bed. A sand is drawn as a wedge and a
+      trace computed at every position across it, so the true boundaries and the events an interpreter
+      would pick can be followed together as the bed pinches out.
+      <a href="modules/03-what-the-wavelet-does.html">Module 3</a></dd>
+
+    <dt id="g-tuning">Tuning</dt>
+    <dd>What happens below that thickness: the two reflections overlap and add together, so the size of
+      the single event that remains depends on thickness as much as on the rock.
+      <a href="modules/03-what-the-wavelet-does.html">Module 3</a></dd>
+
+    <dt id="g-bandwidth">Bandwidth</dt>
+    <dd>The range of frequencies a survey actually recorded. Everything outside it is missing from the
+      data and has to come from somewhere else. <a href="modules/06-never-recorded.html">Module 6</a></dd>
+
+    <dt id="g-low-frequency-component">Low-frequency component</dt>
+    <dd>The part of the earth's impedance that varies more slowly with depth than the seismic band
+      reaches: the compaction trend, and the overall level. It belongs to the rock and is there whether
+      or not anyone measures it. No survey records it.
+      <a href="modules/06-never-recorded.html">Module 6</a></dd>
+
+    <dt id="g-low-frequency-model">Low-frequency model, or background model</dt>
+    <dd>Somebody's estimate of the low-frequency component, made by filtering impedance logs down to the
+      missing band and carrying them across the survey along horizons. The component is a property of
+      the earth; the model is a thing a person builds, and what it gets wrong goes into the answer with
+      nothing in the seismic to object. <a href="modules/06-never-recorded.html">Module 6</a></dd>
+
+    <dt id="g-relative-acoustic-impedance">Relative acoustic impedance</dt>
+    <dd>What you get by summing a trace: the right shape, but with no absolute value and no slow trend.
+      Free, fast, and honest about what it lacks. <a href="modules/06-never-recorded.html">Module 6</a></dd>
+
+    <dt id="g-colored-inversion">Colored inversion</dt>
+    <dd>A single filter, designed from well logs once, that turns a seismic volume into something with
+      the frequency character of an impedance log. Fast over a whole volume, and relative rather than
+      absolute. <a href="modules/08-the-family-of-methods.html">Module 8</a></dd>
+
+    <dt id="g-sparse-spike-inversion">Sparse-spike inversion</dt>
+    <dd>Assumes the earth has only a few significant boundaries and finds them. The number of spikes
+      allowed is a choice somebody makes, not something the seismic decides.
+      <a href="modules/08-the-family-of-methods.html">Module 8</a></dd>
+
+    <dt id="g-model-based-inversion">Model-based inversion</dt>
+    <dd>Starts from a background model, adjusts it until its synthetic matches the recording, and returns
+      absolute impedance. The workhorse, and what most products mean by inversion.
+      <a href="modules/08-the-family-of-methods.html">Module 8</a></dd>
+
+    <dt id="g-full-waveform-inversion">Full-waveform inversion, FWI</dt>
+    <dd>Builds a detailed velocity model from the recorded waveforms, mainly to improve the image. Worth
+      keeping separate in your mind from the reservoir methods above: it answers a different question and
+      needs long offsets, low frequencies and a good starting model.
+      <a href="modules/08-the-family-of-methods.html">Module 8</a></dd>
+
+    <dt id="g-post-stack-inversion">Post-stack inversion</dt>
+    <dd>Inversion of the ordinary stacked seismic volume. Returns acoustic impedance.
+      <a href="modules/07-reading-a-result.html">Module 7</a></dd>
+
+    <dt id="g-pre-stack-inversion">Pre-stack inversion</dt>
+    <dd>Inversion that keeps the different angles separate instead of averaging them, which allows a
+      second rock property to be estimated. <a href="modules/08-the-family-of-methods.html">Module 8</a></dd>
+
+    <dt id="g-deterministic-inversion">Deterministic inversion</dt>
+    <dd>Returns one best-fitting model. Most commercial inversion is of this kind.</dd>
+
+    <dt id="g-stochastic-inversion">Stochastic inversion</dt>
+    <dd>Returns many models that all fit the data, so the spread between them can be measured. Covered
+      in the companion advanced set.</dd>
+
+    <dt id="g-trace">Trace</dt>
+    <dd>The recording at one surface location: amplitude against two-way time, drawn as a wiggle. A seismic section is a row of traces side by side.
+      <a href="modules/01-rock-makes-seismic.html">Module 1</a></dd>
+    <dt id="g-amplitude">Amplitude</dt>
+    <dd>How far the trace departs from zero at a given time. It carries the size of the reflection there, blended with the reflections near it, and scaled by whatever gain the processing applied.
+      <a href="modules/01-rock-makes-seismic.html">Module 1</a></dd>
+    <dt id="g-frequency">Frequency</dt>
+    <dd>How many cycles a wave completes per second, in hertz. A wavelet is a mixture of frequencies rather than one, and the range a survey holds is its bandwidth.
+      <a href="modules/03-what-the-wavelet-does.html">Module 3</a></dd>
+    <dt id="g-phase">Phase</dt>
+    <dd>Where a wavelet sits relative to the boundary that produced it. A zero-phase wavelet is centered on the boundary; other phases shift and distort the event, and phase cannot be checked from the seismic alone.
+      <a href="modules/05-tying-a-well.html">Module 5</a></dd>
+    <dt id="g-amplitude-spectrum">Amplitude spectrum</dt>
+    <dd>A plot of how much energy a signal holds at each frequency. It is where the band a survey recorded is visible, and where the absence of the low frequencies is visible as well.
+      <a href="modules/06-never-recorded.html">Module 6</a></dd>
+    <dt id="g-offset">Offset</dt>
+    <dd>The distance between the source and the receiver that recorded a given reflection. A larger offset means the wave struck the boundary at a larger angle, which is the information stacking averages away.
+      <a href="modules/08-the-family-of-methods.html">Module 8</a></dd>
+    <dt id="g-gather">Gather</dt>
+    <dd>The set of traces that recorded the same subsurface point at different offsets, collected together before stacking. A pre-stack inversion works on gathers; a post-stack one works on what is left after they are summed.
+      <a href="modules/08-the-family-of-methods.html">Module 8</a></dd>
+    <dt id="g-angle-stack">Angle stack</dt>
+    <dd>Traces stacked within a range of angles rather than across all of them — a near stack, a mid stack, a far stack. It is a middle course between keeping every offset and averaging them all together.
+      <a href="modules/08-the-family-of-methods.html">Module 8</a></dd>
+    <dt id="g-horizon">Horizon</dt>
+    <dd>A boundary followed across a seismic survey and picked as a surface. Horizons carry a low-frequency model away from the wells, and a tie that is out moves every horizon by the same amount.
+      <a href="modules/07-reading-a-result.html">Module 7</a></dd>
+    <dt id="g-shear-impedance">Shear impedance</dt>
+    <dd>Density multiplied by shear-wave velocity, written Zs or Is. Gas in the pore space lowers the compressional velocity sharply and leaves the shear velocity almost alone, so Zs separates rocks that acoustic impedance alone cannot.
+      <a href="modules/08-the-family-of-methods.html">Module 8</a></dd>
+    <dt id="g-vp-vs">Vp/Vs</dt>
+    <dd>The ratio of compressional to shear velocity. It falls in a gas-charged sand and stays high in a shale, which makes it one of the more useful things a pre-stack inversion returns.
+      <a href="modules/08-the-family-of-methods.html">Module 8</a></dd>
+    <dt id="g-shear-sonic">Shear sonic</dt>
+    <dd>A well log of shear-wave travel time, recorded by a tool that measures it alongside the compressional. Without one in at least one well, a pre-stack inversion has nothing to calibrate its second property against.
+      <a href="modules/08-the-family-of-methods.html">Module 8</a></dd>
+    <dt id="g-density-log">Density log</dt>
+    <dd>A well log of bulk density, measured from how strongly the formation scatters gamma rays from a source in the tool. With velocity from the sonic it gives impedance.
+      <a href="modules/05-tying-a-well.html">Module 5</a></dd>
+    <dt id="g-time-depth-curve">Time-depth curve</dt>
+    <dd>A two-way time for every depth in a well, built by adding up the travel time across each sonic log sample and anchored by a checkshot. It is what a well tie produces and what everything afterwards reads in both directions.
+      <a href="modules/05-tying-a-well.html">Module 5</a></dd>
+    <dt id="g-cycle-skip">Cycle skip</dt>
+    <dd>A tie settled a whole wavelet period away from the truth, so the synthetic is matched to the neighbouring loop of the wavelet rather than the right one. The correlation can look good and every depth is out by one cycle.
+      <a href="modules/05-tying-a-well.html">Module 5</a></dd>
+    <dt id="g-ricker-wavelet">Ricker wavelet</dt>
+    <dd>A simple symmetric wavelet with one peak and a trough either side, defined by a single peak frequency. Real wavelets are messier; this one is used throughout for teaching because it has one number to change.
+      <a href="modules/03-what-the-wavelet-does.html">Module 3</a></dd>
+    <dt id="g-realization">Realization</dt>
+    <dd>One of the many models a stochastic inversion returns, each fitting the recording as well as the others. The value is in how much they disagree, which is a number a single answer cannot give.
+      <a href="modules/08-the-family-of-methods.html">Module 8</a></dd>
+    <dt id="g-running-sum">Running sum</dt>
+    <dd>Adding a trace up sample by sample. It undoes the differencing that made the reflection coefficients, which recovers the shape of the impedance and nothing else — no level and no slow trend.
+      <a href="modules/06-never-recorded.html">Module 6</a></dd>
+    <dt id="g-elastic-property">Elastic property</dt>
+    <dd>A property describing how a rock deforms under a passing wave — acoustic impedance, shear impedance, Vp/Vs and the rest. One of them rarely names a rock; two together often narrow it usefully.
+      <a href="modules/08-the-family-of-methods.html">Module 8</a></dd>
+    <dt id="g-avo">AVO</dt>
+    <dd>Amplitude versus offset: how the size of a reflection changes as the angle at which the wave struck the boundary increases. It is the information stacking averages away and pre-stack inversion keeps.
+      <a href="modules/08-the-family-of-methods.html">Module 8</a></dd>
+    <dt id="g-zoeppritz-equations">Zoeppritz equations</dt>
+    <dd>The equations giving how much energy a boundary between two elastic rocks reflects at each angle. They are exact and unwieldy, so approximations to them are what pre-stack inversion is built on.
+      <a href="modules/08-the-family-of-methods.html">Module 8</a></dd>
+    <dt id="g-migration">Migration</dt>
+    <dd>The processing step that moves reflections to where they actually came from, which for a dipping or curved boundary is not directly beneath the recording point. Inversion assumes it has already been done properly.
+      <a href="modules/03-what-the-wavelet-does.html">Module 3</a></dd>
+    <dt id="g-ground-roll">Ground roll</dt>
+    <dd>Slow, low-frequency surface waves that travel along the ground rather than down through it. They arrive with far more energy than the reflections and are filtered out — which is one reason a survey holds no low frequencies.
+      <a href="modules/06-never-recorded.html">Module 6</a></dd>
+
+    <dt id="g-side-lobe">Side lobe</dt>
+    <dd>The smaller excursions either side of a wavelet's main peak. They belong to the wavelet rather
+      than to the rock, and picking one by mistake is how a horizon ends up half a lobe off.
+      <a href="modules/03-what-the-wavelet-does.html">Module 3</a></dd>
+
+    <dt id="g-two-way-time">Two-way time</dt>
+    <dd>The time a wave takes to travel down to a boundary and back up to the surface. Seismic data is
+      recorded in two-way time and wells are measured in depth, and the two are not proportional to
+      each other, because velocity changes with depth.
+      <a href="modules/05-tying-a-well.html">Module 5</a></dd>
+
+    <dt id="g-synthetic-seismogram">Synthetic seismogram</dt>
+    <dd>A trace calculated from well logs: impedance from the sonic and density logs, reflection
+      coefficients from the impedance, then a wavelet convolved onto them. It is the forward problem
+      run on real logs rather than on a made-up model.
+      <a href="modules/05-tying-a-well.html">Module 5</a></dd>
+
+    <dt id="g-well-tie">Well tie</dt>
+    <dd>Matching a synthetic seismogram against the recorded seismic at the well and adjusting the time
+      scale until the two line up. It is what fixes the relationship between depth in the well and time
+      on the seismic, and every later step that mixes logs with seismic rests on it.
+      <a href="modules/05-tying-a-well.html">Module 5</a></dd>
+
+    <dt id="g-checkshot">Checkshot</dt>
+    <dd>A direct measurement of travel time to known depths in a well, made by recording a surface
+      source on a geophone lowered down the hole. It anchors the time-depth relationship, which a sonic
+      log on its own gets slightly wrong because it measures a different frequency band over a
+      different path. <a href="modules/05-tying-a-well.html">Module 5</a></dd>
+
+    <dt id="g-sonic-log">Sonic log</dt>
+    <dd>A well log of how long a wave takes to cross a fixed distance of rock at the borehole wall,
+      usually in microseconds per foot or per meter. Its reciprocal is velocity, which with the density
+      log gives impedance. <a href="modules/05-tying-a-well.html">Module 5</a></dd>
+
+    <dt id="g-polarity">Polarity</dt>
+    <dd>Which way a reflection deflects on the display. It follows the sign of the reflection
+      coefficient, so it says whether impedance stepped up or down at that boundary — provided the
+      convention the display was drawn with is known.
+      <a href="modules/01-rock-makes-seismic.html">Module 1</a></dd>
+
+    <dt id="g-zero-phase">Zero-phase</dt>
+    <dd>A wavelet whose largest excursion falls at the same time as the boundary that produced it, with
+      symmetric side lobes either side. Processing aims for it because it is the shape for which the
+      center of an event marks the interface.
+      <a href="modules/07-reading-a-result.html">Module 7</a></dd>
+
+    <dt id="g-deconvolution">Deconvolution</dt>
+    <dd>A processing step that shortens the wavelet so that reflections close together arrive as
+      separate events rather than one blended one. It broadens the bandwidth at the high end and does
+      not recover the low frequencies. <a href="modules/06-never-recorded.html">Module 6</a></dd>
+
+    <dt id="g-stacking">Stacking</dt>
+    <dd>Adding together the traces that reflected from the same subsurface point at different
+      source-receiver distances. It raises signal against noise, and averages away the change of
+      amplitude with angle that pre-stack inversion uses.
+      <a href="modules/08-the-family-of-methods.html">Module 8</a></dd>
+
+    <dt id="g-bright-spot">Bright spot</dt>
+    <dd>A reflection noticeably stronger than the ones around it. It is often read as a fluid
+      indicator, though thickness and lithology change amplitude as well, which is what makes it a
+      standing example of non-uniqueness.
+      <a href="modules/04-more-than-one-answer.html">Module 4</a></dd>
+
+    <dt id="g-gas-sand">Gas sand</dt>
+    <dd>A porous sand whose pore space holds gas rather than brine. Gas lowers both the velocity and the
+      density of the rock, so it lowers the impedance, often far enough to make the sand softer than the
+      shale above it. A soft shale can sit at the same impedance, which is why one impedance value does
+      not identify a rock. <a href="modules/04-more-than-one-answer.html">Module 4</a></dd>
+
+    <dt id="g-misfit">Misfit</dt>
+    <dd>A number saying how far a synthetic trace is from the recorded one, usually the sum of the
+      squared differences sample by sample. An inversion adjusts its model to make this small, and a
+      small misfit is not the same thing as a correct model.
+      <a href="modules/08-the-family-of-methods.html">Module 8</a></dd>
+
+    <dt id="g-prior-information">Prior information</dt>
+    <dd>Anything used to choose among the models that fit the data equally well: wells, geology, rock
+      physics, or an assumption about how simple the answer should be.
+      <a href="modules/04-more-than-one-answer.html">Module 4</a> and <a href="modules/06-never-recorded.html">module 6</a></dd>
+  </dl>
+
+  <div class="whymatters" style="margin-top:30px">
+    <h4>Words this set deliberately avoids</h4>
+    <p>Regularization, posterior distribution, Bayesian inference, cycle skipping and full-waveform
+      inversion are all real and all useful, and none of them is needed to understand what inversion is
+      doing. They belong to the companion set, <i>How Seismic Inversion Actually Works</i>.</p>
+  </div>
+
+  <footer>
+    <div class="foot-grid">
+      <p>Built for teaching by Dr. Heather Bedle and Dr. April Moreno-Ward, School of Geosciences,
+        University of Oklahoma, with the <a href="https://www.ou.edu/mcee/labs/aaspi">AASPI</a>
+        consortium.</p>
+      <p class="lic">Licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+        — free to use, adapt and share, including commercially, provided the source is credited and
+        adaptations carry the same license.</p>
+      <p class="lic">Well data from the New Zealand Petroleum &amp; Minerals Geodata Catalogue, Ministry
+        of Business, Innovation &amp; Employment. Open-file and used with acknowledgement.</p>
+      <p class="lic">To cite: H. Bedle and A. Moreno-Ward, <i>Seismic Inversion, from the start</i>,
+        University of Oklahoma. <span class="k">SSRN: [article link to follow]</span></p>
+    </div>
+  </footer>
+</div>
+<script src="assets/count.js"></script>
+<script src="assets/glossary.js"></script>
+</body>
+</html>

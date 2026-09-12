@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7 · Reading somebody else's result | Seismic Inversion, from the start</title>
+<meta name="description" content="An impedance section on the screen, what it is good for, and the short list of questions worth asking about any result somebody hands you.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .provenance { font: 12px/1.6 "IBM Plex Mono", monospace; color: #5C6670;
+                border-left: 3px solid #0B7285; padding: 6px 0 6px 12px; margin: 14px 0 0; }
+  .asklist { margin: 0; padding: 0; list-style: none; }
+  .asklist li { border-left: 3px solid #841617; padding: 10px 0 10px 16px; margin: 0 0 18px; }
+  .asklist b { display: block; font: 700 16px/1.4 "IBM Plex Sans", sans-serif; color: #16191C; }
+  .asklist span { display: block; margin-top: 5px; font: 14.5px/1.65 "IBM Plex Sans", sans-serif;
+                  color: #40474E; }
+  .asklist em { color: #5C6670; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="masthead">
+    <a class="brand" href="../index.html"><span class="dot"></span>Seismic inversion, <b>from the start</b></a>
+    <nav>
+      <a href="../index.html">All modules</a>
+      <a href="../glossary.html">Glossary</a>
+      <a href="#pm">How this page works</a>
+    </nav>
+  </header>
+
+  <div class="mod-head">
+    <p class="eyebrow">Module 7 &nbsp;·&nbsp; Reading somebody else's result</p>
+    <h1>What the display is good for, and what to ask about it</h1>
+    <p class="sub">Five modules on one trace at a time. This one puts a section on the screen. It covers what an impedance display shows that an amplitude display does not, what survives when the assumptions change, and the short list of questions worth asking about any result you are handed.</p>
+  </div>
+
+  <div class="labhead">
+    <div class="labgrid">
+      <div>
+        <p class="cap">The same line, both ways <span>&mdash; built from Maui-4</span></p>
+        <canvas id="cHead" aria-label="An amplitude section and an impedance section over the same model"></canvas>
+      </div>
+      <div>
+        <p class="cap">Change the earth and the assumptions <span>&mdash; then read both</span></p>
+        <div class="controls" id="mainControls">
+          <div class="ctl-col">
+            <h2>The earth</h2>
+            <div class="ctl">
+              <label for="soft">How soft the body is <span class="val" id="softV">22%</span></label>
+              <input type="range" data-key="soft" id="soft" min="0" max="40" step="1" value="22">
+            </div>
+            <div class="ctl">
+              <label for="wide">How wide it is <span class="val" id="wideV">20 traces</span></label>
+              <input type="range" data-key="wide" id="wide" min="6" max="40" step="1" value="20">
+            </div>
+
+            <h2>The survey</h2>
+            <div class="ctl">
+              <label for="fr">Wavelet frequency <span class="val" id="frV">30 Hz</span></label>
+              <input type="range" data-key="fr" id="fr" min="15" max="60" step="1" value="30">
+            </div>
+
+            <h2>What somebody supplied</h2>
+            <div class="ctl">
+              <label for="bg">Background from a well
+                <span class="val" id="bgV">at this spot</span></label>
+              <input type="range" data-key="bg" id="bg" min="0" max="2" step="1" value="0">
+            </div>
+
+            <div class="modbar" style="margin-top:14px">
+              <button class="btn ghost small reset" id="resetBtn" type="button">Reset</button>
+              <button class="btn ghost small" id="copyBtn" type="button">Copy link to this setup</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="tabhint">Three short steps. Step 3 is the page to keep.</p>
+
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Module steps">
+    <button role="tab" data-tab="p1" aria-selected="false">1 · Two displays</button>
+    <button role="tab" data-tab="p2" aria-selected="false">2 · Same data, two answers</button>
+    <button role="tab" data-tab="p3" aria-selected="false">3 · The questions</button>
+    <span class="gap"></span>
+    <span class="tabs-meta">
+  <button role="tab" data-tab="pw" aria-selected="false">Why this matters</button>
+      <button role="tab" data-tab="pc" aria-selected="false">Check yourself</button>
+      <button role="tab" data-tab="pm" aria-selected="false">How this page works</button>
+    </span>
+  </nav>
+
+  <!-- =============================== STEP 1 =============================== -->
+  <section class="tabpane" id="p1" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">1</span>Contacts above, layers below</h3>
+      <span class="hint">The same line, displayed two ways</span>
+    </div>
+
+    <p class="lede">The upper panel is the amplitude section. A wiggle wherever the rock changes, two of
+      them for a body with a top and a base, and nothing in between. The lower panel is the impedance
+      section made from the same recording, where the body is a block of color and the wiggles have
+      become its edges.</p>
+
+    <p class="lede">This is the plain case for inversion, and it is worth looking at before any of the
+      cautions. A geologist thinks in layers with properties. An amplitude section shows the contacts
+      between layers. An impedance section shows the layers.</p>
+
+    <p class="lede">Set the body softness to zero and the body disappears from both displays together,
+      leaving the bedding of the real well that the section was built on. Neither display invents
+      anything the other does not have. What changes between them is the arrangement of the information,
+      not its amount.</p>
+
+    <p class="lede"><b>Where the boundary actually is.</b> Both panels carry a dashed line at the top of
+      the body, and it is worth checking what each display puts there. On the impedance section the line
+      falls on an edge: the color changes at the boundary, because impedance is a property of a layer and
+      the layer starts there. On the amplitude section the same line falls in the <em>middle</em> of a
+      dark band, halfway down the event rather than at the top of it.</p>
+
+    <p class="lede">That is what a zero-phase wavelet does. The wavelet is symmetric about its own
+      center, so when a copy of it is laid on the reflection at the boundary, the largest excursion sits
+      at the boundary and the side lobes sit above and below. The event is roughly a wavelength across
+      and the interface is at its middle, not at the point where the trace first leaves the zero line.
+      Picking the top of the black band puts the horizon half a lobe shallow, which at 30 Hz in this
+      section is around 8 ms, or about 20 m.</p>
+
+    <div class="sec-row" id="row1">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> The amplitude section
+          <span class="note">what the survey recorded</span></p>
+        <canvas id="c1a" aria-label="The amplitude section over the model"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> The impedance section
+          <span class="note">what the inversion returned</span></p>
+        <canvas id="c1b" aria-label="The impedance section over the same model"></canvas>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Events on the amplitude section</span><b id="s1a">&mdash;</b></div>
+      <div class="stat"><span>On the impedance section</span><b id="s1b">&mdash;</b></div>
+      <div class="stat"><span>Impedance of the body</span><b id="s1c">&mdash;</b></div>
+      <div class="stat"><span>Impedance around it</span><b id="s1d">&mdash;</b></div>
+      <div class="stat"><span>Contrast, body against surroundings</span><b id="s1e">&mdash;</b></div>
+      <div class="stat key"><span>What changed between the displays</span><b id="s1f">&mdash;</b></div>
+      <div class="stat wide"><span>Where the boundary sits on each display</span><b id="s1g">&mdash;</b></div>
+    </div>
+
+    <div class="whymatters">
+      <h4>Why this matters</h4>
+      <p>Almost every question a geologist puts to a seismic section is about a layer: how thick, how
+        porous, what rock. An amplitude display answers a different question, about the contacts. Turning
+        one into the other is what all of the trouble in modules 3 to 6 was for.</p>
+    </div>
+  </section>
+
+  <!-- =============================== STEP 2 =============================== -->
+  <section class="tabpane" id="p2" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">2</span>The same recording, inverted twice</h3>
+      <span class="hint">Move the background control and compare</span>
+    </div>
+
+    <p class="lede">Two sections, from one recording, with backgrounds built from wells in different
+      places. Look at them before reading any numbers.</p>
+
+    <p class="lede">They are hard to tell apart. The body is in the same place, the same shape and the
+      same size on both, because all of that came from the seismic and the seismic did not change. Then
+      read the values. The body's impedance differs between the two by the amount in the readout.</p>
+
+    <p class="lede">That is module 6's result, seen on a display instead of a curve. It gives a practical
+      rule with two halves. Comparing one part of a section with another is sound, because both parts
+      carry the same background. Quoting a value and taking it somewhere else. To a rock-physics
+      relationship, to a core measurement, to a different survey. Depends on a background that somebody
+      built and that nobody measured at your target.</p>
+
+    <p class="callout"><b>Use the pointer.</b> Move the mouse across either section and a crosshair
+      appears at the same trace and the same time on both. The readouts underneath give the impedance
+      each panel holds at that exact spot, and how far apart they are. Comparing two displays by eye
+      across a gap is how a difference like this gets missed on a real screen.</p>
+
+    <div class="sec-row" id="row2">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> With a well on this line
+          <span class="note">the good case</span></p>
+        <canvas id="c2a" aria-label="The impedance section with a background from a nearby well"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> With a well some way off
+          <span class="note">the same recording, same color scale</span></p>
+        <canvas id="c2b" aria-label="The impedance section with a background from a more distant well"></canvas>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Body value, near well</span><b id="s2a">&mdash;</b></div>
+      <div class="stat"><span>Body value, distant well</span><b id="s2b">&mdash;</b></div>
+      <div class="stat"><span>How far apart those are</span><b id="s2c">&mdash;</b></div>
+      <div class="stat"><span>Contrast against the surroundings</span><b id="s2d">&mdash;</b></div>
+      <div class="stat key"><span>What survived the change</span><b id="s2e">&mdash;</b></div>
+      <div class="stat wide"><span>What did not</span><b id="s2f">&mdash;</b></div>
+      <div class="stat"><span>Pointer is on</span><b id="s2g">&mdash;</b></div>
+      <div class="stat wide key"><span>Impedance there, left panel against right</span><b id="s2h">&mdash;</b></div>
+    </div>
+
+    <div class="miscon">
+      <h4>Common misconception</h4>
+      <p class="said">"The color bar has numbers on it, so the numbers are measured."</p>
+      <p class="fix">Most of every number on that bar was carried in from a well, as module 6 measured. About 86 percent of it. Both sections here fit the seismic identically well, because changing the
+        background does not touch the part that fits. <b>The color bar is a measurement wearing a
+        borrowed level.</b> The pattern is yours to trust; the level belongs to whoever built the
+        background.</p>
+    </div>
+  </section>
+
+  <!-- =============================== STEP 3 =============================== -->
+  <section class="tabpane" id="p3" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">3</span>The questions worth asking</h3>
+      <span class="hint">Five modules, on one card</span>
+    </div>
+
+    <p class="lede">Somebody hands you an impedance volume. These are the questions that decide how much
+      of it you can use, in the order worth asking them.</p>
+
+    <ul class="asklist">
+      <li><b>How were the wells tied, and what was the tie hung on?</b>
+        <span>Every log that went into this result reached it through a tie. A tie that is a cycle out,
+        or one corrected with a bulk shift where the sonic needed a stretch, moves everything downstream
+        by the same amount and looks consistent while doing it.
+        <em>Module 5.</em></span></li>
+
+      <li><b>Which wells built the background, and how far away are they?</b>
+        <span>Most of every number came from there rather than from the seismic. The further the wells,
+        the softer the values, while the shapes stay just as good.
+        <em>Module 6.</em></span></li>
+
+      <li><b>What is the wavelet, and how thin a bed can it separate?</b>
+        <span>A quarter of a wavelength, roughly. Anything thinner arrives as one event, and its
+        brightness then mixes thickness with contrast. Ask before promising a thickness map.
+        <em>Module 3.</em></span></li>
+
+      <li><b>What else would have fitted this data?</b>
+        <span>The display shows one model. Others fit too, and something other than the seismic chose
+        between them. Ask what that something was.
+        <em>Module 4.</em></span></li>
+
+      <li><b>Am I comparing, or quoting?</b>
+        <span>Comparing one part of the section with another is sound. Taking a value somewhere else
+        depends on the background. The same section supports the first and not always the second.
+        <em>Modules 4 and 6.</em></span></li>
+
+      <li><b>Does the simplest method agree with it?</b>
+        <span>Summing the trace takes seconds and needs no well information. If its shape matches the delivered result, then the difference between the two is the background model. That is exactly the part to ask about.
+        <em>Modules 1 and 6.</em></span></li>
+    </ul>
+
+    <p class="lede">The panels put the last one into practice. On the left is the delivered impedance
+      section. On the right is the summed trace, made from the recording alone. Compare the shapes.</p>
+
+    <div class="sec-row" id="row3">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> The delivered result <span class="note">background model and seismic together</span></p>
+        <canvas id="c3a" aria-label="The delivered impedance section"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> The same line, without wells
+          <span class="note">the summed trace, no well information</span></p>
+        <canvas id="c3b" aria-label="The summed trace section, which needs no well information"></canvas>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Shapes agree</span><b id="s3a">&mdash;</b></div>
+      <div class="stat"><span>Body on the delivered result</span><b id="s3b">&mdash;</b></div>
+      <div class="stat"><span>Body on the summed trace</span><b id="s3c">&mdash;</b></div>
+      <div class="stat"><span>The difference between them</span><b id="s3d">&mdash;</b></div>
+      <div class="stat key"><span>What the background model added</span><b id="s3e">&mdash;</b></div>
+      <div class="stat wide"><span>What to trust on this section</span><b id="s3f">&mdash;</b></div>
+      <div class="stat wide"><span>Under the pointer</span><b id="s3g">&mdash;</b></div>
+    </div>
+
+    <div class="whymatters">
+      <h4>Why this matters</h4>
+      <p>None of this is a reason to distrust an inversion. It is a description of what one is: a careful
+        estimate built from a recording and a set of stated assumptions. Knowing which assumptions is
+        what turns a picture into evidence.</p>
+    </div>
+  </section>
+
+  <!-- ============================ WHY IT MATTERS =========================== -->
+  <section class="tabpane" id="pw" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">W</span>Why this matters</h3>
+      <span class="hint">What the whole set was for</span>
+    </div>
+    <p class="lede">An impedance section is the closest thing seismic gives a geologist to a picture of
+      rock. Layers instead of contacts, values instead of amplitudes, and edges that sit where the rock
+      changes. Step 1 is the honest case for the technique and it is a strong one.</p>
+    <p class="lede">Most of what an inversion delivers is reliable. The shapes are reliable. Comparisons
+      within one section are reliable. Those are the things most interpretation actually needs, and they
+      held up under everything the earlier modules measured.</p>
+    <p class="lede">What needs care is the part that came from outside the seismic. The level on the
+      color bar, the detail the display implies, and the single answer shown where several fit. All
+      three are measurable, and the five questions in step 3 are how you find out.</p>
+    <p class="lede">The habit worth taking away is small. When somebody shows you an impedance section,
+      ask which wells built the background and how thin a bed the wavelet can separate. Two questions,
+      half a minute, and you will know most of what you need about how far to trust the numbers on
+      it.</p>
+    <p class="lede">If you want the full treatment. Background models built properly, the loop a
+      contractor actually runs, estimating the wavelet, and keeping the angles to get a second rock
+      property. That is the companion set, <i>How Seismic Inversion Actually Works</i>.</p>
+  </section>
+
+  <!-- ============================ CHECK YOURSELF =========================== -->
+  <section class="tabpane" id="pc" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">C</span>Check yourself</h3>
+      <span class="hint">Five questions, drawing on the whole set</span>
+    </div>
+
+    <ol class="check" id="checkList">
+      <li data-q="q1" data-right="b">
+        <p class="qtext">What does an impedance section show that an amplitude section does not?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">More detail</button>
+          <button class="opt" data-opt="b" type="button">Layers rather than contacts</button>
+          <button class="opt" data-opt="c" type="button">Fewer assumptions</button>
+        </div>
+        <p class="why" hidden><b>Layers rather than contacts.</b> Not more detail. The impedance was
+          made from the amplitude and cannot hold anything the amplitude did not. And certainly not fewer
+          assumptions. It needed a background model the amplitude never asked for. What changed is the
+          arrangement, and the arrangement is what a geologist can use.</p>
+      </li>
+
+      <li data-q="q2" data-right="a">
+        <p class="qtext">Two inversions of the same data, with backgrounds from different wells. What
+          differs between the results?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">The values, not the pattern</button>
+          <button class="opt" data-opt="b" type="button">The pattern, not the values</button>
+          <button class="opt" data-opt="c" type="button">Both equally</button>
+        </div>
+        <p class="why" hidden><b>The values, not the pattern.</b> The pattern came from the seismic,
+          which did not change. The values came from the wells, which did. Step 2 lets you flip between
+          the two sections and see how hard they are to tell apart while the readouts show the body's
+          impedance moving.</p>
+      </li>
+
+      <li data-q="q3" data-right="c">
+        <p class="qtext">An inversion fits the seismic to 98 percent. What has that shown?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">The impedances are accurate</button>
+          <button class="opt" data-opt="b" type="button">The background was well chosen</button>
+          <button class="opt" data-opt="c" type="button">Only that the seismic part is explained</button>
+        </div>
+        <p class="why" hidden><b>Only that the seismic part is explained.</b> Changing the background does
+          not change how well the answer fits the seismic at all, so the fit cannot see a background
+          error. A high fit is necessary and it is not evidence about the values. Only a well can check
+          those, and the well is usually where they came from.</p>
+      </li>
+
+      <li data-q="q4" data-right="b">
+        <p class="qtext">Your target is 14 m thick, the rock is 3,000 m/s and the wavelet is 25 Hz. What
+          can you say about thickness from the section?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">It can be measured directly</button>
+          <button class="opt" data-opt="b" type="button">It is below resolution, so brightness mixes thickness with contrast</button>
+          <button class="opt" data-opt="c" type="button">Nothing at all can be said</button>
+        </div>
+        <p class="why" hidden><b>It is below resolution.</b> The wavelength is 3,000 over 25, which is
+          120 m, and a quarter of that is 30 m. A 14 m bed arrives as a single event whose brightness
+          depends on thickness and contrast together. That does not mean nothing can be said. The bed is
+          clearly there, and its extent can be mapped. But a thickness read off the display would not be
+          a measurement.</p>
+      </li>
+
+      <li data-q="q5" data-right="c">
+        <p class="qtext">You have ten minutes with an impedance volume and one question to ask. Which is
+          the most useful?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">What software made it</button>
+          <button class="opt" data-opt="b" type="button">What the fit to the seismic was</button>
+          <button class="opt" data-opt="c" type="button">Which wells built the background</button>
+        </div>
+        <p class="why" hidden><b>Which wells built the background.</b> That single answer tells you how
+          far to trust every number on the color bar, because most of each number came from there. The
+          fit is nearly always high and tells you little. The software matters least of all.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- =============================== METHOD =============================== -->
+  <section class="tabpane" id="pm" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">M</span>How this page works</h3>
+      <span class="hint">The arithmetic, and what it leaves out</span>
+    </div>
+
+    <p class="lede"><b>Everything on this page is computed while you watch.</b> The section is built from
+      the Maui-4 impedance log and inverted trace by trace, so both displays come from the same
+      recording.</p>
+
+    <p class="lede"><b>How the section is built.</b> A window of the log is used as the background
+      geology and repeated across 48 traces with a gentle dip. A body is placed in it, softened by the
+      amount you set and tapered at its edges so it thins rather than stopping at a wall. Each trace is
+      forward modeled with the wavelet, then inverted.</p>
+
+    <p class="lede">Because the section carries a real well's bedding, it never goes completely quiet.
+      With the body softness at zero there is still about 530 impedance units of contrast across that
+      interval, which is the well's own layering rather than anything this page added.</p>
+
+    <p class="lede"><b>The inversion is a sum plus a background</b>, as in module 6. A contractor runs a
+      loop instead, which gets a similar answer with more machinery and needs the same background. The
+      loop belongs to the companion set.</p>
+
+    <p class="lede"><b>The color scale is fixed</b> across both sections in step 2 and does not rescale
+      when the background changes. Software usually rescales each display to its own range by default,
+      which would hide the very difference that step is about.</p>
+
+    <p class="lede"><b>Where this page simplifies.</b></p>
+    <ul class="lede" style="padding-left:20px">
+      <li><b>The section is a model, not a survey.</b> No migration, no velocity error, no multiples,
+        and every trace sits exactly where it belongs. A real line is harder to read than this one for
+        reasons that have nothing to do with inversion.</li>
+      <li><b>The wavelet is known exactly and is symmetrical.</b> In practice it is estimated, and errors
+        in it move picks and values.</li>
+      <li><b>The distant well is a stand-in</b>, built from another interval of the same log, so the
+        shift in step 2 is a mild version of what a genuinely different well would do.</li>
+      <li><b>Lateral smearing is only the wavelet's width across the line.</b> Real lateral resolution is
+        set by the migration and the Fresnel zone and is worse.</li>
+      <li><b>No noise and no angles.</b> Both belong to the companion set.</li>
+    </ul>
+
+    <p class="provenance">Well data: NZP&amp;M Geodata Catalogue, Petroleum Report 543; composite log
+      compiled by GNS Science, version 04.08.2010. New Zealand Petroleum &amp; Minerals, Ministry of
+      Business, Innovation &amp; Employment. Open file and used with acknowledgement.</p>
+
+    <details class="instr">
+      <summary>Instructor notes</summary>
+      <div class="instr-body">
+        <h5>Learning objectives</h5>
+        <ul>
+          <li>State what an impedance display shows that an amplitude display does not.</li>
+          <li>Predict what changes and what does not when the background model changes.</li>
+          <li>Say what a good fit to the seismic does and does not demonstrate.</li>
+          <li>Ask at least three sensible questions about a delivered impedance volume.</li>
+        </ul>
+
+        <h5>Summary</h5>
+        <p>Trust the pattern and the comparisons. Ask where the level came from. Two questions —
+          which wells, and how thin a bed the wavelet resolves — cover most of it.</p>
+
+        <h5>Suggested discussion questions</h5>
+        <ul>
+          <li>A consultant presents an impedance map with a porosity scale on it. What would you need to
+            see before using those porosities in a volume calculation?</li>
+          <li>When is it fair to compare impedance values between two different surveys, and when is it
+            not?</li>
+          <li>Which of the five questions in step 3 would be hardest to get a straight answer to, and
+            why?</li>
+        </ul>
+
+        <h5>Common misconceptions this page addresses</h5>
+        <ul>
+          <li>That numbers on a color bar are measurements.</li>
+          <li>That a high fit to the seismic validates the impedance values.</li>
+        </ul>
+
+        <h5>Approximate completion time</h5>
+        <p>Twenty minutes, and step 3 works well as a printed card. The comparison in step 2 is worth
+          doing on a projector: flipping the background while the sections look identical makes the point
+          faster than any explanation.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="nextup" id="nextup" hidden>
+    <p class="eyebrow">That is the set</p>
+    <h3>Eight modules, from one boundary to a whole section</h3>
+    <p>From velocity and density making a wiggle, through what a survey never records, to the questions
+      worth asking about somebody else's volume. The front page has the sequence if you want to go back
+      to any of it.</p>
+    <a class="btn" href="08-the-family-of-methods.html">Go to module 8 →</a>
+    <a class="btn ghost" href="../glossary.html">Glossary</a>
+  </section>
+
+  <div class="pager" id="pager" hidden>
+    <a class="btn ghost" href="06-never-recorded.html">← Module 6: the part never recorded</a>
+    <a class="btn ghost" href="08-the-family-of-methods.html">Module 8: the family of methods →</a>
+  </div>
+
+  <footer>
+    <div class="foot-grid">
+      <p>Built for teaching by Dr. Heather Bedle and Dr. April Moreno-Ward, School of Geosciences,
+        University of Oklahoma, with the
+        <a href="https://www.ou.edu/mcee/labs/aaspi">AASPI</a> consortium.</p>
+      <p class="lic">Licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+        — free to use, adapt and share, including commercially, provided the source is credited and
+        adaptations carry the same license.</p>
+      <p class="lic">Well data from the New Zealand Petroleum &amp; Minerals Geodata Catalogue, Ministry
+        of Business, Innovation &amp; Employment. Open file and used with acknowledgement.</p>
+      <p class="lic">To cite: H. Bedle and A. Moreno-Ward, <i>Seismic Inversion, from the start</i>,
+        University of Oklahoma. <span class="k">SSRN: [article link to follow]</span></p>
+    </div>
+  </footer>
+</div>
+
+<script src="../assets/count.js"></script>
+<script src="../assets/glossary.js"></script>
+<script src="../assets/panelout.js"></script>
+<script src="../assets/seismic.js"></script>
+<script src="../assets/physics.js"></script>
+<script src="../assets/panels.js"></script>
+<script src="../data/maui-4.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  if (typeof SEIS === 'undefined' || typeof PHYS === 'undefined' || typeof MAUI4 === 'undefined') {
+    const el = document.createElement('div');
+    el.setAttribute('style', 'background:#841617;color:#fff;padding:14px 18px;font:14px/1.5 monospace');
+    el.textContent = 'This module needs seismic.js, physics.js and data/maui-4.js.';
+    const w = document.querySelector('.wrap');
+    (w || document.body).insertBefore(el, w ? w.firstChild : null);
+    return;
+  }
+
+  const $ = (id) => document.getElementById(id);
+  const visible = (id) => { const el = $(id); return el && !el.hidden; };
+  const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+  const CRIM = '#841617', TEAL = '#0B7285', SLATE = '#5C6670', INK = '#16191C';
+
+  const DEF = { soft: 22, wide: 20, fr: 30, bg: 0, tab: 'p1' };
+  const S = SEIS.readState(DEF);
+  (function sanitize() {
+    const num = (k, lo, hi) => {
+      let v = Number(S[k]);
+      if (!isFinite(v)) v = DEF[k];
+      S[k] = Math.min(hi, Math.max(lo, v));
+    };
+    num('soft', 0, 40); num('wide', 6, 40); num('fr', 15, 60); num('bg', 0, 2);
+  })();
+  const saveState = () => SEIS.writeState(S, DEF);
+  if ($('copyBtn')) $('copyBtn').addEventListener('click', (e) => SEIS.copyLink(e.currentTarget));
+
+  const DT = 0.001, NT = 190, NX = 48, T0 = 0;
+  const C = MAUI4.curves;
+  const TOP_M = 2000, SPAN_M = 360;
+  const DIP = 0.18;                       // samples of dip per trace
+  const BODY_T0 = 62, BODY_T1 = 96;       // the body, in samples
+
+  /* How far down each trace is pushed by the dip. One definition, used by the
+     model that builds the sections and by everything drawn on top of them. */
+  const dipShift = (x) => Math.round((x - NX / 2) * DIP);
+
+  // Exactly one place converts a sample index to a y position.
+  const yAt = (i, R) => R.y + (i / (NT - 1)) * R.h;
+
+  /* Fixed axes, shared by both sections and never rescaled. */
+  const AX = {
+    z:   [6500, 13000],
+    amp: [-0.35, 0.35],
+    rel: [-1800, 1800],
+  };
+
+  const fmt0 = (v) => Math.round(v).toLocaleString();
+
+  const WELLS = [
+    { label: 'at this spot',   off: 0 },
+    { label: 'some way off',   off: 220 },
+    { label: 'a long way off', off: 430 },
+  ];
+
+  function logWindow(topDepth) {
+    const base = Math.max(1990, Math.min(2714 - SPAN_M, topDepth));
+    let i0 = C.DEPT.findIndex((d) => d >= base);
+    let i1 = C.DEPT.findIndex((d) => d >= base + SPAN_M);
+    if (i0 < 0) i0 = 0;
+    if (i1 < 0) i1 = C.DEPT.length - 1;
+    const twt = C.TWT.slice(i0, i1 + 1), ai = C.AI.slice(i0, i1 + 1);
+    const ta = twt[0], tb = twt[twt.length - 1];
+    const z = new Float64Array(NT);
+    for (let i = 0; i < NT; i++) {
+      const t = ta + (tb - ta) * i / (NT - 1);
+      let k = 0;
+      while (k < twt.length - 1 && twt[k + 1] < t) k++;
+      const f = (t - twt[k]) / ((twt[k + 1] - twt[k]) || 1);
+      z[i] = ai[k] + (ai[Math.min(k + 1, ai.length - 1)] - ai[k]) * f;
+    }
+    return z;
+  }
+
+  function smoothed(x, N) {
+    const n = x.length, out = new Float64Array(n);
+    for (let i = 0; i < n; i++) {
+      let s = 0, c = 0;
+      for (let j = Math.max(0, i - N); j <= Math.min(n - 1, i + N); j++) { s += x[j]; c++; }
+      out[i] = s / c;
+    }
+    return out;
+  }
+
+  let D = {};
+
+  function recompute() {
+    D.soft = Math.round(S.soft);
+    D.wide = Math.round(S.wide);
+    D.fr = Math.round(S.fr);
+    D.bg = Math.max(0, Math.min(2, Math.round(S.bg)));
+
+    D.base = logWindow(TOP_M);
+
+    // how much the body is softened at each trace: full in the middle, tapered
+    const half = D.wide / 2, taper = Math.max(2, D.wide * 0.3);
+    D.profile = new Float64Array(NX);
+    for (let x = 0; x < NX; x++) {
+      const r = Math.abs(x - (NX - 1) / 2);
+      D.profile[x] = r <= half - taper ? 1 : (r < half ? (half - r) / taper : 0);
+    }
+
+    D.wav = PHYS.wavelet(D.fr, DT);
+    const shift = dipShift;
+
+    // the backgrounds, smoothed the same way
+    D.bgs = WELLS.map((W) => smoothed(logWindow(TOP_M + W.off), 40));
+
+    D.model = []; D.amp = []; D.invA = []; D.invB = []; D.free = [];
+    for (let x = 0; x < NX; x++) {
+      const sh = shift(x);
+      const z = new Float64Array(NT);
+      for (let i = 0; i < NT; i++) {
+        const j = Math.max(0, Math.min(NT - 1, i - sh));
+        z[i] = D.base[j];
+      }
+      const drop = 1 - (D.soft / 100) * D.profile[x];
+      for (let i = BODY_T0 + sh; i <= BODY_T1 + sh; i++) {
+        if (i >= 0 && i < NT) z[i] *= drop;
+      }
+      D.model.push(z);
+
+      const r = new Float64Array(NT);
+      for (let i = 1; i < NT; i++) {
+        r[i] = 0.5 * (z[i] - z[i - 1]) / (0.5 * (z[i] + z[i - 1]));
+      }
+      const tr = PHYS.convolve(r, D.wav);
+      D.amp.push(tr);
+
+      const rel = PHYS.runningSum(tr, { removeDrift: true });
+      // put the summed trace on the same footing as the log's own wiggle
+      const sc = PHYS.rms(rel) || 1;
+      const scaled = Float64Array.from(rel, (v) => v * 900 / sc);
+      D.free.push(scaled);
+
+      /* Shift a background to sit on this trace's dip. This used to be called
+         from inside the mapping callback below, which rebuilt the whole array
+         once per sample: about 3.5 million operations for a redraw where
+         eighteen thousand will do, and a slider that dragged like treacle on a
+         laptop. Both shifts are worked out once per trace now. */
+      const shiftBg = (bg) => {
+        const out = new Float64Array(NT);
+        for (let i = 0; i < NT; i++) {
+          const j = Math.max(0, Math.min(NT - 1, i - sh));
+          out[i] = bg[j];
+        }
+        return out;
+      };
+      const bgNear = shiftBg(D.bgs[0]);
+      const bgFar = shiftBg(D.bgs[D.bg === 0 ? 2 : D.bg]);
+      D.invA.push(Float64Array.from(scaled, (v, i) => v + bgNear[i]));
+      D.invB.push(Float64Array.from(scaled, (v, i) => v + bgFar[i]));
+    }
+    D.inv = D.bg === 0 ? D.invA : D.invB;
+
+    // lateral smearing: the wavelet has a width across the line too
+    const lat = Math.max(1, Math.round(80 / D.fr));
+    const smear = (sec) => {
+      const out = sec.map((t) => Float64Array.from(t));
+      for (let i = 0; i < NT; i++) {
+        for (let x = 0; x < NX; x++) {
+          let s = 0, n = 0;
+          for (let k = -lat; k <= lat; k++) {
+            const xx = x + k;
+            if (xx < 0 || xx >= NX) continue;
+            s += sec[xx][i]; n++;
+          }
+          out[x][i] = s / n;
+        }
+      }
+      return out;
+    };
+    D.amp = smear(D.amp);
+    D.inv = smear(D.inv);
+    D.invA = smear(D.invA);
+    D.invB = smear(D.invB);
+    D.free = smear(D.free);
+
+    // readouts, taken on the middle trace
+    const mid = Math.floor(NX / 2);
+    D.mid = mid;
+    const sh = shift(mid);
+    const meanIn = (arr, a, b) => {
+      let s = 0, n = 0;
+      for (let i = Math.max(0, a); i <= Math.min(NT - 1, b); i++) { s += arr[i]; n++; }
+      return n ? s / n : NaN;
+    };
+    const bt = BODY_T0 + sh, bb = BODY_T1 + sh;
+    D.bodyModel = meanIn(D.model[mid], bt, bb);
+    D.aroundModel = meanIn(D.model[mid], Math.max(0, bt - 26), bt - 5);
+    D.bodyA = meanIn(D.invA[mid], bt, bb);
+    D.bodyB = meanIn(D.invB[mid], bt, bb);
+    D.aroundA = meanIn(D.invA[mid], Math.max(0, bt - 26), bt - 5);
+    D.spread = Math.abs(D.bodyA - D.bodyB);
+    D.contrast = D.aroundA - D.bodyA;
+    D.bodyFree = meanIn(D.free[mid], bt, bb);
+    D.freeShape = PHYS.agreement(D.free[mid], D.inv[mid]);
+  }
+
+  /* --- drawing ------------------------------------------------------------- */
+
+  function panel(id, hRatio) {
+    const c = $(id);
+    if (!c || !c.parentElement) return null;
+    const cs = window.getComputedStyle(c.parentElement);
+    const w = c.parentElement.clientWidth
+            - parseFloat(cs.paddingLeft || 0) - parseFloat(cs.paddingRight || 0);
+    const h = Math.max(220, Math.round(w * (hRatio || 0.62)));
+    const ctx = SEIS.fitCanvas(c, w, h);
+    ctx.clearRect(0, 0, w, h);
+    return { ctx, w, h };
+  }
+
+  /* Impedance runs from a low value to a high one. It is not a quantity with a
+     natural zero in the middle, the way an amplitude is, so it is displayed
+     with a scale that runs continuously from one end to the other rather than
+     with two colors meeting at a white middle. The ramp below is the one most
+     interpretation packages use for impedance: purple and blue at the soft
+     end, through green and yellow, to red at the hard end.
+
+     A ramp of this kind does put visible edges in the display where the data
+     changes smoothly, at the places where the hue turns. That is the reason
+     the amplitude sections on this page keep a grey scale, and the reason the
+     numbers on the color bar are worth reading rather than the colors. */
+  const IMP_RAMP = [
+    [ 68,  16,  92],   // softest
+    [ 46,  62, 158],
+    [ 24, 126, 196],
+    [ 30, 176, 178],
+    [ 92, 198, 110],
+    [190, 214,  62],
+    [246, 208,  48],
+    [238, 148,  38],
+    [208,  70,  34],
+    [138,  18,  22],   // hardest
+  ];
+
+  function impColor(v, lo, hi) {
+    const f = Math.max(0, Math.min(1, (v - lo) / (hi - lo)));
+    const p = f * (IMP_RAMP.length - 1);
+    const i = Math.min(IMP_RAMP.length - 2, Math.floor(p));
+    const t = p - i;
+    const a = IMP_RAMP[i], b = IMP_RAMP[i + 1];
+    return 'rgb(' + Math.round(a[0] + (b[0] - a[0]) * t) + ','
+                  + Math.round(a[1] + (b[1] - a[1]) * t) + ','
+                  + Math.round(a[2] + (b[2] - a[2]) * t) + ')';
+  }
+  function greyColor(v, lo, hi) {
+    const f = Math.max(0, Math.min(1, (v - lo) / (hi - lo)));
+    const g = Math.round(255 * (1 - f));
+    return 'rgb(' + g + ',' + g + ',' + g + ')';
+  }
+
+  function section(ctx, rect, traces, rng, colorFn) {
+    const cw = rect.w / NX;
+    for (let x = 0; x < NX; x++) {
+      const tr = traces[x];
+      for (let i = 0; i < NT; i++) {
+        const y0 = yAt(i, rect), y1 = yAt(i + 1, rect);
+        ctx.fillStyle = colorFn(tr[i], rng[0], rng[1]);
+        ctx.fillRect(rect.x + x * cw, y0, cw + 0.8, Math.max(1, y1 - y0 + 0.8));
+      }
+    }
+    SEIS.frame(ctx, rect);
+  }
+
+  // A colored section with no scales is a picture, not a measurement. These
+  // three put time down the side, position along the bottom, and — the one that
+  // matters most for a beginner — say which end of the color bar is soft rock.
+  function sectionScales(ctx, rect) {
+    const ticks = [];
+    for (let ms = 0; ms <= 180; ms += 40) {
+      ticks.push({ pos: ms / ((NT - 1) * 1000 * DT), label: String(ms) });
+    }
+    PANEL.sideScale(ctx, rect, ticks, 'ms');
+    ctx.save();
+    ctx.font = '9px "IBM Plex Mono", monospace';
+    ctx.fillStyle = SLATE; ctx.textBaseline = 'top';
+    ctx.textAlign = 'left';  ctx.fillText('trace 1', rect.x, rect.y + rect.h + 5);
+    ctx.textAlign = 'right'; ctx.fillText('trace ' + NX, rect.x + rect.w, rect.y + rect.h + 5);
+    ctx.restore();
+  }
+
+  /* The same dashed line on both panels, at the true two-way time of a
+     boundary in the model. Drawn identically on the amplitude section and the
+     impedance section so the eye can carry it across, because the whole point
+     is that the two displays put the boundary in different-looking places. */
+  /* Where a boundary of the body truly sits, drawn on both sections.
+
+     The section has a gentle dip: every trace is shifted by DIP samples per
+     trace, so the body is deeper on the right than on the left. This line used
+     to be drawn flat, which meant it crossed the bed it was labelling instead
+     of following it, and only agreed with the boundary at one point across the
+     panel. It now carries the same shift the model does, so on the impedance
+     section it sits on the color edge everywhere, and on the amplitude section
+     it sits at the middle of the event everywhere. That is the comparison the
+     step exists to make, and a flat line was quietly breaking it. */
+  function interfaceLine(ctx, rect, t, label) {
+    const yOfX = (x) => yAt(t + dipShift(x), rect);
+    ctx.save();
+    ctx.strokeStyle = 'rgba(22,25,28,.85)';
+    ctx.setLineDash([5, 4]);
+    ctx.lineWidth = 1.3;
+    ctx.beginPath();
+    for (let x = 0; x < NX; x++) {
+      const px = rect.x + rect.w * (x + 0.5) / NX;
+      const py = yOfX(x);
+      x === 0 ? ctx.moveTo(rect.x, py) : ctx.lineTo(px, py);
+    }
+    ctx.lineTo(rect.x + rect.w, yOfX(NX - 1));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+    if (label) {
+      const xi = Math.round(NX * 0.30);
+      PANEL.tagAt(ctx, rect.x + rect.w * 0.30, yOfX(xi), label, INK, 'left');
+    }
+  }
+
+  /* The caption under a section. It sits close under the frame, above anything
+     else that goes below the panel, and is left of center so it does not run
+     into a color bar's end labels on a narrow column. */
+  /* A pointer that lands at the same place on every section on the page.
+
+     Two sections side by side are only comparable if the eye can be sure it is
+     looking at the same trace and the same time on both. Moving a mouse over
+     one panel puts a crosshair at that trace and time on all of them, and reads
+     the value under it out of each one. Without it a student comparing two
+     impedance displays is matching by eye across a gap, which is exactly the
+     thing that goes wrong when somebody reads a real section.
+
+     The position is held in samples and traces rather than pixels, so it means
+     the same thing on panels of different sizes. */
+  const PTR = { x: null, i: null };
+
+  function pointerAt(ctx, rect) {
+    if (PTR.x === null || PTR.i === null) return;
+    const px = rect.x + rect.w * (PTR.x + 0.5) / NX;
+    const py = yAt(PTR.i, rect);
+    ctx.save();
+    ctx.strokeStyle = 'rgba(22,25,28,.55)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 3]);
+    ctx.beginPath();
+    ctx.moveTo(rect.x, py); ctx.lineTo(rect.x + rect.w, py);
+    ctx.moveTo(px, rect.y); ctx.lineTo(px, rect.y + rect.h);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.4;
+    ctx.beginPath(); ctx.arc(px, py, 4.5, 0, 6.284); ctx.stroke();
+    ctx.strokeStyle = CRIM; ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.arc(px, py, 4.5, 0, 6.284); ctx.stroke();
+    ctx.restore();
+  }
+
+  /* Mouse and touch on a section canvas, turned into a trace and a sample.
+     Called once per canvas that shows a section. */
+  function wirePointer(id) {
+    const c = $(id);
+    if (!c || c.dataset.ptr) return;
+    c.dataset.ptr = '1';
+    const move = (ev) => {
+      const r = c.getBoundingClientRect();
+      const pt = ev.touches ? ev.touches[0] : ev;
+      const w = r.width, h = r.height;
+      // the same rect the sections are drawn into
+      const rx = 46, rw = w - 64, ry = 30, rh = h - 104;
+      const fx = (pt.clientX - r.left - rx) / rw;
+      const fy = (pt.clientY - r.top - ry) / rh;
+      if (fx < 0 || fx > 1 || fy < 0 || fy > 1) return;
+      PTR.x = Math.max(0, Math.min(NX - 1, Math.round(fx * NX - 0.5)));
+      PTR.i = Math.max(0, Math.min(NT - 1, Math.round(fy * (NT - 1))));
+      drawAll();
+      if (ev.touches) ev.preventDefault();
+    };
+    c.addEventListener('mousemove', move);
+    c.addEventListener('touchmove', move, { passive: false });
+    c.addEventListener('mouseleave', () => { PTR.x = null; PTR.i = null; drawAll(); });
+    c.style.cursor = 'crosshair';
+  }
+
+  function sectionLabel(ctx, rect, label) {
+    ctx.save();
+    ctx.font = '10px "IBM Plex Mono", monospace';
+    ctx.fillStyle = SLATE; ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText(label, rect.x, rect.y + rect.h + 18);
+    ctx.restore();
+  }
+
+  function colorbar(ctx, rect, rng, colorFn, label) {
+    const n = 40;
+    for (let i = 0; i < n; i++) {
+      const v = rng[0] + (i / (n - 1)) * (rng[1] - rng[0]);
+      ctx.fillStyle = colorFn(v, rng[0], rng[1]);
+      ctx.fillRect(rect.x + (i / n) * rect.w, rect.y, rect.w / n + 0.8, rect.h);
+    }
+    SEIS.frame(ctx, rect);
+    ctx.save();
+    ctx.font = '10px "IBM Plex Mono", monospace';
+    ctx.fillStyle = SLATE; ctx.textBaseline = 'top';
+    /* Five pieces of text around one small bar. They used to share two lines
+       and collided as soon as the panel was narrow: the units landed on the
+       numbers either side of them, and "softer rock" and "harder rock" landed
+       on the section caption above. Three lines now, each with one job.
+
+         above the bar   which end is soft and which is hard
+         below the bar   the two numbers, at the two ends
+         under those     the units, centered */
+    ctx.textAlign = 'left';  ctx.fillText(fmt0(rng[0]), rect.x, rect.y + rect.h + 4);
+    ctx.textAlign = 'right'; ctx.fillText(fmt0(rng[1]), rect.x + rect.w, rect.y + rect.h + 4);
+    ctx.textAlign = 'center';
+    ctx.fillText(label, rect.x + rect.w / 2, rect.y + rect.h + 17);
+    // Which end is which. A student who does not already know which end of the
+    // ramp is soft rock cannot read the section at all.
+    ctx.font = '600 10px "IBM Plex Sans", sans-serif';
+    ctx.textBaseline = 'bottom';
+    ctx.fillStyle = '#3C2A6E';  ctx.textAlign = 'left';
+    ctx.fillText('softer rock', rect.x, rect.y - 4);
+    ctx.fillStyle = CRIM;       ctx.textAlign = 'right';
+    ctx.fillText('harder rock', rect.x + rect.w, rect.y - 4);
+    ctx.restore();
+  }
+
+  function drawHead() {
+    const p = panel('cHead', 0.56); if (!p) return;
+    const { ctx, w, h } = p;
+    const pad = 18, top = 20, gap = 28;
+    const H = (h - top - gap - 30) / 2;
+    const ra = { x: 46, y: top, w: w - 46 - pad, h: H };
+    const rb = { x: 46, y: top + H + gap, w: w - 46 - pad, h: H };
+    sectionScales(ctx, ra);
+    section(ctx, ra, D.amp, AX.amp, greyColor);
+    sectionLabel(ctx, ra, 'amplitude');
+    sectionScales(ctx, rb);
+    section(ctx, rb, D.inv, AX.z, impColor);
+    sectionLabel(ctx, rb, 'impedance');
+  }
+
+  function draw1() {
+    const pa = panel('c1a', 0.7);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const rect = { x: 46, y: 30, w: w - 64, h: h - 104 };
+      sectionScales(ctx, rect);
+      section(ctx, rect, D.amp, AX.amp, greyColor);
+      if (D.soft > 4) {
+        interfaceLine(ctx, rect, BODY_T0, 'top of the body — mid-event');
+        interfaceLine(ctx, rect, BODY_T1, 'base of the body');
+      }
+      sectionLabel(ctx, rect, 'amplitude — two wiggles, nothing between them');
+    }
+    const pb = panel('c1b', 0.7);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const rect = { x: 46, y: 30, w: w - 64, h: h - 104 };
+      sectionScales(ctx, rect);
+      section(ctx, rect, D.inv, AX.z, impColor);
+      if (D.soft > 4) {
+        interfaceLine(ctx, rect, BODY_T0, 'top of the body — a color edge');
+        interfaceLine(ctx, rect, BODY_T1, 'base of the body');
+      }
+      sectionLabel(ctx, rect, 'impedance — one body you can point at');
+      colorbar(ctx, { x: rect.x + rect.w * 0.22, y: rect.y + rect.h + 34,
+                      w: rect.w * 0.56, h: 8 }, AX.z, impColor, '(m/s)(g/cc)');
+    }
+    set('s1a', D.soft > 2 ? 'two — a top and a base for the body'
+                          : 'only the bedding of the well');
+    set('s1b', D.soft > 2 ? 'one body, filled in'
+                          : 'no body — just the layered background');
+    set('s1c', fmt0(D.bodyModel));
+    set('s1d', fmt0(D.aroundModel));
+    set('s1e', fmt0(D.aroundModel - D.bodyModel));
+    set('s1f', 'the arrangement, not the amount of information');
+    set('s1g', D.soft > 4
+      ? 'amplitude: the middle of the event.  impedance: the edge of the block.'
+      : 'set a softness above zero to put a boundary on the display');
+  }
+
+  function draw2() {
+    // Both panels reserve the same room underneath, whether or not they carry
+    // a color bar, so the two sections are drawn the same size. Two sections
+    // meant to be compared cannot be different shapes.
+    const pa = panel('c2a', 0.7);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const rect = { x: 46, y: 30, w: w - 64, h: h - 104 };
+      sectionScales(ctx, rect);
+      section(ctx, rect, D.invA, AX.z, impColor);
+      pointerAt(ctx, rect);
+      sectionLabel(ctx, rect, 'background from a well on this line');
+      wirePointer('c2a');
+    }
+    const pb = panel('c2b', 0.7);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const rect = { x: 46, y: 30, w: w - 64, h: h - 104 };
+      sectionScales(ctx, rect);
+      section(ctx, rect, D.invB, AX.z, impColor);
+      pointerAt(ctx, rect);
+      sectionLabel(ctx, rect, 'background from a well ' + WELLS[D.bg === 0 ? 2 : D.bg].label);
+      colorbar(ctx, { x: rect.x + rect.w * 0.22, y: rect.y + rect.h + 34,
+                      w: rect.w * 0.56, h: 8 }, AX.z, impColor, 'the same scale on both');
+      wirePointer('c2b');
+    }
+    set('s2a', fmt0(D.bodyA));
+    set('s2b', fmt0(D.bodyB));
+    set('s2c', fmt0(D.spread) + ' impedance units');
+    set('s2d', fmt0(D.contrast) + ', the same either way');
+    set('s2e', 'the pattern, and the contrast against the surroundings');
+    set('s2f', 'the number you would quote for the body');
+    // what the pointer is sitting on, read out of both sections at once
+    if (PTR.x !== null && PTR.i !== null) {
+      const a = D.invA[PTR.x][PTR.i], b = D.invB[PTR.x][PTR.i];
+      set('s2g', 'trace ' + (PTR.x + 1) + ', ' + PTR.i + ' ms');
+      set('s2h', fmt0(a) + '   against   ' + fmt0(b) +
+                 '   —   ' + fmt0(Math.abs(a - b)) + ' apart');
+    } else {
+      set('s2g', 'move the pointer over either section');
+      set('s2h', 'the same spot is marked on both');
+    }
+  }
+
+  function draw3() {
+    const pa = panel('c3a', 0.7);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const rect = { x: 46, y: 30, w: w - 64, h: h - 104 };
+      sectionScales(ctx, rect);
+      section(ctx, rect, D.inv, AX.z, impColor);
+      if (D.soft > 4) interfaceLine(ctx, rect, BODY_T0, 'top of the body');
+      pointerAt(ctx, rect);
+      sectionLabel(ctx, rect, 'delivered impedance');
+      wirePointer('c3a');
+    }
+    const pb = panel('c3b', 0.7);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const rect = { x: 46, y: 30, w: w - 64, h: h - 104 };
+      sectionScales(ctx, rect);
+      section(ctx, rect, D.free, AX.rel, impColor);
+      if (D.soft > 4) interfaceLine(ctx, rect, BODY_T0, 'the same boundary');
+      pointerAt(ctx, rect);
+      sectionLabel(ctx, rect, 'the summed trace — no wells used');
+      wirePointer('c3b');
+    }
+    set('s3a', D.freeShape.toFixed(3));
+    set('s3b', fmt0(D.bodyA));
+    set('s3c', fmt0(D.bodyFree) + ' — no absolute level');
+    set('s3d', 'the background, worth ' + fmt0(D.bodyA - D.bodyFree));
+    set('s3e', 'the position on the impedance axis');
+    set('s3f', 'the pattern and the comparisons, more than the values');
+    if (PTR.x !== null && PTR.i !== null) {
+      set('s3g', 'trace ' + (PTR.x + 1) + ', ' + PTR.i + ' ms — delivered ' +
+                 fmt0(D.inv[PTR.x][PTR.i]) + ', summed trace ' + fmt0(D.free[PTR.x][PTR.i]));
+    } else {
+      set('s3g', 'move the pointer over either section');
+    }
+  }
+
+  /* --- check yourself ------------------------------------------------------ */
+
+  (function wireCheck() {
+    const list = $('checkList');
+    if (!list) return;
+    list.addEventListener('click', (ev) => {
+      const btn = ev.target.closest('.opt');
+      if (!btn) return;
+      const li = btn.closest('li');
+      const right = li.getAttribute('data-right');
+      li.querySelectorAll('.opt').forEach((b) => {
+        b.classList.remove('right', 'wrong');
+        if (b.getAttribute('data-opt') === right) b.classList.add('right');
+      });
+      if (btn.getAttribute('data-opt') !== right) btn.classList.add('wrong');
+      const why = li.querySelector('.why');
+      if (why) why.hidden = false;
+    });
+  })();
+
+  /* --- wiring -------------------------------------------------------------- */
+
+  function syncControls() {
+    if ($('soft')) $('soft').value = S.soft;
+    set('softV', Math.round(S.soft) + '%');
+    if ($('wide')) $('wide').value = S.wide;
+    set('wideV', Math.round(S.wide) + ' traces');
+    if ($('fr')) $('fr').value = S.fr;
+    set('frV', Math.round(S.fr) + ' Hz');
+    if ($('bg')) $('bg').value = S.bg;
+    set('bgV', WELLS[Math.max(0, Math.min(2, Math.round(S.bg)))].label);
+  }
+
+  function drawAll() {
+    syncControls();
+    drawHead();
+    if (visible('p1')) draw1();
+    if (visible('p2')) draw2();
+    if (visible('p3')) draw3();
+  }
+
+  const PANES = ['p1', 'p2', 'p3', 'pw', 'pc', 'pm'];
+
+  function showTab(id) {
+    PANES.forEach((q) => { const el = $(q); if (el) el.hidden = q !== id; });
+    document.querySelectorAll('#tabs button').forEach((b) => {
+      b.setAttribute('aria-selected', b.dataset.tab === id);
+    });
+    const lab = document.querySelector('.labhead');
+    if (lab) lab.hidden = (id === 'pw' || id === 'pc' || id === 'pm');
+    const last = (id === 'pc' || id === 'pm');
+    if ($('nextup')) $('nextup').hidden = !last;
+    if ($('pager')) $('pager').hidden = !last;
+    S.tab = id;
+    drawAll();
+    saveState();
+  }
+  document.querySelectorAll('#tabs button').forEach((b) => {
+    b.addEventListener('click', () => showTab(b.dataset.tab));
+  });
+
+  document.addEventListener('input', (ev) => {
+    const key = ev.target && ev.target.dataset && ev.target.dataset.key;
+    if (!key) return;
+    const v = parseFloat(ev.target.value);
+    if (!isFinite(v)) return;
+    S[key] = v;
+    recompute(); drawAll(); saveState();
+  });
+
+  if ($('resetBtn')) {
+    $('resetBtn').addEventListener('click', () => {
+      Object.keys(DEF).forEach((k) => { if (k !== 'tab') S[k] = DEF[k]; });
+      recompute(); drawAll(); saveState();
+    });
+  }
+
+  let rt;
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(drawAll, 140); });
+
+  recompute();
+  showTab(PANES.indexOf(S.tab) >= 0 ? S.tab : 'p1');
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawAll);
+
+  window.__MOD = { S, get D() { return D; }, recompute, drawAll, showTab };
+})();
+</script>
+</body>
+</html>

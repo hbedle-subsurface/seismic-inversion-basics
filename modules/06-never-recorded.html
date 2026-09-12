@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>6 · The part that was never recorded | Seismic Inversion, from the start</title>
+<meta name="description" content="A survey records no very low frequencies, so the level and the compaction trend of an impedance answer come from a low-frequency model built at wells. On the Maui-4 log that turns out to be most of the number.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .provenance { font: 12px/1.6 "IBM Plex Mono", monospace; color: #5C6670;
+                border-left: 3px solid #0B7285; padding: 6px 0 6px 12px; margin: 14px 0 0; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="masthead">
+    <a class="brand" href="../index.html"><span class="dot"></span>Seismic inversion, <b>from the start</b></a>
+    <nav>
+      <a href="../index.html">All modules</a>
+      <a href="../glossary.html">Glossary</a>
+      <a href="#pm">How this page works</a>
+    </nav>
+  </header>
+
+  <div class="mod-head">
+    <p class="eyebrow">Module 6 &nbsp;·&nbsp; The part that was never recorded</p>
+    <h1>A seismic survey does not record the low frequencies</h1>
+    <p class="sub">A survey holds a band of frequencies — roughly 8 Hz to 60 Hz on a good marine line —
+      and nothing below it. Impedance in the ground rises steadily with depth as rocks compact, and that
+      rise is far slower than 8 Hz. So is the overall level, which is zero frequency. Neither was ever
+      recorded, and no processing can put them back. They have to come from a well. This module measures
+      how much of an impedance answer that turns out to be, on a real log.</p>
+  </div>
+
+  <div class="labhead">
+    <div class="labgrid">
+      <div>
+        <p class="cap">What the survey holds, and the log it has to describe
+          <span>&mdash; Maui-4, Taranaki Basin</span></p>
+        <canvas id="cSpec" aria-label="The amplitude spectrum of the survey, with the frequencies below the low cut shaded as never recorded"></canvas>
+        <canvas id="cHead" aria-label="The Maui-4 impedance log split into the part a survey records and the part it does not"></canvas>
+      </div>
+      <div>
+        <p class="cap">The survey, and the well <span>&mdash; change either</span></p>
+        <div class="controls" id="mainControls">
+          <div class="ctl-col">
+            <h2>Where you are looking</h2>
+            <div class="ctl">
+              <label for="top">Top of window <span class="val" id="topV">2000 m</span></label>
+              <input type="range" data-key="top" id="top" min="1990" max="2300" step="10" value="2000">
+            </div>
+
+            <h2>What the survey recorded</h2>
+            <div class="ctl">
+              <label for="flo">Lowest frequency it holds
+                <span class="val" id="floV">8 Hz</span></label>
+              <input type="range" data-key="flo" id="flo" min="2" max="25" step="1" value="8">
+            </div>
+            <div class="ctl">
+              <label for="fr">Wavelet frequency <span class="val" id="frV">30 Hz</span></label>
+              <input type="range" data-key="fr" id="fr" min="15" max="60" step="1" value="30">
+            </div>
+
+            <div class="modbar" style="margin-top:14px">
+              <button class="btn ghost small reset" id="resetBtn" type="button">Reset</button>
+              <button class="btn ghost small" id="copyBtn" type="button">Copy link to this setup</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="tabhint">Four short steps, on a well drilled in 1970 that is still open file. The first three work at the well; the fourth spreads the argument across a line.</p>
+
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Module steps">
+    <button role="tab" data-tab="p1" aria-selected="false">1 · What is missing</button>
+    <button role="tab" data-tab="p2" aria-selected="false">2 · Filling it in</button>
+    <button role="tab" data-tab="p3" aria-selected="false">3 · The wrong well</button>
+    <button role="tab" data-tab="p4" aria-selected="false">4 · On a 2D line</button>
+    <span class="gap"></span>
+    <span class="tabs-meta">
+  <button role="tab" data-tab="pw" aria-selected="false">Why this matters</button>
+      <button role="tab" data-tab="pc" aria-selected="false">Check yourself</button>
+      <button role="tab" data-tab="pm" aria-selected="false">How this page works</button>
+    </span>
+  </nav>
+
+  <!-- =============================== STEP 1 =============================== -->
+  <section class="tabpane" id="p1" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">1</span>Split the log at the bottom of the seismic band</h3>
+      <span class="hint">One part a survey can record, one it cannot</span>
+    </div>
+
+    <p class="lede">This is a real acoustic impedance log from Maui-4, a well drilled off Taranaki in
+      1970. The left panel is the whole log.</p>
+
+    <p class="lede">Split it at the lowest frequency the survey holds. Everything below that cut is the
+      <b>low-frequency component</b> of the impedance: the overall level, and the steady increase with
+      depth as the rocks compact. Everything above it is the <b>seismic-band component</b>, which is the
+      wiggle around that trend — the beds, the coal, the sands.</p>
+
+    <p class="lede">A survey records none of the low-frequency component. Seismic sources put very little
+      energy below about 6 to 8 Hz, geophones are not sensitive there, and processing removes what does
+      arrive along with the ground roll. Zero frequency, which is the level itself, is not recorded by
+      any survey at all.</p>
+
+    <p class="lede">The seismic-band component is not fully recorded either. Module 3 showed the wavelet
+      merging anything thinner than about a quarter of its wavelength, so the finest detail on this log
+      is lost as well. What a survey holds is a band in the middle: above the compaction trend, below the
+      thin beds.</p>
+
+    <p class="lede">The sizes are the point of this step. In the window this page opens on, the
+      low-frequency component is around nine thousand impedance units and the seismic-band component
+      wiggles by around one and a half thousand. The readouts give both, and the last one gives the
+      share of the final number that the survey never held. Move the window and all three numbers move
+      with it, between about 86 and 91 percent on this well.</p>
+
+    <div class="sec-row" id="row1">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> The whole log
+          <span class="note">what a well measures</span></p>
+        <canvas id="c1a" aria-label="The complete Maui-4 impedance log"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> The two parts, side by side
+          <span class="note">low-frequency component teal, seismic band red</span></p>
+        <canvas id="c1b" aria-label="The low-frequency component and the seismic-band component of the impedance log shown separately"></canvas>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Mean impedance in the window</span><b id="s1a">&mdash;</b></div>
+      <div class="stat"><span>Size of the low-frequency component</span><b id="s1b">&mdash;</b></div>
+      <div class="stat"><span>Size of the seismic-band component</span><b id="s1c">&mdash;</b></div>
+      <div class="stat"><span>Detail too fine for the wavelet</span><b id="s1d">&mdash;</b></div>
+      <div class="stat"><span>The survey records</span><b id="s1e">&mdash;</b></div>
+      <div class="stat key"><span>Share the survey never recorded</span><b id="s1f">&mdash;</b></div>
+    </div>
+
+    <div class="miscon">
+      <h4>Common misconception</h4>
+      <p class="said">"Better processing could recover the low frequencies."</p>
+      <p class="fix">Drag the lowest-recorded-frequency control from 25 Hz down to 2 Hz, which is far
+        better than any real survey. The share barely moves. It sits near 86 percent the whole way.
+        <b>The missing part is not hiding in the data waiting to be brought out.</b> It was never
+        recorded, and filling it in means getting it from somewhere else.</p>
+    </div>
+  </section>
+
+  <!-- =============================== STEP 2 =============================== -->
+  <section class="tabpane" id="p2" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">2</span>Filling it in from a well</h3>
+      <span class="hint">The two parts added back together</span>
+    </div>
+
+    <p class="lede">This step puts the two pieces back together, which is what an inversion does. The
+      trace is summed, the way module 1 had you do it, and that gives a curve with the right shape and no
+      level. The curve is <b>relative acoustic impedance</b>. It uses the recording alone, with no well
+      logs.</p>
+
+    <p class="lede">The missing low-frequency component is then supplied. It is estimated by taking the
+      impedance logs from whatever wells are available, filtering them down to the band the seismic does
+      not cover, and interpolating that filtered version across the survey along mapped horizons. The
+      estimate is the <b>low-frequency model</b>, also called the background model, and adding it to the
+      relative curve turns a shape into impedance values.</p>
+
+    <p class="lede">Two names that sound alike are worth keeping apart. The low-frequency
+      <em>component</em> is a property of the earth, and it exists whether or not anyone measures it. The
+      low-frequency <em>model</em> is an estimate of that component, built by a person from wells and
+      horizons. Everything the model gets wrong is carried straight into the answer, and nothing in the
+      seismic will reveal that it is wrong.</p>
+
+    <p class="lede">The panels show the two pieces and the sum. The sum tracks the real log closely,
+      which is the encouraging part. The readout underneath is the uncomfortable part. It gives how much
+      of the final number came from the well rather than from the seismic.</p>
+
+    <div class="sec-row" id="row2">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> The two pieces
+          <span class="note">low-frequency model teal, summed trace red</span></p>
+        <canvas id="c2a" aria-label="The low-frequency model and the summed seismic trace shown separately"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> Added together, against the log
+          <span class="note">the answer in red, the truth in grey</span></p>
+        <canvas id="c2b" aria-label="The inversion result compared with the true impedance log"></canvas>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Shape agreement with the log</span><b id="s2a">&mdash;</b></div>
+      <div class="stat"><span>Average error in impedance</span><b id="s2b">&mdash;</b></div>
+      <div class="stat"><span>Came from the well</span><b id="s2c">&mdash;</b></div>
+      <div class="stat"><span>Came from the seismic</span><b id="s2d">&mdash;</b></div>
+      <div class="stat key"><span>Share supplied from outside</span><b id="s2f">&mdash;</b></div>
+      <div class="stat wide"><span>What the seismic did contribute</span><b id="s2e">&mdash;</b></div>
+    </div>
+
+    <div class="whymatters">
+      <h4>Why this matters</h4>
+      <p>An impedance section looks like a measurement of the earth, and most of every number on it was
+        carried in from a well. That does not make it wrong. It does mean the reliability of the numbers
+        depends on how good the wells were and how far away they are, which is a question about the
+        project rather than about the seismic.</p>
+    </div>
+  </section>
+
+  <!-- =============================== STEP 3 =============================== -->
+  <section class="tabpane" id="p3" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">3</span>What if the well is somewhere else</h3>
+      <span class="hint">Move the background further away and watch</span>
+    </div>
+
+    <p class="lede">Wells are not where you need them. The background at your target is built from wells
+      some distance off, and the rock changes in between.</p>
+
+    <p class="lede">The <b>a well this far away</b> control swaps the background for one built from a
+      different part of the section, standing in for a well that has drilled slightly different rock.</p>
+
+    <p class="lede">Watch the two readouts separately. Shape agreement sits at about 0.93 and stays
+      there, with no trend at all, because the shape came from the seismic and the seismic has not
+      changed. The impedance error climbs, from about 915 units at this spot to about 1,030 at the
+      furthest well, because the level came from the well and the well has changed.</p>
+
+    <p class="lede">That is a rise of roughly 12 percent, a mild version of the effect. These stand-in
+      wells differ from each other by only a few percent, so the shift is small. A genuinely different
+      well in a different part of a basin can be much further out, and the shape would still not
+      notice.</p>
+
+    <p class="lede">Move the window and the climb stops being tidy. At some settings a more distant
+      interval happens to fit the level better than the nearby one, and the error dips before it rises.
+      That is real rather than a fault in the exercise: distance from a well makes a background less
+      reliable, it does not make it reliably worse. What holds at every setting is the split between the
+      two readouts. The shape does not respond to the well at all, and the level responds to nothing
+      else.</p>
+
+    <p class="lede">That split is the practical rule to take away. Comparing one part of a section with
+      another is sound, because both parts got the same background. Quoting a number and comparing it
+      with a laboratory measurement or a rock-physics relationship is a different matter, and it depends
+      on a background you did not measure.</p>
+
+    <div class="sec-row" id="row3">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> The same seismic, four backgrounds
+          <span class="note">the answers barely differ in shape</span></p>
+        <canvas id="c3a" aria-label="Four inversion results from the same seismic with backgrounds from different wells"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> Shape and level, as the well moves away
+          <span class="note">one holds up, the other does not</span></p>
+        <canvas id="c3b" aria-label="Shape agreement and impedance error plotted against how far away the well is"></canvas>
+      </div>
+    </div>
+
+    <div class="controls" id="wellControls" style="margin-bottom:14px">
+      <div class="ctl-col">
+        <h2>Where the background comes from</h2>
+        <div class="ctl">
+          <label for="away">A well this far away
+            <span class="val" id="awayV">at this spot</span></label>
+          <input type="range" data-key="away" id="away" min="0" max="3" step="1" value="0">
+        </div>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>Background in use</span><b id="s3a">&mdash;</b></div>
+      <div class="stat"><span>Shape agreement</span><b id="s3b">&mdash;</b></div>
+      <div class="stat"><span>Impedance error</span><b id="s3c">&mdash;</b></div>
+      <div class="stat"><span>Shape, nearest to furthest</span><b id="s3d">&mdash;</b></div>
+      <div class="stat key"><span>Error, nearest to furthest</span><b id="s3e">&mdash;</b></div>
+      <div class="stat wide"><span>What survived the change of well</span><b id="s3f">&mdash;</b></div>
+    </div>
+
+    <div class="miscon">
+      <h4>Common misconception</h4>
+      <p class="said">"If the inversion matches the seismic well, the impedances must be right."</p>
+      <p class="fix">Every background on this page produces an answer that fits the seismic equally
+        well, because none of them changed the seismic part at all. The fit cannot see the background,
+        so it cannot warn you when the background is wrong. <b>A good match to the data is not evidence
+        that the numbers are right.</b> Only a well can check that, and the well is usually the thing
+        that supplied them.</p>
+    </div>
+  </section>
+
+  <!-- =============================== STEP 4 =============================== -->
+  <section class="tabpane" id="p4" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno">4</span>The same argument, on a seismic line</h3>
+      <span class="hint">Move the well along the line and watch which panels change</span>
+    </div>
+
+    <p class="lede">Steps 1 to 3 worked on one trace at a well, because that is where the arithmetic is
+      visible. A project is a line or a volume, and the same argument looks different when it is spread
+      out sideways. This step is a synthetic 2D line over a low-relief anticline. A wedge sand thins
+      across it, and a sand at 412 ms holds gas over the crest and brine off the flank.</p>
+
+    <p class="lede">The four panels are the four things that exist in a project. The top left is the
+      earth: the true impedance, which nobody has. The top right is what the survey recorded, which is
+      that impedance differenced into reflection coefficients and convolved with a wavelet. The bottom
+      left is relative acoustic impedance, the summed seismic on its own. The bottom right is the
+      absolute answer, the relative result standing on a low-frequency model built at the well.</p>
+
+    <p class="lede">Move the <b>well position</b> control from one end of the line to the other. The
+      seismic panel does not change, because the recording is the recording. The relative panel does not
+      change either, because summing the trace uses no wells. Only the absolute panel moves, and it moves
+      by hundreds of impedance units in the gas sand.</p>
+
+    <p class="lede">Compare the bottom two panels against the top left. The relative result has the body
+      in the right place with the right shape and sits on no level at all, so the color scale under it is
+      arbitrary. The absolute result has values on it, and how close those values are to the truth depends
+      on where the well was put.</p>
+
+    <p class="lede">The <b>model follows the structure</b> control is the difference between a
+      low-frequency model interpolated along mapped horizons and one interpolated flat in time. Turning
+      it off leaves the model hanging level while the geology dips underneath it, which is what happens
+      when a background is built without horizons. Watch the crest.</p>
+
+    <div class="sec-row" id="row4a">
+      <div class="panel-col">
+        <p class="sublabel"><b>1</b> The earth
+          <span class="note">true impedance &mdash; nobody has this</span></p>
+        <canvas id="c4a" aria-label="The true impedance of the 2D model"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>2</b> What the survey recorded
+          <span class="note">amplitude</span></p>
+        <canvas id="c4b" aria-label="The amplitude section recorded over the same model"></canvas>
+      </div>
+    </div>
+
+    <div class="sec-row" id="row4b" style="margin-top:16px">
+      <div class="panel-col">
+        <p class="sublabel"><b>3</b> Relative acoustic impedance
+          <span class="note">no wells used &mdash; no level</span></p>
+        <canvas id="c4c" aria-label="Relative acoustic impedance from summing the seismic, with no low-frequency model"></canvas>
+      </div>
+      <div class="panel-col">
+        <p class="sublabel"><b>4</b> Absolute impedance
+          <span class="note">the same result on a low-frequency model</span></p>
+        <canvas id="c4d" aria-label="Absolute impedance, the relative result added to a low-frequency model built at the well"></canvas>
+      </div>
+    </div>
+
+    <div class="controls" id="lineControls" style="margin-top:14px">
+      <div class="ctl-col">
+        <h2>The low-frequency model</h2>
+        <div class="ctl">
+          <label for="wellx">Well position <span class="val" id="wellxV">trace 30</span></label>
+          <input type="range" data-key="wellx" id="wellx" min="4" max="92" step="1" value="30">
+        </div>
+        <div class="numrow">
+          <label for="cFollow">Model follows the structure</label>
+          <input type="checkbox" id="cFollow" data-check="cFollow" checked>
+          <span class="unit"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats" style="margin-top:14px">
+      <div class="stat"><span>True impedance in the gas sand</span><b id="s4a">&mdash;</b></div>
+      <div class="stat"><span>What the inversion returns there</span><b id="s4b">&mdash;</b></div>
+      <div class="stat"><span>How far off that is</span><b id="s4c">&mdash;</b></div>
+      <div class="stat"><span>Distance from the well to the gas</span><b id="s4d">&mdash;</b></div>
+      <div class="stat key"><span>Agreement in shape with the truth</span><b id="s4e">&mdash;</b></div>
+      <div class="stat wide"><span>What moving the well changed</span><b id="s4f">&mdash;</b></div>
+    </div>
+
+    <div class="miscon">
+      <h4>Common misconception</h4>
+      <p class="said">"The relative panel is the rough version and the absolute panel is the good one."</p>
+      <p class="fix">Both panels carry exactly the same information from the seismic, because both were
+        made from the same summed trace. The absolute panel has more <em>numbers</em> on it, and every one
+        of those extra numbers came from the well. <b>Putting a level on a result adds units, not
+        evidence.</b> Which of the two is more useful depends on the question. A relative section is
+        enough to find a body and compare it with its surroundings. An absolute one is needed before a
+        value can be carried to a rock physics model or a volume calculation.</p>
+    </div>
+  </section>
+
+  <!-- ============================ WHY IT MATTERS =========================== -->
+  <section class="tabpane" id="pw" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">W</span>Why this matters</h3>
+      <span class="hint">The thing most worth remembering</span>
+    </div>
+    <p class="lede">If you take one number away from this set, take the share in step 1. On this well,
+      in this window, about 86 percent of an impedance value comes from the background and about 14
+      percent from the seismic.</p>
+    <p class="lede">That ratio is not unusual and it is not a criticism. An inversion is doing the job it
+      is supposed to do. It puts the detail the seismic recorded onto a level the wells supplied. The
+      product is more useful than either piece alone.</p>
+    <p class="lede">What follows from it is a way of reading results. Detail and shape came from the
+      recording, so trust them the way you trust the seismic. The level came from wells, so trust it the
+      way you trust the wells. Less far from them, more near them.</p>
+    <p class="lede">It also explains a thing that puzzles people. Two contractors invert the same volume
+      and hand back different impedance levels, and both fit the seismic perfectly. They are not
+      disagreeing about the data. They are disagreeing about the background, and the data has no opinion
+      on that.</p>
+    <p class="lede">Module 7 turns all of this into a short list of questions you can ask about a result
+      somebody hands you. The first one on the list comes from this page. Which wells built the
+      background, and how far away are they.</p>
+  </section>
+
+  <!-- ============================ CHECK YOURSELF =========================== -->
+  <section class="tabpane" id="pc" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">C</span>Check yourself</h3>
+      <span class="hint">Four questions. Wrong answers are the useful ones</span>
+    </div>
+
+    <ol class="check" id="checkList">
+      <li data-q="q1" data-right="c">
+        <p class="qtext">Roughly how much of an impedance number on this well came from the seismic?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">Nearly all of it</button>
+          <button class="opt" data-opt="b" type="button">About half</button>
+          <button class="opt" data-opt="c" type="button">About one part in seven</button>
+        </div>
+        <p class="why" hidden><b>About one part in seven, or 14 percent.</b> The level is around nine
+          thousand and the wiggle around it is around fifteen hundred. The seismic recorded the wiggle.
+          Everything else was carried in from a well. Step 1 measures both, and the share hardly changes
+          whatever you do to the survey.</p>
+      </li>
+
+      <li data-q="q2" data-right="b">
+        <p class="qtext">Why can't better processing recover the missing low frequencies?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">It could, but it is expensive</button>
+          <button class="opt" data-opt="b" type="button">They were never recorded in the first place</button>
+          <button class="opt" data-opt="c" type="button">They are buried under the noise</button>
+        </div>
+        <p class="why" hidden><b>They were never recorded.</b> Sources do not produce them and receivers
+          do not sense them, so there is nothing in the data to bring out. Processing can only rearrange
+          what was recorded. This is different from something being buried in noise, which is at least
+          present.</p>
+      </li>
+
+      <li data-q="q3" data-right="a">
+        <p class="qtext">You swap the background for one from a well further away. What happens?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">The shape holds up and the numbers move</button>
+          <button class="opt" data-opt="b" type="button">Both get worse together</button>
+          <button class="opt" data-opt="c" type="button">Nothing changes</button>
+        </div>
+        <p class="why" hidden><b>The shape holds up and the numbers move.</b> The shape came from the
+          seismic, which you did not change. The level came from the well, which you did. This is why
+          comparing one part of a section with another is safer than quoting a value. Both parts share
+          whatever background was used, so the comparison survives an error that the value does
+          not.</p>
+      </li>
+
+      <li data-q="q4" data-right="c">
+        <p class="qtext">An inversion fits the seismic almost perfectly. What does that tell you about
+          the impedance values?</p>
+        <div class="opts">
+          <button class="opt" data-opt="a" type="button">They are accurate</button>
+          <button class="opt" data-opt="b" type="button">They are accurate near wells</button>
+          <button class="opt" data-opt="c" type="button">Nothing at all</button>
+        </div>
+        <p class="why" hidden><b>Nothing at all.</b> Every background on this page gives an answer that
+          fits the seismic identically well, because changing the background does not touch the part the
+          fit is measuring. A good fit tells you the seismic part is being explained. It is blind to the
+          part that came from the wells, which is most of the number.</p>
+      </li>
+    </ol>
+
+    <div class="whymatters">
+      <h4>If question 1 surprised you</h4>
+      <p>That is the reaction the module is for. Go to step 1 and read the two sizes: about 9,400 for the
+        low-frequency component and about 1,500 for the seismic band. Then drag the lowest-frequency control across its
+        whole range and watch the share stay where it is.</p>
+    </div>
+  </section>
+
+  <!-- =============================== METHOD =============================== -->
+  <section class="tabpane" id="pm" role="tabpanel" hidden>
+    <div class="plot-head">
+      <h3><span class="stepno ref">M</span>How this page works</h3>
+      <span class="hint">The arithmetic, and what it leaves out</span>
+    </div>
+
+    <p class="lede"><b>Everything on this page is computed while you watch</b>, from a real log. This is
+      the first module in the set to use one.</p>
+
+    <p class="lede"><b>The well.</b> Maui-4, drilled in the Taranaki Basin in 1970. The impedance curve
+      is velocity from the sonic times density from the density log. The window runs from the depth you
+      set over about 400 m, sampled to a regular time axis.</p>
+
+    <p class="lede"><b>The split.</b> The low-frequency component is a running average of the log, wide
+      enough to pass only frequencies below the one you set. The seismic-band component is whatever is
+      left over. The two add back to
+      the original exactly.</p>
+
+    <p class="lede"><b>The share.</b> The low-frequency component is measured by its average value,
+      about 9,400 here, because that is what it contributes to a number read off the section. The
+      seismic-band component is measured by how far it typically swings about zero, around 1,500. The
+      share is the first divided by the sum of the two. Those are two different kinds of measurement, a
+      level against a swing, and the comparison is deliberate. The question being asked is how much of
+      one printed impedance value came from each source, not how much variance each accounts for. Most
+      of the numerator is zero frequency, which no survey records at all, so the share comes out near 86
+      percent across the whole range of the frequency control. That is the point of the control.</p>
+
+    <p class="lede"><b>The distant wells</b> are stand-ins. Rather than a second well, the page builds
+      backgrounds from other depth intervals of this same well. They differ from one another by about 3
+      to 6 percent of the impedance level, which makes the effect in step 3 a mild one. At the default
+      window the error rises by about 12 percent across the four. A genuinely different well in a
+      different part of a basin would move it further. What the page demonstrates is the direction and
+      the split, not the size.</p>
+
+    <p class="lede">The four intervals are spread across whatever room the log leaves above or below the
+      window you have set, rather than sitting at fixed offsets, because the logged section is only
+      about 320 m longer than the window itself. The distance to each one is printed beside the control,
+      and it changes as the window moves.</p>
+
+    <p class="lede"><b>Shape is scored against the log filtered to the band the wavelet carries</b>,
+      using a zero-phase filter. That is the fair test. The seismic never held the lowest or the finest
+      parts of the log, so asking the summed trace to reproduce them would be measuring the wrong thing.
+      Scored that way the agreement comes out above 0.9, and the number to watch is how completely it
+      ignores which well supplied the background.</p>
+
+    <p class="lede"><b>Where this page simplifies.</b></p>
+    <ul class="lede" style="padding-left:20px">
+      <li><b>The inversion is a sum plus a background</b>, not the loop a contractor runs. The loop gets
+        a similar answer with more machinery, and it needs the same background.</li>
+      <li><b>The wavelet is known exactly.</b> Estimating it is a job of its own and errors in it make
+        everything on this page worse.</li>
+      <li><b>One trace, one well.</b> A real background model is interpolated between wells along
+        horizons, which is a piece of interpretation in its own right and can be done well or badly.</li>
+      <li><b>The 86 percent is this well, this window.</b> A shallower target, a slower section or a
+        larger contrast would shift it. The order of magnitude is what to remember, not the digits.</li>
+      <li><b>No noise and no angles.</b> Both belong to the advanced set.</li>
+    </ul>
+
+    <p class="provenance">Well data: NZP&amp;M Geodata Catalogue, Petroleum Report 543; composite log
+      compiled by GNS Science, version 04.08.2010. New Zealand Petroleum &amp; Minerals, Ministry of
+      Business, Innovation &amp; Employment. Open file and used with acknowledgement.</p>
+
+    <details class="instr">
+      <summary>Instructor notes</summary>
+      <div class="instr-body">
+        <h5>Learning objectives</h5>
+        <ul>
+          <li>Split an impedance log into the part a survey records and the part it does not.</li>
+          <li>State roughly what share of an impedance value comes from the background.</li>
+          <li>Explain why processing cannot recover the missing frequencies.</li>
+          <li>Say which conclusions survive a wrong background and which do not.</li>
+        </ul>
+
+        <h5>Summary</h5>
+        <p>Most of an impedance number comes from wells, not from the seismic. Shapes and comparisons
+          survive a wrong background; quoted values do not.</p>
+
+        <h5>Suggested discussion questions</h5>
+        <ul>
+          <li>Your survey has one well in the corner and the target is 20 km away. What does that do to
+            the numbers on the impedance map, and what would you still be willing to say?</li>
+          <li>A contractor shows a fit of 98 percent to the seismic. What has that actually
+            demonstrated?</li>
+          <li>If most of the answer comes from wells, why bother inverting at all?</li>
+        </ul>
+
+        <h5>Common misconceptions this page addresses</h5>
+        <ul>
+          <li>That better processing could recover the low frequencies.</li>
+          <li>That a good fit to the seismic means the impedance values are right.</li>
+        </ul>
+
+        <h5>Approximate completion time</h5>
+        <p>Twenty minutes. The share readout in step 1 is the moment worth pausing on; students are
+          usually surprised, and the surprise is the lesson.</p>
+      </div>
+    </details>
+  </section>
+
+  <section class="nextup" id="nextup" hidden>
+    <p class="eyebrow">Next up</p>
+    <h3>6 · Reading somebody else's result</h3>
+    <p>The last module puts an impedance section on the screen and turns the five before it into a short
+      list of questions worth asking about any result you are handed.</p>
+    <a class="btn" href="07-reading-a-result.html">Go to module 7 →</a>
+    <a class="btn ghost" href="05-tying-a-well.html">Back to module 5</a>
+  </section>
+
+  <div class="pager" id="pager" hidden>
+    <a class="btn ghost" href="05-tying-a-well.html">← Module 5: tying a well</a>
+    <a class="btn ghost" href="07-reading-a-result.html">Module 7: reading a result →</a>
+  </div>
+
+  <footer>
+    <div class="foot-grid">
+      <p>Built for teaching by Dr. Heather Bedle and Dr. April Moreno-Ward, School of Geosciences,
+        University of Oklahoma, with the
+        <a href="https://www.ou.edu/mcee/labs/aaspi">AASPI</a> consortium.</p>
+      <p class="lic">Licensed <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+        — free to use, adapt and share, including commercially, provided the source is credited and
+        adaptations carry the same license.</p>
+      <p class="lic">Well data from the New Zealand Petroleum &amp; Minerals Geodata Catalogue, Ministry
+        of Business, Innovation &amp; Employment. Open file and used with acknowledgement.</p>
+      <p class="lic">To cite: H. Bedle and A. Moreno-Ward, <i>Seismic Inversion, from the start</i>,
+        University of Oklahoma. <span class="k">SSRN: [article link to follow]</span></p>
+    </div>
+  </footer>
+</div>
+
+<script src="../assets/count.js"></script>
+<script src="../assets/glossary.js"></script>
+<script src="../assets/panelout.js"></script>
+<script src="../assets/seismic.js"></script>
+<script src="../assets/physics.js"></script>
+<script src="../assets/panels.js"></script>
+<script src="../assets/synth2d.js"></script>
+<script src="../data/maui-4.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  if (typeof SEIS === 'undefined' || typeof PHYS === 'undefined' || typeof MAUI4 === 'undefined') {
+    const el = document.createElement('div');
+    el.setAttribute('style', 'background:#841617;color:#fff;padding:14px 18px;font:14px/1.5 monospace');
+    el.textContent = 'This module needs seismic.js, physics.js and data/maui-4.js.';
+    const w = document.querySelector('.wrap');
+    (w || document.body).insertBefore(el, w ? w.firstChild : null);
+    return;
+  }
+
+  const $ = (id) => document.getElementById(id);
+  const visible = (id) => { const el = $(id); return el && !el.hidden; };
+  const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+  const CRIM = '#841617', TEAL = '#0B7285', SLATE = '#5C6670', INK = '#16191C';
+  const GRID = '#C9CDD2';
+
+  const DEF = { top: 2000, flo: 8, fr: 30, away: 0, wellx: 30, cFollow: 1, tab: 'p1' };
+  const S = SEIS.readState(DEF);
+  (function sanitize() {
+    const num = (k, lo, hi) => {
+      let v = Number(S[k]);
+      if (!isFinite(v)) v = DEF[k];
+      S[k] = Math.min(hi, Math.max(lo, v));
+    };
+    num('top', 1990, 2300); num('flo', 2, 25); num('fr', 15, 60); num('away', 0, 3);
+    num('wellx', 4, 92);
+    S.cFollow = (S.cFollow === 0 || S.cFollow === '0' || S.cFollow === false) ? 0 : 1;
+  })();
+  const saveState = () => SEIS.writeState(S, DEF);
+  if ($('copyBtn')) $('copyBtn').addEventListener('click', (e) => SEIS.copyLink(e.currentTarget));
+
+  const DT = 0.001, NT = 204, T0 = 0;
+  const C = MAUI4.curves;
+  const SPAN = 400;                              // window length in meters
+
+  // Exactly one place converts a sample index to a y position. This module
+  // resamples every window to the same number of samples, so the mapping is
+  // in samples rather than seconds.
+  const yAt = (i, R) => R.y + (i / (NT - 1)) * R.h;
+
+  /* Fixed axes across the whole module. */
+  const AX = {
+    z:    [6000, 14000],
+    dev:  [-3000, 3000],
+    /* The impedance error runs a little over a thousand units at the default
+       settings. This bound used to be 900, which clamped all four points to the
+       top of the panel and drew the "error climbs" curve as a flat line. */
+    err:  [0, 1400],
+  };
+
+  const fmt0 = (v) => Math.round(v).toLocaleString();
+
+  /* The four backgrounds: this spot, then progressively different rock. Each is
+     a real interval of the same well standing in for a well some way off.
+
+     The offsets are worked out from the window rather than fixed, because the
+     window has to fit inside the logged interval and that leaves only about
+     320 m of usable range. A fixed set of offsets ran off the bottom of the
+     log: with the window at 2,100 m, three of the four wells landed on the
+     same clamped depth and the error fell with distance instead of rising,
+     which is the opposite of what the step is for. Measuring toward whichever
+     end of the log has more room keeps four distinct wells at every setting of
+     the window control. */
+  const WELL_LABELS = ['at this spot', 'a short way off', 'further off', 'a long way off'];
+  const TOP_LO = 1990, TOP_HI = 2714 - SPAN;
+
+  function wellsFor(top) {
+    const room = (top - TOP_LO > TOP_HI - top) ? -(top - TOP_LO) : (TOP_HI - top);
+    return WELL_LABELS.map((label, k) => {
+      const f = k / (WELL_LABELS.length - 1);
+      return { label: label, top: top + room * f, off: Math.abs(room) * f };
+    });
+  }
+
+  let D = {};
+
+  // Pull a window of the log and resample it to NT samples.
+  function windowAt(topDepth) {
+    const base = Math.max(1990, Math.min(2714 - SPAN, topDepth));
+    let i0 = C.DEPT.findIndex((d) => d >= base);
+    let i1 = C.DEPT.findIndex((d) => d >= base + SPAN);
+    if (i0 < 0) i0 = 0;
+    if (i1 < 0) i1 = C.DEPT.length - 1;
+    const twt = C.TWT.slice(i0, i1 + 1), ai = C.AI.slice(i0, i1 + 1);
+    const ta = twt[0], tb = twt[twt.length - 1];
+    const z = new Float64Array(NT);
+    for (let i = 0; i < NT; i++) {
+      const t = ta + (tb - ta) * i / (NT - 1);
+      let k = 0;
+      while (k < twt.length - 1 && twt[k + 1] < t) k++;
+      const f = (t - twt[k]) / ((twt[k + 1] - twt[k]) || 1);
+      z[i] = ai[k] + (ai[Math.min(k + 1, ai.length - 1)] - ai[k]) * f;
+    }
+    return { z, ta, tb, base };
+  }
+
+  // A running average wide enough to pass only frequencies below fLo.
+  function slowPart(x, fLo) {
+    const half = Math.max(1, Math.round(1 / (2 * fLo * DT)));
+    const n = x.length, out = new Float64Array(n);
+    for (let i = 0; i < n; i++) {
+      let s = 0, c = 0;
+      for (let j = Math.max(0, i - half); j <= Math.min(n - 1, i + half); j++) { s += x[j]; c++; }
+      out[i] = s / c;
+    }
+    return out;
+  }
+
+  function meanOf(x) {
+    let s = 0;
+    for (let i = 0; i < x.length; i++) s += x[i];
+    return s / x.length;
+  }
+  function meanAbs(x) {
+    let s = 0;
+    for (let i = 0; i < x.length; i++) s += Math.abs(x[i]);
+    return s / x.length;
+  }
+
+  function recompute() {
+    D.top = Math.round(S.top);
+    D.flo = Math.round(S.flo);
+    D.fr = Math.round(S.fr);
+    D.away = Math.max(0, Math.min(3, Math.round(S.away)));
+    lineRecompute();
+
+    const win = windowAt(D.top);
+    D.z = win.z;
+    D.base = win.base;
+    D.mean = meanOf(D.z);
+
+    D.slow = slowPart(D.z, D.flo);
+    D.fast = Float64Array.from(D.z, (v, i) => v - D.slow[i]);
+    // The seismic-band component still holds detail finer than the wavelet can carry, so split
+    // it again: what the survey records, and what it misses off the top end.
+    // the band the wavelet actually carries, taken with a zero-phase filter so
+    // it can be compared with the summed trace without a sideways shift
+    D.band = PHYS.waveletBand(D.fr);
+    D.recordable = PHYS.bandpass(D.z, DT, D.band.f1, D.band.f2, D.band.f3, D.band.f4);
+    D.tooFine = Float64Array.from(D.fast, (v, i) => v - D.recordable[i]);
+    D.fineSize = PHYS.rms(D.tooFine);
+    D.slowSize = meanAbs(D.slow);
+    D.fastSize = PHYS.rms(D.fast);
+    D.share = 100 * D.slowSize / (D.slowSize + D.fastSize);
+
+    // The seismic: reflectivity of the log, through a wavelet, then summed back.
+    const r = new Float64Array(NT);
+    for (let i = 1; i < NT; i++) {
+      r[i] = 0.5 * (D.z[i] - D.z[i - 1]) / (0.5 * (D.z[i] + D.z[i - 1]));
+    }
+    D.trace = PHYS.convolve(r, PHYS.wavelet(D.fr, DT));
+    const summed = PHYS.runningSum(D.trace, { removeDrift: true });
+    // scale the summed trace so it carries the same swing as the seismic-band component
+    const sc = (PHYS.rms(summed) || 1);
+    D.relative = Float64Array.from(summed, (v) => v * PHYS.rms(D.recordable) / sc);
+    // Scored against the log filtered to the same band. That is the fair
+    // comparison: the rest of the log was never recordable, so holding the
+    // summed trace to account for it would be measuring the wrong thing.
+    D.bandShape = PHYS.agreement(D.relative, D.recordable);
+
+    // The four backgrounds, all smoothed the same way.
+    D.wells = wellsFor(D.top);
+    D.backgrounds = D.wells.map((W) => ({
+      label: W.label, off: W.off, bg: slowPart(windowAt(W.top).z, D.flo),
+    }));
+    D.answers = D.backgrounds.map((B) => ({
+      label: B.label, off: B.off,
+      z: Float64Array.from(D.relative, (v, i) => v + B.bg[i]),
+    }));
+    D.answers.forEach((A) => {
+      A.shape = PHYS.agreement(
+        Float64Array.from(A.z, (v, i) => v - D.backgrounds[0].bg[i]), D.recordable);
+      let e = 0;
+      for (let i = 0; i < NT; i++) e += Math.abs(A.z[i] - D.z[i]);
+      A.err = e / NT;
+    });
+    D.answer = D.answers[D.away];
+    D.bg = D.backgrounds[D.away].bg;
+
+    D.wellPart = meanAbs(D.bg);
+    D.seisPart = PHYS.rms(D.relative);
+    D.outsideShare = 100 * D.wellPart / (D.wellPart + D.seisPart);
+  }
+
+  /* --- drawing helpers ---------------------------------------------------- */
+
+  function panel(id, hRatio) {
+    const c = $(id);
+    if (!c || !c.parentElement) return null;
+    const cs = window.getComputedStyle(c.parentElement);
+    const w = c.parentElement.clientWidth
+            - parseFloat(cs.paddingLeft || 0) - parseFloat(cs.paddingRight || 0);
+    const h = Math.max(240, Math.round(w * (hRatio || 0.8)));
+    const ctx = SEIS.fitCanvas(c, w, h);
+    ctx.clearRect(0, 0, w, h);
+    return { ctx, w, h };
+  }
+
+  function trackLabel(ctx, rect, label, rng, fmt) {
+    SEIS.frame(ctx, rect);
+    ctx.save();
+    ctx.font = '10px "IBM Plex Mono", monospace';
+    ctx.fillStyle = SLATE; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText(label, rect.x + rect.w / 2, rect.y + rect.h + 6);
+    if (fmt) {
+      ctx.textAlign = 'left'; ctx.fillText(fmt(rng[0]), rect.x, rect.y - 13);
+      ctx.textAlign = 'right'; ctx.fillText(fmt(rng[1]), rect.x + rect.w, rect.y - 13);
+    }
+    ctx.restore();
+  }
+
+  // Depth down the left of a panel, so a student can see where they are.
+  function depthMarks(ctx, rect) {
+    ctx.save();
+    ctx.font = '9px "IBM Plex Mono", monospace';
+    ctx.fillStyle = SLATE; ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+    for (let k = 0; k <= 4; k++) {
+      const i = Math.round(k * (NT - 1) / 4);
+      const d = D.base + SPAN * k / 4;
+      const y = yAt(i, rect);
+      ctx.fillText(Math.round(d) + ' m', rect.x - 6, y);
+      SEIS.dashedLine(ctx, rect.x, y, rect.x + rect.w, y, 'rgba(201,205,210,.6)', [2, 4], 1);
+    }
+    ctx.restore();
+  }
+
+  function curve(ctx, rect, values, rng, color, width) {
+    ctx.save();
+    ctx.beginPath(); ctx.rect(rect.x, rect.y, rect.w, rect.h); ctx.clip();
+    ctx.strokeStyle = color; ctx.lineWidth = width || 2;
+    ctx.beginPath();
+    for (let i = 0; i < values.length; i++) {
+      const f = (values[i] - rng[0]) / (rng[1] - rng[0]);
+      const x = rect.x + Math.max(-0.2, Math.min(1.2, f)) * rect.w;
+      const y = yAt(i, rect);
+      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }
+    ctx.stroke(); ctx.restore();
+  }
+
+  /* --- the sticky head ---------------------------------------------------- */
+
+  /* The amplitude spectrum of the survey, with the band it does not hold shaded.
+
+     This is the first thing on the page for a reason. The rest of the module is
+     an argument about a frequency band, and a geologist who has not spent years
+     looking at spectra should not have to build the picture from prose. The
+     shaded strip on the left is the part that was never recorded — everything
+     below the low cut, including zero, which is the overall level of the
+     impedance. Both ends move with the controls. */
+  function drawSpectrum() {
+    const p = panel('cSpec', 0.26); if (!p) return;
+    const { ctx, w, h } = p;
+    const r = { x: 58, y: 30, w: w - 88, h: h - 66 };
+    const F0 = 0, F1 = 90;                       // fixed axis, in Hz
+    const xf = (f) => r.x + r.w * (f - F0) / (F1 - F0);
+
+    // The band: flat between the low cut and roughly twice the peak frequency,
+    // rolling off at both ends. A real spectrum is bumpier; the shape here is
+    // only carrying where the edges are.
+    const fLo = D.flo, fHi = Math.min(F1 - 4, D.fr * 2);
+    const amp = (f) => {
+      if (f <= fLo - 2 || f >= fHi + 6) return 0;
+      const up = Math.min(1, Math.max(0, (f - (fLo - 2)) / 6));
+      const dn = Math.min(1, Math.max(0, (fHi + 6 - f) / 14));
+      return Math.min(up, dn);
+    };
+
+    // what was never recorded
+    ctx.save();
+    ctx.fillStyle = 'rgba(132,22,23,.10)';
+    ctx.fillRect(r.x, r.y, xf(fLo) - r.x, r.h);
+    ctx.restore();
+
+    // the band that was
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(r.x, r.y + r.h);
+    for (let f = F0; f <= F1; f += 0.5) ctx.lineTo(xf(f), r.y + r.h - r.h * 0.86 * amp(f));
+    ctx.lineTo(r.x + r.w, r.y + r.h);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(11,114,133,.20)';
+    ctx.fill();
+    ctx.strokeStyle = TEAL; ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let f = F0; f <= F1; f += 0.5) {
+      const x = xf(f), y = r.y + r.h - r.h * 0.86 * amp(f);
+      f === F0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.restore();
+
+    // the low cut, and zero frequency, which is the level itself
+    SEIS.dashedLine(ctx, xf(fLo), r.y, xf(fLo), r.y + r.h, CRIM, [4, 3], 1.6);
+    ctx.save();
+    ctx.strokeStyle = CRIM; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(r.x, r.y); ctx.lineTo(r.x, r.y + r.h); ctx.stroke();
+    ctx.restore();
+
+    SEIS.frame(ctx, r);
+    SEIS.axisBottom(ctx, r, F0, F1, 'frequency, Hz', (v) => String(Math.round(v)));
+
+    ctx.save();
+    ctx.font = '600 10.5px "IBM Plex Sans", sans-serif';
+    ctx.fillStyle = CRIM; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    if (xf(fLo) - r.x > 74) {
+      ctx.fillText('never recorded', (r.x + xf(fLo)) / 2, r.y + r.h * 0.44);
+      ctx.font = '9.5px "IBM Plex Mono", monospace';
+      ctx.fillStyle = 'rgba(132,22,23,.8)';
+      ctx.fillText('including zero — the level', (r.x + xf(fLo)) / 2, r.y + r.h * 0.66);
+    }
+    ctx.font = '600 10.5px "IBM Plex Sans", sans-serif';
+    ctx.fillStyle = TEAL; ctx.textAlign = 'center';
+    ctx.fillText('what the survey holds', (xf(fLo) + xf(fHi)) / 2, r.y + r.h * 0.30);
+    ctx.font = '9.5px "IBM Plex Mono", monospace';
+    ctx.fillStyle = SLATE; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom';
+    ctx.fillText(D.flo + ' Hz', xf(fLo) + 4, r.y - 4);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText('0 Hz', r.x + 2, r.y + r.h + 4);
+    ctx.restore();
+  }
+
+  function drawHead() {
+    const p = panel('cHead', 0.5); if (!p) return;
+    const { ctx, w, h } = p;
+    const pad = 58, top = 30, bot = 26, gap = 14;
+    const cw = (w - pad - 30 - 2 * gap) / 3;
+    const H = h - top - bot;
+    const r = (k) => ({ x: pad + k * (cw + gap), y: top, w: cw, h: H });
+
+    depthMarks(ctx, r(0));
+    curve(ctx, r(0), D.z, AX.z, INK, 1.8);
+    trackLabel(ctx, r(0), 'the whole log', AX.z, fmt0);
+
+    curve(ctx, r(1), D.slow, AX.z, TEAL, 2.6);
+    trackLabel(ctx, r(1), 'low-frequency component', AX.z, fmt0);
+
+    curve(ctx, r(2), D.fast, AX.dev, CRIM, 1.6);
+    trackLabel(ctx, r(2), 'seismic-band component', AX.dev, fmt0);
+  }
+
+  /* --- step 1 -------------------------------------------------------------- */
+
+  function draw1() {
+    const pa = panel('c1a', 0.9);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const rect = { x: 62, y: 30, w: w - 86, h: h - 62 };
+      depthMarks(ctx, rect);
+      curve(ctx, rect, D.z, AX.z, INK, 1.9);
+      curve(ctx, rect, D.slow, AX.z, TEAL, 2.6);
+      PANEL.quantity(ctx, rect, 'impedance', '(m/s)(g/cc)', AX.z[0], AX.z[1], fmt0);
+      PANEL.curveLabel(ctx, rect, D.z, AX.z, 0.20, 'the whole log', INK);
+      PANEL.curveLabel(ctx, rect, D.slow, AX.z, 0.74, 'low-frequency component', TEAL);
+      trackLabel(ctx, rect, 'one is inside the other', [0, 0], () => '');
+    }
+    const pb = panel('c1b', 0.9);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const pad = 58, top = 30, gap = 18;
+      const cw = (w - pad - 30 - gap) / 2;
+      const H = h - top - 34;
+      const ra = { x: pad, y: top, w: cw, h: H };
+      const rb = { x: pad + cw + gap, y: top, w: cw, h: H };
+      depthMarks(ctx, ra);
+      curve(ctx, ra, D.slow, AX.z, TEAL, 2.6);
+      trackLabel(ctx, ra, 'low frequencies — not recorded', AX.z, fmt0);
+      curve(ctx, rb, D.fast, AX.dev, CRIM, 1.7);
+      trackLabel(ctx, rb, 'fast — recorded', AX.dev, fmt0);
+    }
+
+    set('s1a', fmt0(D.mean));
+    set('s1b', fmt0(D.slowSize));
+    set('s1c', fmt0(D.fastSize) + ' either way');
+    set('s1d', fmt0(D.fineSize) + ' — missed off the top end');
+    set('s1e', 'only between ' + D.flo + ' and about ' + D.fr + ' Hz');
+    set('s1f', D.share.toFixed(1) + '% of the number');
+  }
+
+  /* --- step 2 -------------------------------------------------------------- */
+
+  function draw2() {
+    const pa = panel('c2a', 0.9);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const pad = 58, top = 30, gap = 18;
+      const cw = (w - pad - 30 - gap) / 2;
+      const H = h - top - 34;
+      const ra = { x: pad, y: top, w: cw, h: H };
+      const rb = { x: pad + cw + gap, y: top, w: cw, h: H };
+      depthMarks(ctx, ra);
+      curve(ctx, ra, D.bg, AX.z, TEAL, 2.6);
+      trackLabel(ctx, ra, 'background, from a well', AX.z, fmt0);
+      curve(ctx, rb, D.relative, AX.dev, CRIM, 1.7);
+      trackLabel(ctx, rb, 'summed trace, from the seismic', AX.dev, fmt0);
+    }
+    const pb = panel('c2b', 0.9);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const rect = { x: 62, y: 30, w: w - 86, h: h - 62 };
+      depthMarks(ctx, rect);
+      curve(ctx, rect, D.z, AX.z, 'rgba(92,102,112,.55)', 2.8);
+      curve(ctx, rect, D.answer.z, AX.z, CRIM, 1.8);
+      PANEL.quantity(ctx, rect, 'impedance', '(m/s)(g/cc)', AX.z[0], AX.z[1], fmt0);
+      PANEL.curveLabel(ctx, rect, D.z, AX.z, 0.18, 'the real log', SLATE);
+      PANEL.curveLabel(ctx, rect, D.answer.z, AX.z, 0.70, 'the inversion', CRIM);
+      trackLabel(ctx, rect, 'background plus summed trace', [0, 0], () => '');
+    }
+
+    set('s2a', D.bandShape.toFixed(3));
+    set('s2b', fmt0(D.answer.err) + ' impedance units');
+    set('s2c', fmt0(D.wellPart) + ' of the number');
+    set('s2d', fmt0(D.seisPart) + ' of the number');
+    set('s2e', 'every wiggle, and where each bed sits');
+    set('s2f', D.outsideShare.toFixed(1) + '% from the well');
+  }
+
+  /* --- step 3 -------------------------------------------------------------- */
+
+  function draw3() {
+    const pa = panel('c3a', 0.9);
+    if (pa) {
+      const { ctx, w, h } = pa;
+      const rect = { x: 62, y: 30, w: w - 86, h: h - 62 };
+      depthMarks(ctx, rect);
+      curve(ctx, rect, D.z, AX.z, 'rgba(92,102,112,.50)', 3);
+      const shades = ['rgba(132,22,23,.95)', 'rgba(132,22,23,.62)',
+                      'rgba(132,22,23,.42)', 'rgba(132,22,23,.28)'];
+      D.answers.forEach((A, k) => curve(ctx, rect, A.z, AX.z, shades[k], 1.7));
+      PANEL.quantity(ctx, rect, 'impedance', '(m/s)(g/cc)', AX.z[0], AX.z[1], fmt0);
+      PANEL.curveLabel(ctx, rect, D.z, AX.z, 0.16, 'the real log', SLATE);
+      PANEL.tagAt(ctx, rect.x + rect.w * 0.62, rect.y + rect.h * 0.80,
+                  'four wells, four answers', CRIM, 'left');
+      trackLabel(ctx, rect, 'same shape, different values', [0, 0], () => '');
+    }
+    const pb = panel('c3b', 0.9);
+    if (pb) {
+      const { ctx, w, h } = pb;
+      const rect = { x: 62, y: 30, w: w - 84, h: h - 66 };
+      SEIS.frame(ctx, rect);
+      SEIS.axisBottom(ctx, rect, 0, 3, 'how far off the well is', (v) => ['0', '1', '2', '3'][Math.round(v)] || '');
+      SEIS.axisLeft(ctx, rect, 0, 100, 'shape, %   ·   error, % of ' + fmt0(AX.err[1]),
+                    (v) => v.toFixed(0), { flip: true });
+      const xOf = (k) => rect.x + (k / 3) * rect.w;
+      const yV = (v) => rect.y + (100 - Math.max(0, Math.min(100, v))) / 100 * rect.h;
+      // shape agreement, as a percentage
+      ctx.save(); ctx.strokeStyle = TEAL; ctx.lineWidth = 2.4; ctx.beginPath();
+      D.answers.forEach((A, k) => {
+        const x = xOf(k), y = yV(100 * A.shape);
+        k ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      });
+      ctx.stroke(); ctx.restore();
+      // impedance error, on the same scale so the two can be compared
+      ctx.save(); ctx.strokeStyle = CRIM; ctx.lineWidth = 2.4; ctx.beginPath();
+      D.answers.forEach((A, k) => {
+        const x = xOf(k), y = yV(100 * A.err / AX.err[1]);
+        k ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      });
+      ctx.stroke(); ctx.restore();
+      SEIS.tag(ctx, rect.x + rect.w - 6, rect.y + 14, 'shape holds up', TEAL, 'right');
+      SEIS.tag(ctx, rect.x + rect.w - 6, rect.y + 32, 'error climbs', CRIM, 'right');
+      SEIS.dashedLine(ctx, xOf(D.away), rect.y, xOf(D.away), rect.y + rect.h, SLATE, [4, 3], 1.3);
+    }
+
+    set('s3a', D.answer.label
+      + (D.answer.off >= 1 ? ' \u2014 ' + Math.round(D.answer.off) + ' m away' : ''));
+    set('s3b', D.answer.shape.toFixed(3));
+    set('s3c', fmt0(D.answer.err) + ' impedance units');
+    set('s3d', D.answers[0].shape.toFixed(3) + ' to ' + D.answers[3].shape.toFixed(3));
+    set('s3e', fmt0(D.answers[0].err) + ' to ' + fmt0(D.answers[3].err));
+    set('s3f', 'the shape — flat at about ' + D.answers[0].shape.toFixed(2)
+      + ' whichever well you use');
+  }
+
+  /* --- step 4: the same argument on a 2D line ------------------------------
+
+     The line comes from the shared model in assets/synth2d.js, which builds an
+     earth in impedance and derives everything else from it. That order is what
+     makes this step work: there is a truth on the screen to compare the
+     inversion against, which is the one thing a real project never has.
+
+     Only the pieces that depend on the well are recomputed when the well moves.
+     The reflectivity and the recorded section are built once, because moving a
+     well does not change what a survey recorded, and a student should be able
+     to see that those two panels do not so much as flicker.
+     -------------------------------------------------------------------- */
+
+  const LINE = (function () {
+    if (typeof SYNTH2D === 'undefined') return null;
+    const z = SYNTH2D.impedanceField();
+    const r = SYNTH2D.reflectivityFrom(z);
+    return { z: z, r: r, section: null, rel: null, fr: null };
+  })();
+
+  // Impedance on the rainbow ramp used across the set for impedance, amplitude
+  // on grey. Both take a value already scaled into [-1, 1].
+  const IMP_RAMP = [
+    [68, 16, 92], [46, 62, 158], [24, 126, 196], [30, 176, 178], [92, 198, 110],
+    [190, 214, 62], [246, 208, 48], [238, 148, 38], [208, 70, 34], [138, 18, 22],
+  ];
+  function impCmap(v) {
+    const f = Math.max(0, Math.min(1, (v + 1) / 2));
+    const p = f * (IMP_RAMP.length - 1);
+    const i = Math.min(IMP_RAMP.length - 2, Math.floor(p));
+    const t = p - i, a = IMP_RAMP[i], b = IMP_RAMP[i + 1];
+    return [Math.round(a[0] + (b[0] - a[0]) * t),
+            Math.round(a[1] + (b[1] - a[1]) * t),
+            Math.round(a[2] + (b[2] - a[2]) * t)];
+  }
+
+  function lineRecompute() {
+    if (!LINE) return;
+    const fr = Math.round(S.fr), flo = Math.round(S.flo);
+    const wellIx = Math.round(S.wellx);
+    const follow = S.cFollow ? 1 : 0;
+
+    // Only rebuilt when the wavelet or the band changes, not when the well moves.
+    // The scaling is deliberately fixed against the whole line rather than at
+    // the well: this step is about what the low-frequency model does, and a
+    // relative panel that quietly rescaled as the well moved would put a second
+    // variable on the screen. In a project the scaling is a well step too.
+    if (LINE.fr !== fr || LINE.flo !== flo) {
+      LINE.section = SYNTH2D.sectionFrom(LINE.r, fr).field;
+      const rel0 = SYNTH2D.relativeImpedance(LINE.section, flo);
+      const k = SYNTH2D.calibrateAtWell(rel0, LINE.z, null, flo);
+      LINE.rel = SYNTH2D.scaleField(rel0, k);
+      LINE.fr = fr; LINE.flo = flo;
+    }
+
+    LINE.bg = SYNTH2D.backgroundModel(LINE.z, wellIx, flo, follow);
+    LINE.abs = SYNTH2D.absoluteImpedance(LINE.rel, LINE.bg);
+
+    LINE.trueGas = SYNTH2D.meanInGasSand(LINE.z);
+    LINE.invGas = SYNTH2D.meanInGasSand(LINE.abs);
+    LINE.shape = SYNTH2D.agreement(LINE.z, LINE.abs);
+    LINE.wellIx = wellIx;
+  }
+
+  function linePanel(id, ratio) {
+    const c = $(id);
+    if (!c || !c.parentElement) return null;
+    const cs = window.getComputedStyle(c.parentElement);
+    const w = c.parentElement.clientWidth
+            - parseFloat(cs.paddingLeft || 0) - parseFloat(cs.paddingRight || 0);
+    const h = Math.max(210, Math.round(w * (ratio || 0.66)));
+    const ctx = SEIS.fitCanvas(c, w, h);
+    ctx.clearRect(0, 0, w, h);
+    // Every panel in this step reserves the same margins, so the four sections
+    // are drawn exactly the same size and a feature can be carried between them.
+    /* Room below the section for the trace numbers, the color bar, and the bar's
+       own labels. At h - 78 the labels under the bar ran off the bottom of the
+       canvas and were cut in half. */
+    return { ctx, w, h, rect: { x: 46, y: 30, w: w - 62, h: h - 100 } };
+  }
+
+  /* The color bar under a section.
+
+     The units go above the bar and the two ends of the range go below it, at
+     the ends. All three used to sit on one line — the low value on the left,
+     the high value on the right and the units centered between them — which
+     collided as soon as the panel was narrow enough for "(m/s)(g/cc)" to reach
+     the numbers either side of it. A color bar nobody can read is worse than no
+     color bar, because the section still looks quantitative. */
+  function lineBar(ctx, rect, lo, hi, label) {
+    const bar = { x: rect.x + rect.w * 0.14, y: rect.y + rect.h + 34,
+                  w: rect.w * 0.72, h: 9 };
+    const n = 64;
+    for (let i = 0; i < n; i++) {
+      const c = impCmap((i / (n - 1)) * 2 - 1);
+      ctx.fillStyle = 'rgb(' + c[0] + ',' + c[1] + ',' + c[2] + ')';
+      ctx.fillRect(bar.x + (i / n) * bar.w, bar.y, bar.w / n + 0.8, bar.h);
+    }
+    SEIS.frame(ctx, bar);
+    ctx.save();
+    ctx.font = '9.5px "IBM Plex Mono", monospace';
+    ctx.fillStyle = SLATE;
+    // units above
+    ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+    ctx.fillText(label, bar.x + bar.w / 2, bar.y - 4);
+    // the two ends below
+    ctx.textBaseline = 'top';
+    ctx.textAlign = 'left';  ctx.fillText(lo, bar.x, bar.y + bar.h + 4);
+    ctx.textAlign = 'right'; ctx.fillText(hi, bar.x + bar.w, bar.y + bar.h + 4);
+    ctx.restore();
+  }
+
+  function draw4() {
+    if (!LINE) return;
+
+    const pa = linePanel('c4a');
+    if (pa) {
+      const { ctx, rect } = pa;
+      SYNTH2D.timeScale(ctx, rect);
+      SYNTH2D.drawField(ctx, LINE.z, rect, impCmap, SYNTH2D.Z_RANGE);
+      SYNTH2D.outlineGasSand(ctx, rect, 'rgba(255,255,255,.85)');
+      SYNTH2D.traceScale(ctx, rect, LINE.wellIx, SLATE);
+      lineBar(ctx, rect, fmt0(SYNTH2D.Z_RANGE[0]), fmt0(SYNTH2D.Z_RANGE[1]), '(m/s)(g/cc)');
+    }
+
+    const pb = linePanel('c4b');
+    if (pb) {
+      const { ctx, rect } = pb;
+      SYNTH2D.timeScale(ctx, rect);
+      SYNTH2D.drawField(ctx, LINE.section, rect, SEIS.COLORMAPS.gray, SYNTH2D.A_RANGE);
+      SYNTH2D.outlineGasSand(ctx, rect, 'rgba(132,22,23,.9)');
+      SYNTH2D.traceScale(ctx, rect, LINE.wellIx, SLATE);
+      SEIS.tag(ctx, rect.x + 6, rect.y + rect.h + 40,
+               'the same at every well position', SLATE, 'left');
+    }
+
+    const pc = linePanel('c4c');
+    if (pc) {
+      const { ctx, rect } = pc;
+      SYNTH2D.timeScale(ctx, rect);
+      SYNTH2D.drawField(ctx, LINE.rel, rect, impCmap, SYNTH2D.R_RANGE);
+      SYNTH2D.outlineGasSand(ctx, rect, 'rgba(255,255,255,.85)');
+      SYNTH2D.traceScale(ctx, rect, LINE.wellIx, SLATE);
+      lineBar(ctx, rect, 'softer', 'harder', 'no units');
+    }
+
+    const pd = linePanel('c4d');
+    if (pd) {
+      const { ctx, rect } = pd;
+      SYNTH2D.timeScale(ctx, rect);
+      SYNTH2D.drawField(ctx, LINE.abs, rect, impCmap, SYNTH2D.Z_RANGE);
+      SYNTH2D.outlineGasSand(ctx, rect, 'rgba(255,255,255,.85)');
+      SYNTH2D.traceScale(ctx, rect, LINE.wellIx, SLATE);
+      lineBar(ctx, rect, fmt0(SYNTH2D.Z_RANGE[0]), fmt0(SYNTH2D.Z_RANGE[1]), '(m/s)(g/cc)');
+    }
+
+    // The gas accumulation sits between traces 14 and 52, so its center is 33.
+    const gasCenter = 33;
+    const away = Math.abs(LINE.wellIx - gasCenter);
+    set('s4a', fmt0(LINE.trueGas));
+    set('s4b', fmt0(LINE.invGas));
+    set('s4c', fmt0(Math.abs(LINE.invGas - LINE.trueGas)) + ' impedance units');
+    set('s4d', away + ' traces');
+    set('s4e', LINE.shape.toFixed(3));
+    set('s4f', 'the values on the bottom right panel, and nothing else');
+  }
+
+  /* --- check yourself ------------------------------------------------------ */
+
+  (function wireCheck() {
+    const list = $('checkList');
+    if (!list) return;
+    list.addEventListener('click', (ev) => {
+      const btn = ev.target.closest('.opt');
+      if (!btn) return;
+      const li = btn.closest('li');
+      const right = li.getAttribute('data-right');
+      li.querySelectorAll('.opt').forEach((b) => {
+        b.classList.remove('right', 'wrong');
+        if (b.getAttribute('data-opt') === right) b.classList.add('right');
+      });
+      if (btn.getAttribute('data-opt') !== right) btn.classList.add('wrong');
+      const why = li.querySelector('.why');
+      if (why) why.hidden = false;
+    });
+  })();
+
+  /* --- wiring -------------------------------------------------------------- */
+
+  function syncControls() {
+    if ($('top')) $('top').value = S.top;
+    set('topV', Math.round(S.top) + ' m');
+    if ($('flo')) $('flo').value = S.flo;
+    set('floV', Math.round(S.flo) + ' Hz');
+    if ($('fr')) $('fr').value = S.fr;
+    set('frV', Math.round(S.fr) + ' Hz');
+    if ($('away')) $('away').value = S.away;
+    const wk = Math.max(0, Math.min(3, Math.round(S.away)));
+    const wsel = (D.wells || wellsFor(Math.round(S.top)))[wk];
+    set('awayV', wsel.label + (wsel.off >= 1 ? ' \u2014 ' + Math.round(wsel.off) + ' m' : ''));
+    if ($('wellx')) $('wellx').value = S.wellx;
+    set('wellxV', 'trace ' + Math.round(S.wellx));
+    if ($('cFollow')) $('cFollow').checked = !!S.cFollow;
+  }
+
+  function drawAll() {
+    syncControls();
+    drawSpectrum();
+    drawHead();
+    if (visible('p1')) draw1();
+    if (visible('p2')) draw2();
+    if (visible('p3')) draw3();
+    if (visible('p4')) draw4();
+  }
+
+  const PANES = ['p1', 'p2', 'p3', 'p4', 'pw', 'pc', 'pm'];
+
+  function showTab(id) {
+    PANES.forEach((q) => { const el = $(q); if (el) el.hidden = q !== id; });
+    document.querySelectorAll('#tabs button').forEach((b) => {
+      b.setAttribute('aria-selected', b.dataset.tab === id);
+    });
+    const lab = document.querySelector('.labhead');
+    if (lab) lab.hidden = (id === 'pw' || id === 'pc' || id === 'pm');
+    const last = (id === 'pc' || id === 'pm');
+    if ($('nextup')) $('nextup').hidden = !last;
+    if ($('pager')) $('pager').hidden = !last;
+    S.tab = id;
+    drawAll();
+    saveState();
+  }
+  document.querySelectorAll('#tabs button').forEach((b) => {
+    b.addEventListener('click', () => showTab(b.dataset.tab));
+  });
+
+  document.addEventListener('input', (ev) => {
+    const t = ev.target;
+    const check = t && t.dataset && t.dataset.check;
+    if (check) {
+      S[check] = t.checked ? 1 : 0;
+      recompute(); drawAll(); saveState();
+      return;
+    }
+    const key = t && t.dataset && t.dataset.key;
+    if (!key) return;
+    const v = parseFloat(t.value);
+    if (!isFinite(v)) return;
+    S[key] = v;
+    recompute(); drawAll(); saveState();
+  });
+
+  if ($('resetBtn')) {
+    $('resetBtn').addEventListener('click', () => {
+      Object.keys(DEF).forEach((k) => { if (k !== 'tab') S[k] = DEF[k]; });
+      recompute(); drawAll(); saveState();
+    });
+  }
+
+  let rt;
+  window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(drawAll, 140); });
+
+  recompute();
+  showTab(PANES.indexOf(S.tab) >= 0 ? S.tab : 'p1');
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawAll);
+
+  window.__MOD = { S, get D() { return D; }, recompute, drawAll, showTab };
+})();
+</script>
+</body>
+</html>

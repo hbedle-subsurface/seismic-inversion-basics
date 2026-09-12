@@ -1,0 +1,26 @@
+Seismic Inversion, from the start
+Copyright (c) 2026 Heather Bedle and April Moreno-Ward, University of Oklahoma
+
+This work -- the teaching text, figures, models and source code in this
+repository -- is licensed under the Creative Commons Attribution-ShareAlike 4.0
+International License (CC BY-SA 4.0).
+
+You are free to share and adapt this material for any purpose, including
+commercially, provided you give appropriate credit and license any adaptation
+under the same terms.
+
+To cite:
+
+    H. Bedle and A. Moreno-Ward, 2026, Seismic Inversion, from the start:
+    A Set of Browser-Based Interactive Modules for Teaching Seismic Inversion
+    to Geology Undergraduates: SSRN working paper, University of Oklahoma,
+    https://hbedle-subsurface.github.io/seismic-inversion-basics/
+
+License summary:  https://creativecommons.org/licenses/by-sa/4.0/
+Full legal text:  https://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+The well data used by these modules is not covered by this license. Maui-4 is
+open-file New Zealand data, released by New Zealand Petroleum & Minerals
+(Ministry of Business, Innovation & Employment) through the NZP&M Geodata
+Catalogue, with the composite log compiled by GNS Science. That data is free to
+download and is used here with acknowledgement; see DATA.md.
